@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<enrichment>
+	<annotation annotationDate="2015/09/25 01:46:18" annotationPlanName="Document Classification (Plan_DC)">
+		<docID value="conv-1450564206"/>
+		<language value="English"/>
+		<subject label_en="lbl_en_5" label_fr="lbl_fr_5" relevance="high" uri="http://kim.oecd.org/Taxonomy/Topics#T5">topic5 text</subject>
+		<subject label_en="lbl_en_14" label_fr="lbl_fr_14" relevance="normal" uri="http://kim.oecd.org/Taxonomy/Topics#T14">topic14 text</subject>
+		<subject label_en="lbl_en_40" label_fr="lbl_fr_40" relevance="normal" uri="http://kim.oecd.org/Taxonomy/Topics#T40">topic40 text</subject>
+		<subject label_en="lbl_en_16" label_fr="lbl_fr_16" relevance="normal" uri="http://kim.oecd.org/Taxonomy/Topics#T16">topic16 text</subject>
+		<subject label_en="lbl_en_8" label_fr="lbl_fr_8" relevance="normal" uri="http://kim.oecd.org/Taxonomy/Topics#T8">topic8 text</subject>
+		<subject label_en="lbl_en_9" label_fr="lbl_fr_9" relevance="normal" uri="http://kim.oecd.org/Taxonomy/Topics#T9">topic9 text</subject>
+		<subject label_en="lbl_en_41" label_fr="lbl_fr_41" relevance="normal" uri="http://kim.oecd.org/Taxonomy/Topics#T41">topic41 text</subject>
+		<subject label_en="lbl_en_45" label_fr="lbl_fr_45" relevance="normal" uri="http://kim.oecd.org/Taxonomy/Topics#T45">topic45 text</subject>
+		<subject label_en="lbl_en_44" label_fr="lbl_fr_44" relevance="high" uri="http://kim.oecd.org/Taxonomy/Topics#T44">topic44 text</subject>
+		<subject label_en="lbl_en_18" label_fr="lbl_fr_18" relevance="normal" uri="http://kim.oecd.org/Taxonomy/Topics#T18">topic18 text</subject>
+		<subject label_en="lbl_en_46" label_fr="lbl_fr_46" relevance="normal" uri="http://kim.oecd.org/Taxonomy/Topics#T46">topic46 text</subject>
+		<subject label_en="lbl_en_42" label_fr="lbl_fr_42" relevance="normal" uri="http://kim.oecd.org/Taxonomy/Topics#T42">topic42 text</subject>
+		<subject label_en="lbl_en_11" label_fr="lbl_fr_11" relevance="normal" uri="http://kim.oecd.org/Taxonomy/Topics#T11">topic11 text</subject>
+		<subject label_en="lbl_en_1" label_fr="lbl_fr_1" relevance="normal" uri="http://kim.oecd.org/Taxonomy/Topics#T1">topic1 text</subject>
+		<subject label_en="lbl_en_10" label_fr="lbl_fr_10" relevance="normal" uri="http://kim.oecd.org/Taxonomy/Topics#T10">topic10 text</subject>
+	</annotation>
+</enrichment>

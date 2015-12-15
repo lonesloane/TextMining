@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<enrichment>
+	<annotation annotationDate="2015/09/25 01:46:18" annotationPlanName="Document Classification (Plan_DC)">
+		<docID value="conv-1450564206"/>
+		<language value="English"/>
+		<subject label_en="lbl_en_9" label_fr="lbl_fr_9" relevance="normal" uri="http://kim.oecd.org/Taxonomy/Topics#T9">topic9 text</subject>
+		<subject label_en="lbl_en_3" label_fr="lbl_fr_3" relevance="normal" uri="http://kim.oecd.org/Taxonomy/Topics#T3">topic3 text</subject>
+		<subject label_en="lbl_en_6" label_fr="lbl_fr_6" relevance="normal" uri="http://kim.oecd.org/Taxonomy/Topics#T6">topic6 text</subject>
+		<subject label_en="lbl_en_10" label_fr="lbl_fr_10" relevance="normal" uri="http://kim.oecd.org/Taxonomy/Topics#T10">topic10 text</subject>
+		<subject label_en="lbl_en_11" label_fr="lbl_fr_11" relevance="normal" uri="http://kim.oecd.org/Taxonomy/Topics#T11">topic11 text</subject>
+	</annotation>
+</enrichment>
