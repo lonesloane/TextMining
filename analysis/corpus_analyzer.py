@@ -1,7 +1,7 @@
-import os
-import xml.etree.cElementTree as Et
 import logging
+import os
 import shelve
+import xml.etree.cElementTree as Et
 from sys import exc_info
 
 CORPUS_ROOT_FOLDER = "~/Corpus"
@@ -148,22 +148,25 @@ class CorpusAnalyzer:
         d.close()
 
 def main():
-    # corpus_root_folder = "/media/Data/OECD/Official Documents Enrichment/Documents"
-    # topics_index_filename = "Corpus_Table"
-    # corpus_root = "/media/Data/OECD/Official Documents Enrichment/2015/06/18"
-    # corpus_root = "../tests/testCooccurrence/"
+    corpus_root = "/media/Data/OECD/Official Documents Enrichment/Documents"
+    topics_occurrences_index = "Topics_Occurrences_Index"
+    topics_index = "Topics_Index"
+    files_index = "Files_Index"
 
+    # corpus_root = "/media/Data/OECD/Official Documents Enrichment/2015/06/18"
     # topics_occurrences_index = "2015_06_18_Topics_Occurrences_Index"
     # topics_index = "2015_06_18_Topics_Index"
     # files_index = "2015_06_18_Files_Index"
+
+    # corpus_root = "../tests/testCooccurrence/"
     # topics_occurrences_index = "Test_Cooccurrence_Topics_Occurrences_Index"
     # topics_index = "Test_Cooccurrence_Topics_Index"
     # files_index = "Test_Cooccurrence_Files_Index"
 
-    corpus_root = "../tests/testCorpus/"
-    topics_occurrences_index = "Test_Topics_Occurrences_Index"
-    topics_index = "Test_Topics_Index"
-    files_index = "Test_Files_Index"
+    # corpus_root = "../tests/testCorpus/"
+    # topics_occurrences_index = "Test_Topics_Occurrences_Index"
+    # topics_index = "Test_Topics_Index"
+    # files_index = "Test_Files_Index"
 
     LOG_LEVEL = logging.INFO
     logging.basicConfig(filename="corpus_analyzer.log", filemode="w",
