@@ -1,5 +1,6 @@
 import unittest
-import analysis.proximity_finder as finder
+
+import search.proximity_finder as finder
 
 
 class ProximityFinderTestCase(unittest.TestCase):

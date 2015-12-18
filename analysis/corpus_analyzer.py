@@ -5,8 +5,9 @@ import xml.etree.cElementTree as Et
 from sys import exc_info
 
 CORPUS_ROOT_FOLDER = "~/Corpus"
-TOPICS_OCCURRENCES_INDEX_FILENAME = "Topics_Occurences_Index"
+TOPICS_OCCURRENCES_INDEX_FILENAME = "Topics_Occurrences_Index"
 TOPICS_INDEX_FILENAME = "Topics_Index"
+TOPICS_LABELS_INDEX_FILENAME = "Topics_Labels_Index"
 FILES_INDEX_FILENAME = "Files_Index"
 LOG_LEVEL = logging.DEBUG
 
@@ -136,6 +137,7 @@ class CorpusAnalyzer:
 
     @staticmethod
     def shelve_index(index_filename, index_data):
+        print "Shelving %s" % index_filename
         d = shelve.open(index_filename)
         d["Corpus"] = index_data
         d.close()
@@ -147,11 +149,42 @@ class CorpusAnalyzer:
         self.topics_occurrences_hash = d["Corpus"]
         d.close()
 
+    @classmethod
+    def extract_topics_labels_index(cls, topics_index_filename=None, topics_labels_index_filename=None):
+        """
+
+        :param topics_index_filename: file containing the index of topics ids
+        :param topics_labels_index_filename: file where the topics labels index will be saved
+        :return:
+        """
+        if topics_index_filename is None:
+            topics_index_filename = TOPICS_INDEX_FILENAME
+        if topics_labels_index_filename is None:
+            topics_labels_index_filename = TOPICS_LABELS_INDEX_FILENAME
+        topics_labels_index = dict()
+
+        topics_index = CorpusAnalyzer.load_topics_index(topics_index_filename)
+        for topic, labels in topics_index.iteritems():
+            topics_labels_index[labels[0]] = topic
+            topics_labels_index[labels[1]] = topic
+
+        # Save the index to the filesystem
+        CorpusAnalyzer.shelve_index(topics_labels_index_filename, topics_labels_index)
+
+    @classmethod
+    def load_topics_index(cls, topics_index_filename):
+        d = shelve.open(topics_index_filename)
+        topics_index = d["Corpus"]
+        d.close()
+        return topics_index
+
+
+
 def main():
-    corpus_root = "/media/Data/OECD/Official Documents Enrichment/Documents"
-    topics_occurrences_index = "Topics_Occurrences_Index"
-    topics_index = "Topics_Index"
-    files_index = "Files_Index"
+    # corpus_root = "/media/Data/OECD/Official Documents Enrichment/Documents"
+    # topics_occurrences_index = "Topics_Occurrences_Index"
+    # topics_index = "Topics_Index"
+    # files_index = "Files_Index"
 
     # corpus_root = "/media/Data/OECD/Official Documents Enrichment/2015/06/18"
     # topics_occurrences_index = "2015_06_18_Topics_Occurrences_Index"
@@ -163,25 +196,36 @@ def main():
     # topics_index = "Test_Cooccurrence_Topics_Index"
     # files_index = "Test_Cooccurrence_Files_Index"
 
-    # corpus_root = "../tests/testCorpus/"
-    # topics_occurrences_index = "Test_Topics_Occurrences_Index"
-    # topics_index = "Test_Topics_Index"
-    # files_index = "Test_Files_Index"
+    corpus_root = "../tests/testCorpus/"
+    topics_occurrences_index = "Test_Topics_Occurrences_Index"
+    topics_index = "Test_Topics_Index"
+    files_index = "Test_Files_Index"
 
-    LOG_LEVEL = logging.INFO
+    # corpus_root = "../tests/testSingleFile/"
+    # topics_occurrences_index = "SingleFile_Topics_Occurrences_Index"
+    # topics_index = "SingleFile_Topics_Index"
+    # files_index = "SingleFile_Files_Index"
+
     logging.basicConfig(filename="corpus_analyzer.log", filemode="w",
-                        level=LOG_LEVEL, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+                        level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     analyzer = CorpusAnalyzer(corpus_root_folder=corpus_root)
 
-    print "Begin extract files index"
+    print "Begin extract topics indexes"
     analyzer.extract_topics_indexes(topics_index_filename=topics_index,
                                     topics_occurrences_index_filename=topics_occurrences_index)
-    print "End extract files index"
+    print "End extract topics indexes"
+
     print "Begin extract files index"
     analyzer.extract_files_index(topics_occurrences_index_filename=topics_occurrences_index,
                                  files_index_filename=files_index)
     print "End extract files index"
 
+
+def extract_topics_labels_index():
+    CorpusAnalyzer.extract_topics_labels_index(topics_index_filename="Test_Topics_Index",
+                                               topics_labels_index_filename="Test_Topics_Labels_Index")
+
 if __name__ == '__main__':
-    main()
+#     main()
+    extract_topics_labels_index()

@@ -1,11 +1,14 @@
 # coding=utf-8
 import os
+import shelve
 import shutil
 import unittest
 import analysis.corpus_analyzer as analyzer
 
 TEST_CORPUS_ROOT_FOLDER = "../testCorpus/"
 TEST_TOPICS_OCCURRENCES_INDEX_FILENAME = "../testOutput/Test_Topics_Occurrences_Index"
+TEST_TOPICS_LABELS_INDEX_FILENAME = "../testOutput/Test_Topics_Labels_Index"
+TEST_TOPICS_INDEX_FILENAME = "../testOutput/Test_Topics_Index"
 
 
 class CorpusAnalyzerTestCase(unittest.TestCase):
@@ -16,10 +19,30 @@ class CorpusAnalyzerTestCase(unittest.TestCase):
     def tearDown(self):
         if os.path.isfile(TEST_TOPICS_OCCURRENCES_INDEX_FILENAME):
             os.remove(TEST_TOPICS_OCCURRENCES_INDEX_FILENAME)
+        if os.path.isfile(TEST_TOPICS_LABELS_INDEX_FILENAME):
+            os.remove(TEST_TOPICS_LABELS_INDEX_FILENAME)
 
     def test_create_corpus_analyzer(self):
         self.assertIsNotNone(self.analyzer.topics_occurrences_hash)
         self.assertEqual(TEST_CORPUS_ROOT_FOLDER, self.analyzer.corpus_root_folder)
+
+    def test_extract_topics_labels_index(self):
+        self.assertFalse(os.path.isfile(TEST_TOPICS_LABELS_INDEX_FILENAME))
+
+        analyzer.CorpusAnalyzer.extract_topics_labels_index(topics_index_filename=TEST_TOPICS_INDEX_FILENAME,
+                                                            topics_labels_index_filename=TEST_TOPICS_LABELS_INDEX_FILENAME)
+
+        self.assertTrue(os.path.isfile(TEST_TOPICS_LABELS_INDEX_FILENAME))
+
+        d = shelve.open(TEST_TOPICS_LABELS_INDEX_FILENAME)
+        topics_labels_index = d["Corpus"]
+        d.close()
+
+        self.assertEqual(94, len(topics_labels_index))
+        self.assertTrue("1", topics_labels_index["lbl_en_1"])
+        self.assertTrue("1", topics_labels_index["lbl_fr_1"])
+        self.assertTrue("30", topics_labels_index["lbl_en_30"])
+        self.assertTrue("30", topics_labels_index["lbl_fr_30"])
 
     def test_process_enrichment_result(self):
         result_file = "JT03.xml"

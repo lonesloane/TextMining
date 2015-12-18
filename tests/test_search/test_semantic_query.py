@@ -1,33 +1,31 @@
 import unittest
 
-import search.semantic_search as search
+import search.semantic_query as search
 
 
 class QueryProcessorTestCase(unittest.TestCase):
     def setUp(self):
         files_index = "../testOutput/Test_Files_Index"
         topics_index = "../testOutput/Test_Topics_Occurrences_Index"
+        topics_labels_index = "../testOutput/Test_Topics_Labels_Index"
         self.processor = search.QueryProcessor(files_index_filename=files_index,
-                                               topics_occurrences_index_filename=topics_index)
+                                               topics_occurrences_index_filename=topics_index,
+                                               topics_labels_index_filename=topics_labels_index)
 
     def test_init(self):
         self.assertRaises(Exception, search.QueryProcessor)
 
-        files_index = "../testOutput/Test_Files_Index"
-        topics_index = "../testOutput/Test_Topics_Occurrences_Index"
-        processor = search.QueryProcessor(files_index_filename=files_index,
-                                          topics_occurrences_index_filename=topics_index)
-        self.assertIsNotNone(processor._files_index_filename, "Files index should not be None")
-        self.assertIsNotNone(processor._topics_occurrences_index_filename, "Topics index should not be None")
-        self.assertEqual("../testOutput/Test_Files_Index", processor._files_index_filename)
-        self.assertEqual("../testOutput/Test_Topics_Occurrences_Index", processor._topics_occurrences_index_filename)
+        self.assertIsNotNone(self.processor._files_index_filename, "Files index should not be None")
+        self.assertIsNotNone(self.processor._topics_occurrences_index_filename, "Topics index should not be None")
+        self.assertEqual("../testOutput/Test_Files_Index", self.processor._files_index_filename)
+        self.assertEqual("../testOutput/Test_Topics_Occurrences_Index", self.processor._topics_occurrences_index_filename)
 
-        self.assertIsNotNone(processor._files_index)
-        self.assertIsNotNone(processor._topics_occurrences_index)
+        self.assertIsNotNone(self.processor._files_index)
+        self.assertIsNotNone(self.processor._topics_occurrences_index)
 
     def test_load_files_index(self):
         self.processor.load_files_index()
-        self.assertTrue(self.processor._files_index.has_key('JT01.xml'))
+        self.assertTrue('JT01.xml'in self.processor._files_index)
         expected = [('26', 'N'), ('27', 'N'), ('22', 'H'), ('46', 'N'), ('43', 'N'), ('1', 'N'), ('8', 'N'),
                     ('47', 'N'), ('38', 'N'), ('15', 'N'), ('18', 'N'), ('31', 'N'),
                     ('37', 'N'), ('36', 'N'), ('48', 'H')]
@@ -37,9 +35,18 @@ class QueryProcessorTestCase(unittest.TestCase):
 
     def test_load_topics_occurrences_index(self):
         self.processor.load_topics_occurrences_index()
-        self.assertTrue(self.processor._topics_occurrences_index.has_key('1'))
+        self.assertTrue('1' in self.processor._topics_occurrences_index)
         expected = [('JT02.xml', 'N'), ('JT08.xml', 'N'), ('JT01.xml', 'N'), ('JT07.xml', 'N')]
         actual = self.processor._topics_occurrences_index['1']
+
+        self.assertEqual(expected, actual)
+
+    def test_load_topics_labels_index(self):
+        self.processor.load_topics_labels_index()
+        self.assertTrue('lbl_en_1' in self.processor._topics_labels_index)
+        expected = '1'
+        actual = self.processor._topics_labels_index['lbl_en_1']
+        print actual
 
         self.assertEqual(expected, actual)
 
@@ -48,7 +55,7 @@ class QueryProcessorTestCase(unittest.TestCase):
         expected_len = 4
         expected_files = ['JT02.xml', 'JT08.xml', 'JT01.xml', 'JT07.xml']
 
-        actual = self.processor._get_files(topic)
+        actual = self.processor._get_files_for_topic(topic)
 
         self.assertEqual(expected_len, len(actual))
         self.assertEqual(expected_files, actual)
@@ -60,7 +67,7 @@ class QueryProcessorTestCase(unittest.TestCase):
         expected_topics = [2, 3, 5, 6, 8, 9, 10, 11, 14, 15, 16, 18, 20, 22, 24, 25, 26, 27, 28, 30, 31, 33, 35,
                            36, 37, 38, 40, 41, 42, 43, 44, 45, 46, 47, 48]
 
-        actual = self.processor._get_topics(files, ignored_topic=topic)
+        actual = self.processor._get_topics_for_files(files, ignored_topic=topic)
 
         self.assertEqual(expected_len, len(actual))
         self.assertEqual(expected_topics, actual)
@@ -71,12 +78,34 @@ class QueryProcessorTestCase(unittest.TestCase):
         expected_topics = [3, 5, 6, 8, 9, 10, 11, 14, 15, 16, 18, 20, 22, 24, 25, 26, 27, 28, 30, 31, 33, 35,
                            36, 37, 38, 40, 41, 42, 43, 44, 45, 46, 47, 48]
 
-        actual = self.processor._get_topics(files, ignored_topic=topic)
+        actual = self.processor._get_topics_for_files(files, ignored_topic=topic)
 
         self.assertEqual(expected_len, len(actual))
         self.assertEqual(expected_topics, actual)
 
-    def test_execute(self):
+    def test_get_topic_id_from_label(self):
+        topic_label = "lbl_en_1"
+        expected = '1'
+        actual = self.processor.get_topic_id_from_label(topic_label)
+        self.assertEqual(expected, actual)
+
+        topic_label = "lbl_fr_1"
+        expected = '1'
+        actual = self.processor.get_topic_id_from_label(topic_label)
+        self.assertEqual(expected, actual)
+
+        topic_label = "lbl_en_2"
+        expected = '2'
+        actual = self.processor.get_topic_id_from_label(topic_label)
+        self.assertEqual(expected, actual)
+
+        topic_label = "lbl_en_xxx"
+        expected = None
+        actual = self.processor.get_topic_id_from_label(topic_label)
+        self.assertEqual(expected, actual)
+
+
+    def test_execute_by_topic_id(self):
         topic = "1"
         expected_files = ['JT02.xml', 'JT08.xml', 'JT01.xml', 'JT07.xml']
         expected_topics = [2, 3, 5, 6, 8, 9, 10, 11, 14, 15, 16, 18, 20, 22, 24, 25, 26, 27, 28, 30, 31, 33, 35,

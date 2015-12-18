@@ -3,24 +3,25 @@ import unittest
 import analysis.cooccurrence_extractor as extractor
 
 
-class MyTestCase(unittest.TestCase):
+class CoOccurrenceExtractorTestCase(unittest.TestCase):
 
     def setUp(self):
-        # self.extractor = extractor.CoOccurrenceExtractor(topics_occurrences_index_filename="../testOutput/Test_Cooccurrence_Topics_Occurrences_Index",
-        #                                            files_index_filename="../testOutput/Test_Cooccurrence_Files_Index")
+        self.extractor = extractor.CoOccurrenceExtractor(topics_occurrences_index_filename="../testOutput/Test_Cooccurrence_Topics_Occurrences_Index",
+                                                         files_index_filename="../testOutput/Test_Cooccurrence_Files_Index",
+                                                         depth=5)
         # self.extractor = extractor.CoOccurrenceExtractor(topics_occurrences_index_filename="../testOutput/Test_Topics_Occurrences_Index",
         #                                            files_index_filename="../testOutput/Test_Files_Index")
-        self.extractor = extractor.CoOccurrenceExtractor(topics_occurrences_index_filename="../../output/2015_Topics_Occurrences_Index",
-                                                         files_index_filename="../../output/2015_Files_Index", depth=5)
+        # self.extractor = extractor.CoOccurrenceExtractor(topics_occurrences_index_filename="../../output/2015_Topics_Occurrences_Index",
+        #                                                  files_index_filename="../../output/2015_Files_Index", depth=5)
         # self.extractor = extractor.CoOccurrenceExtractor(topics_occurrences_index_filename="../../output/Topics_Occurrences_Index",
         #                                            files_index_filename="../../output/Files_Index")
 
     def tearDown(self):
-        if os.path.isfile("Cooccurrences_Level4_Index"):
-            os.remove("Cooccurrences_Level4_Index")
+        if os.path.isfile("Full_Cooccurrences_Index"):
+            os.remove("Full_Cooccurrences_Index")
 
     def test_create(self):
-        expected = 47
+        expected = 10
         actual = len(self.extractor.topics_occurrences_table)
 
         self.assertEqual(expected, actual)
@@ -28,22 +29,22 @@ class MyTestCase(unittest.TestCase):
     def test_extract_topics_for_file(self):
         target_file = "JT03.xml"
         target_topic = "3"
-        expected = ['11', '10', '6', '9']
+        expected = sorted(['11', '10', '6', '9'])
         actual = self.extractor._extract_topics_for_file(target_file, target_topic)
         print "extract (%s): " % target_topic, actual
-        self.assertEqual(expected, actual)
+        self.assertEqual(expected, sorted(actual))
 
         target_topic = "3-9"
-        expected = ['11', '10', '6']
+        expected = sorted(['11', '10', '6'])
         actual = self.extractor._extract_topics_for_file(target_file, target_topic)
         print "extract (%s): " % target_topic, actual
-        self.assertEqual(expected, actual)
+        self.assertEqual(expected, sorted(actual))
 
         target_topic = "3-6-9"
-        expected = ['11', '10']
+        expected = sorted(['11', '10'])
         actual = self.extractor._extract_topics_for_file(target_file, target_topic)
         print "extract (%s): " % target_topic, actual
-        self.assertEqual(expected, actual)
+        self.assertEqual(expected, sorted(actual))
 
         target_topic = "3-6-9-11"
         expected = ['10']
@@ -73,24 +74,14 @@ class MyTestCase(unittest.TestCase):
         expected = 9
         self.assertEqual(expected, len(co_occurrences))
 
-    def test_extract_cooccurrences(self):
-        self.extractor.extract_cooccurrences()
+    def test_extract_topic_cooccurrences(self):
+        target_topic = "3"
+        target_file = self.extractor._topics_occurrences_table[target_topic][0][0]
+        actual_co_occurrences = self.extractor._extract_topic_cooccurrences(target_topic=target_topic,
+                                                                            target_file=target_file)
 
-    def test_extract_cooccurrences_target(self):
-        target = "3"
-        corpus_files = self.extractor._topics_occurrences_table[target]
-        actual_composite_keys = self.extractor._extract_topic_cooccurrences(target_topic=target, corpus_files=corpus_files)
-        actual_cooccurrences = self.extractor._topics_cooccurrences_table[target]
-        actual_occurrences = self.extractor._topics_occurrences_table[target]
-
-        print "topic occurences: ", actual_occurrences
-        print "topic cooccurences: ", actual_cooccurrences
-        print "composite keys: ", actual_composite_keys
-        self.assertEqual([('JT02.xml', 'N'), ('JT03.xml', 'N'), ('JT01.xml', 'N')], actual_occurrences)
-        self.assertEqual(9, len(actual_cooccurrences))
-        self.assertEqual(9, len(actual_composite_keys))
-        self.assertIn("7", actual_cooccurrences)
-        self.assertIn("3-7", actual_composite_keys)
+        expected_co_occurrences = ['1', '5', '6', '7']
+        self.assertEqual(sorted(expected_co_occurrences), sorted(actual_co_occurrences))
 
     def test_build_index_key(self):
         root_topic = "1-3"
@@ -111,19 +102,13 @@ class MyTestCase(unittest.TestCase):
         actual = extractor.CoOccurrenceExtractor.build_composite_key(root_topic, cooccurrence_topic)
         self.assertEqual(expected, actual)
 
-    def test_fill_topics_index(self):
-        self.extractor._fill_topics_occurrences_table("1001", "JT123456.xml")
-        self.extractor._fill_topics_occurrences_table("2432", "JT123456.xml")
-        self.extractor._fill_topics_occurrences_table("1001-2432", "JT123456.xml")
+    def test_fill_topic_occurrences(self):
+        self.extractor._fill_topic_occurrences("1001", "2432", "JT123456.xml")
         expected = [("JT123456.xml", -1)]
-        actual = self.extractor._topics_occurrences_table["1001"]
-        self.assertEqual(expected, actual)
-        actual = self.extractor._topics_occurrences_table["2432"]
-        self.assertEqual(expected, actual)
         actual = self.extractor._topics_occurrences_table["1001-2432"]
         self.assertEqual(expected, actual)
 
-        self.extractor._fill_topics_occurrences_table("1001-2432", "JT67890.xml")
+        self.extractor._fill_topic_occurrences("1001", "2432", "JT67890.xml")
         expected = [("JT123456.xml", -1), ("JT67890.xml", -1)]
         actual = self.extractor._topics_occurrences_table["1001-2432"]
         self.assertEqual(expected, actual)
@@ -162,10 +147,10 @@ class MyTestCase(unittest.TestCase):
         expected = ["1", "2", "3", "4"]
         self.extractor._topics_cooccurrences_table = expected
 
-        self.extractor._save_cooccurrences_table(4)
-        self.assertTrue(os.path.isfile("Cooccurrences_Level4_Index"))
+        self.extractor._save_cooccurrences_table()
+        self.assertTrue(os.path.isfile("Full_Cooccurrences_Index"))
         import shelve
-        d = shelve.open("Cooccurrences_Level4_Index")
+        d = shelve.open("Full_Cooccurrences_Index")
         actual = d["Corpus"]
         d.close()
         self.assertEqual(expected, actual)

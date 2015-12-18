@@ -77,6 +77,9 @@ class CoOccurrenceExtractor:
                     # Start recursive calls to process all combinations based on topics found within map_file
                     self.extract_cooccurrences(root_topic, map_file)
 
+        self._save_occurrences_table()
+        self._save_cooccurrences_table()
+
     def extract_cooccurrences(self, root_topic, map_file):
 
         if root_topic in self._topics_occurrences_table.keys() \
@@ -223,16 +226,16 @@ class CoOccurrenceExtractor:
     def _percent(idx, total):
         return (idx * 100) / total
 
-    def _save_cooccurrences_table(self, depth):
-        index_filename = "../output/Cooccurrences_Level{level}_Index".format(level=depth)
+    def _save_cooccurrences_table(self):
+        index_filename = "Full_Cooccurrences_Index"
         d = shelve.open(index_filename, flag='n')
         d["Corpus"] = self._topics_cooccurrences_table
         d.close()
 
-    def _save_occurrences_table(self, depth):
+    def _save_occurrences_table(self):
         if len(self._topics_occurrences_table) == 0:
             return
-        index_filename = "../output/Occurrences_Level{level}_Index".format(level=depth)
+        index_filename = "Full_Occurrences_Index"
         d = shelve.open(index_filename, flag='n')
         d["Corpus"] = self._topics_occurrences_table
         d.close()
