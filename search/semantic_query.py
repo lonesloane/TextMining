@@ -1,6 +1,3 @@
-# region imports
-
-# end region
 import logging
 import shelve
 
@@ -76,6 +73,11 @@ class QueryProcessor:
         return sorted(list(set(result_topics)))
 
     def get_topic_id_from_label(self, topic_label):
+        """
+
+        :param topic_label: label of the topic for which to find the topic_id
+        :return: topic_id or None if no topic was found with label "topic_label"
+        """
         try:
             return self._topics_labels_index[topic_label]
         except:

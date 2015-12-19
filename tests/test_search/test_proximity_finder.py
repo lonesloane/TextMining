@@ -13,7 +13,7 @@ class ProximityFinderTestCase(unittest.TestCase):
         self.assertEqual("../testOutput/Test_Topics_Occurrences_Index", self.finder.hash_table_filename)
 
     def test_load_corpus_table(self):
-        self.finder._load_corpus_table()
+        self.finder.load_corpus_table()
         expected = [('JT02.xml', 'N'), ('JT04.xml', 'N'), ('JT01.xml', 'H'), ('JT06.xml', 'N')]
         actual = self.finder.corpus_table['22']
 

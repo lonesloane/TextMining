@@ -3,7 +3,7 @@ import logging
 import logging.config
 
 LOG_LEVEL = logging.INFO
-HASH_TABLE_FILENAME = "Topics_Index"
+HASH_TABLE_FILENAME = "../output/Topics_Occurrences_Index"
 
 
 class ProximityFinder:
@@ -12,7 +12,7 @@ class ProximityFinder:
     TOTAL_MATCHES = 1
 
     def __init__(self, hash_table_filename=None):
-        logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
+        logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
         # logging.config.fileConfig('logging.conf')
         self.logger = logging.getLogger(__name__)
 
@@ -20,8 +20,9 @@ class ProximityFinder:
         self.raw_results = []
         self.hash_table_filename = hash_table_filename if hash_table_filename is not None else HASH_TABLE_FILENAME
         self.corpus_table = None
+        self.load_corpus_table()
 
-    def _load_corpus_table(self):
+    def load_corpus_table(self):
         self.logger.info("Loading corpus hash table from %s", self.hash_table_filename)
 
         d = shelve.open(self.hash_table_filename)
@@ -31,10 +32,11 @@ class ProximityFinder:
     def build_proximity_results(self, semantic_signature, sort_criteria=None, minimum_match_number=0):
         self.proximity_results = {}
         if self.corpus_table is None:
-            self._load_corpus_table()
+            self.load_corpus_table()
 
         for topic in semantic_signature:
             matching_files = self.corpus_table[topic]
+            self.logger.debug("Matching files found for topic %s: %s", topic, matching_files)
             for matching_file, relevance in matching_files:
                 if matching_file not in self.proximity_results:
                     self.proximity_results[matching_file] = [{"total_match": 1,
@@ -56,9 +58,13 @@ class ProximityFinder:
 
     def _sort_results(self, sort_criteria, minimum_match_number):
         sorting_label = ""
+        self.logger.info("[_sort_results] building results dictionary with minimum match: %s", minimum_match_number)
         self.proximity_results = dict((k, v) for k, v in self.proximity_results.items()
                                       if v[0]["total_match"] >= minimum_match_number)
+        self.logger.debug("[_sort_results] results dictionary: %s", self.proximity_results)
+
         if sort_criteria is None:
+            self.logger.info("[_sort_results] No sorting criteria provided, leaving dictionary unordered.")
             self.proximity_results = list(self.proximity_results.iteritems())
         elif sort_criteria == ProximityFinder.TOTAL_MATCHES:
             sorting_label = "total number of matches"

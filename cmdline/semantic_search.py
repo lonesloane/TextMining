@@ -1,8 +1,8 @@
-from search.semantic_query import QueryProcessor
+import search.semantic_query as semantic
 
 
 def main():
-    processor = QueryProcessor()
+    processor = semantic.QueryProcessor()
 
     print "What topic are you looking for?"
     target_topic = raw_input(">> ")
