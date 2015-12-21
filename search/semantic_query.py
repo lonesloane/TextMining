@@ -91,15 +91,15 @@ class QueryProcessor:
         :return: list of files matching the topics and list of topics found in these files (minus topics)
         """
         result_files = set()
-        topic_list = topics.split('-')
-        for topic in topic_list:
+        # topic_list = topics.split('-')
+        for topic in topics:
             single_topic_files = set(self._get_files_for_topic(topic))
             if len(result_files) == 0:
                 result_files = result_files.union(single_topic_files)
             else:
                 result_files = result_files.intersection(single_topic_files)
 
-        result_topics = self._get_topics_for_files(result_files, topic_list)
+        result_topics = self._get_topics_for_files(result_files, topics)
 
         return list(result_files), result_topics
 

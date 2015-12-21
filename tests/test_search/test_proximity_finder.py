@@ -1,33 +1,83 @@
 import unittest
-
 import search.proximity_finder as finder
 
 
 class ProximityFinderTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.finder = finder.ProximityFinder(hash_table_filename="../testOutput/Test_Topics_Occurrences_Index")
+        self.finder = finder.ProximityFinder(
+            topics_occurrences_index_filename="../testOutput/Test_Topics_Occurrences_Index")
 
     def test_create(self):
-        self.assertEqual(None, self.finder.corpus_table)
-        self.assertEqual("../testOutput/Test_Topics_Occurrences_Index", self.finder.hash_table_filename)
-
-    def test_load_corpus_table(self):
-        self.finder.load_corpus_table()
+        self.assertEqual("../testOutput/Test_Topics_Occurrences_Index", self.finder.topics_occurrences_index_filename)
         expected = [('JT02.xml', 'N'), ('JT04.xml', 'N'), ('JT01.xml', 'H'), ('JT06.xml', 'N')]
-        actual = self.finder.corpus_table['22']
+        actual = self.finder.topics_occurrences_index.get_files_for_topic('22')
 
         self.assertEqual(expected, actual)
 
+    def test_compute_proximity_score(self):
+        target_relevance = 'N'
+        relevance = 'N'
+        expected = 100
+        actual = finder.ProximityFinder.compute_proximity_score(target_relevance, relevance)
+        self.assertEqual(expected, actual)
+
+        target_relevance = 'H'
+        relevance = 'N'
+        expected = 1
+        actual = finder.ProximityFinder.compute_proximity_score(target_relevance, relevance)
+        self.assertEqual(expected, actual)
+
+        target_relevance = 'N'
+        relevance = 'H'
+        expected = 1
+        actual = finder.ProximityFinder.compute_proximity_score(target_relevance, relevance)
+        self.assertEqual(expected, actual)
+
+        target_relevance = 'H'
+        relevance = 'H'
+        expected = 10000
+        actual = finder.ProximityFinder.compute_proximity_score(target_relevance, relevance)
+        self.assertEqual(expected, actual)
+
+    def test__trim_results(self):
+        self.finder.proximity_results = {'JT01.xml': [('47', 100), ('18', 100), ('43', 100), ('27', 100)],
+                                         'JT04.xml': [('44', 100), ('39', 100), ('47', 1), ('20', 1)],
+                                         'JT06.xml': [('10', 100), ('16', 100), ('25', 1)],
+                                         'JT09.xml': [('39', 100), ('7', 100), ('30', 100), ('9', 100)],
+                                         'JT05.xml': [('44', 100), ('43', 100), ('10', 100), ('9', 100), ('16', 100)],
+                                         'JT07.xml': [('44', 1), ('11', 100), ('18', 100), ('10', 100), ('9', 100),
+                                                      ('16', 100), ('40', 100)],
+                                         'JT08.xml': [('44', 100), ('18', 100), ('43', 100), ('10', 100), ('40', 100)],
+                                         'JT10.xml': [('44', 100), ('39', 1), ('7', 100), ('47', 1), ('25', 1),
+                                                      ('27', 100)],
+                                         'JT03.xml': [('7', 100), ('30', 100), ('18', 100), ('9', 1)],
+                                         'JT02.xml': [('30', 100), ('9', 100), ('20', 10000), ('25', 1), ('27', 100)]}
+
+        actual = self.finder._trim_results(['JT01.xml'])
+        print actual
+
+        expected = {'JT04.xml': [('44', 100), ('39', 100), ('47', 1), ('20', 1)],
+                    'JT06.xml': [('10', 100), ('16', 100), ('25', 1)],
+                    'JT09.xml': [('39', 100), ('7', 100), ('30', 100), ('9', 100)],
+                    'JT05.xml': [('44', 100), ('43', 100), ('10', 100), ('9', 100), ('16', 100)],
+                    'JT07.xml': [('44', 1), ('11', 100), ('18', 100), ('10', 100), ('9', 100), ('16', 100), ('40', 100)],
+                    'JT08.xml': [('44', 100), ('18', 100), ('43', 100), ('10', 100), ('40', 100)],
+                    'JT10.xml': [('44', 100), ('39', 1), ('7', 100), ('47', 1), ('25', 1), ('27', 100)],
+                    'JT03.xml': [('7', 100), ('30', 100), ('18', 100), ('9', 1)],
+                    'JT02.xml': [('30', 100), ('9', 100), ('20', 10000), ('25', 1), ('27', 100)]}
+
+        self.assertItemsEqual(expected, actual)
+
     def test_build_proximity_results(self):
-        signature = ["44", "39", "11", "7", "47", "30", "18", "43", "10", "9", "20", "29", "40", "25", "27"]
+        signature = [('44', 'N'), ('39', 'N'), ('11', 'N'), ('7', 'N'), ('47', 'N'), ('30', 'N'), ('18', 'N'),
+                     ('43', 'N'), ('10', 'N'), ('9', 'N'), ('20', 'H'), ('16', 'N'), ('40', 'N'), ('25', 'H'),
+                     ('27', 'N')]
         results = self.finder.build_proximity_results(semantic_signature=signature).proximity_results
-        expected_1 = ('JT01.xml', [{'normal_match': 4, 'total_match': 4, 'high_match': 0},
-                                   [('47', 'N'), ('18', 'N'), ('43', 'N'), ('27', 'N')]])
-        expected_2 = ('JT04.xml', [{'normal_match': 4, 'total_match': 5, 'high_match': 1},
-                                   [('44', 'N'), ('39', 'N'), ('47', 'H'), ('20', 'N'), ('29', 'N')]])
-        expected_3 = ('JT02.xml', [{'normal_match': 4, 'total_match': 5, 'high_match': 1},
-                                   [('30', 'N'), ('9', 'N'), ('20', 'H'), ('25', 'N'), ('27', 'N')]])
+        print results
+        expected_1 = ('JT01.xml', [('47', 100), ('18', 100), ('43', 100), ('27', 100)])
+        expected_2 = ('JT04.xml', [('44', 100), ('39', 100), ('47', 1), ('20', 1)])
+        expected_3 = ('JT02.xml', [('30', 100), ('9', 100), ('20', 10000), ('25', 1), ('27', 100)])
         actual_1 = results[0]
         actual_2 = results[1]
         actual_3 = results[-1]
@@ -35,62 +85,89 @@ class ProximityFinderTestCase(unittest.TestCase):
         self.assertEqual(expected_2, actual_2)
         self.assertEqual(expected_3, actual_3)
 
+    def test_build_results_by_proximity_score(self):
+        signature = [('44', 'N'), ('39', 'N'), ('11', 'N'), ('7', 'N'), ('47', 'N'), ('30', 'N'), ('18', 'N'),
+                     ('43', 'N'), ('10', 'N'), ('9', 'N'), ('20', 'H'), ('16', 'N'), ('40', 'N'), ('25', 'H'),
+                     ('27', 'N')]
+        sorted_results = self.finder.build_proximity_results(semantic_signature=signature,
+                                                             sort_criteria=finder.ProximityFinder.PROXIMITY_SCORE).proximity_results
+        expected = ('JT02.xml', [('30', 100), ('9', 100), ('20', 10000), ('25', 1), ('27', 100)])
+        actual = sorted_results[0]
+        self.assertEqual(expected, actual)
+
     def test_build_results_by_number_match(self):
-        signature = ["44", "39", "11", "7", "47", "30", "18", "43", "10", "9", "20", "29", "40", "25", "27"]
+        signature = [('44', 'N'), ('39', 'N'), ('11', 'N'), ('7', 'N'), ('47', 'N'), ('30', 'N'), ('18', 'N'),
+                     ('43', 'N'), ('10', 'N'), ('9', 'N'), ('20', 'H'), ('16', 'N'), ('40', 'N'), ('25', 'H'),
+                     ('27', 'N')]
         sorted_results = self.finder.build_proximity_results(semantic_signature=signature,
                                                              sort_criteria=finder.ProximityFinder.TOTAL_MATCHES).proximity_results
-        expected = ('JT07.xml', [{'normal_match': 5, 'total_match': 6, 'high_match': 1},
-                                 [('44', 'H'), ('11', 'N'), ('18', 'N'), ('10', 'N'), ('9', 'N'), ('40', 'N')]])
+        expected = ('JT07.xml', [('44', 1), ('11', 100), ('18', 100), ('10', 100), ('9', 100), ('16', 100),
+                                 ('40', 100)])
         actual = sorted_results[0]
         self.assertEqual(expected, actual)
 
     def test_build_results_by_number_high(self):
-        signature = ["44", "39", "11", "7", "47", "30", "18", "43", "10", "9", "20", "29", "40", "25", "27"]
+        signature = [('44', 'N'), ('39', 'H'), ('11', 'N'), ('7', 'N'), ('47', 'H'), ('30', 'N'), ('18', 'N'),
+                     ('43', 'N'), ('10', 'N'), ('9', 'N'), ('20', 'H'), ('16', 'N'), ('40', 'N'), ('25', 'H'),
+                     ('27', 'N')]
         sorted_results = self.finder.build_proximity_results(semantic_signature=signature,
                                                              sort_criteria=finder.ProximityFinder.NB_HIGH_MATCHES).proximity_results
-        expected = ('JT10.xml', [{'normal_match': 4, 'total_match': 6, 'high_match': 2},
-                                 [('44', 'N'), ('39', 'H'), ('7', 'N'), ('47', 'H'), ('25', 'N'), ('27', 'N')]])
+        expected = ('JT10.xml', [('44', 100), ('39', 10000), ('7', 100), ('47', 10000), ('25', 1), ('27', 100)])
         actual = sorted_results[0]
         self.assertEqual(expected, actual)
 
     def test_build_results_minimum_matches(self):
-        signature = ["44", "39", "11", "7", "47", "30", "18", "43", "10", "9", "20", "29", "40", "25", "27"]
+        signature = [('44', 'N'), ('39', 'N'), ('11', 'N'), ('7', 'N'), ('47', 'N'), ('30', 'N'), ('18', 'N'),
+                     ('43', 'N'), ('10', 'N'), ('9', 'N'), ('20', 'H'), ('16', 'N'), ('40', 'N'), ('25', 'H'),
+                     ('27', 'N')]
+
         sorted_results_1 = self.finder.build_proximity_results(semantic_signature=signature,
                                                                sort_criteria=finder.ProximityFinder.TOTAL_MATCHES,
                                                                minimum_match_number=1).proximity_results
+        actual_1 = len(sorted_results_1)
+        self.assertEqual(actual_1, 10)
+
         sorted_results_2 = self.finder.build_proximity_results(semantic_signature=signature,
                                                                sort_criteria=finder.ProximityFinder.TOTAL_MATCHES,
                                                                minimum_match_number=2).proximity_results
+        actual_2 = len(sorted_results_2)
+        self.assertEqual(actual_2, 10)
+
         sorted_results_3 = self.finder.build_proximity_results(semantic_signature=signature,
                                                                sort_criteria=finder.ProximityFinder.TOTAL_MATCHES,
                                                                minimum_match_number=3).proximity_results
+        actual_3 = len(sorted_results_3)
+        self.assertEqual(actual_3, 10)
+
         sorted_results_4 = self.finder.build_proximity_results(semantic_signature=signature,
                                                                sort_criteria=finder.ProximityFinder.TOTAL_MATCHES,
                                                                minimum_match_number=4).proximity_results
+        actual_4 = len(sorted_results_4)
+        self.assertEqual(actual_4, 9)
+
         sorted_results_5 = self.finder.build_proximity_results(semantic_signature=signature,
                                                                sort_criteria=finder.ProximityFinder.TOTAL_MATCHES,
                                                                minimum_match_number=5).proximity_results
+        actual_5 = len(sorted_results_5)
+        self.assertEqual(actual_5, 5)
+
         sorted_results_6 = self.finder.build_proximity_results(semantic_signature=signature,
                                                                sort_criteria=finder.ProximityFinder.TOTAL_MATCHES,
                                                                minimum_match_number=6).proximity_results
+        actual_6 = len(sorted_results_6)
+        self.assertEqual(actual_6, 2)
+
         sorted_results_7 = self.finder.build_proximity_results(semantic_signature=signature,
                                                                sort_criteria=finder.ProximityFinder.TOTAL_MATCHES,
                                                                minimum_match_number=7).proximity_results
-        actual_1 = len(sorted_results_1)
-        actual_2 = len(sorted_results_2)
-        actual_3 = len(sorted_results_3)
-        actual_4 = len(sorted_results_4)
-        actual_5 = len(sorted_results_5)
-        actual_6 = len(sorted_results_6)
         actual_7 = len(sorted_results_7)
+        self.assertEqual(actual_7, 1)
 
-        self.assertEqual(actual_1, 10)
-        self.assertEqual(actual_2, 10)
-        self.assertEqual(actual_3, 9)
-        self.assertEqual(actual_4, 9)
-        self.assertEqual(actual_5, 6)
-        self.assertEqual(actual_6, 2)
-        self.assertEqual(actual_7, 0)
+        sorted_results_8 = self.finder.build_proximity_results(semantic_signature=signature,
+                                                               sort_criteria=finder.ProximityFinder.TOTAL_MATCHES,
+                                                               minimum_match_number=8).proximity_results
+        actual_8 = len(sorted_results_8)
+        self.assertEqual(actual_8, 0)
 
 if __name__ == '__main__':
     unittest.main()
