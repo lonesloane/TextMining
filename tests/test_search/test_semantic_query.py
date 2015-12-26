@@ -1,9 +1,11 @@
+import logging
 import unittest
 
 import search.semantic_query as search
 
 
 class QueryProcessorTestCase(unittest.TestCase):
+
     files_index = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Files_Index"
     topics_occurrences_index = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Occurrences_Index"
     topics_labels_index = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Labels_Index"
@@ -14,37 +16,30 @@ class QueryProcessorTestCase(unittest.TestCase):
                                                topics_labels_index_filename=QueryProcessorTestCase.topics_labels_index)
 
     def test_init(self):
-        self.assertIsNotNone(self.processor._files_index_filename, "Files index should not be None")
-        self.assertIsNotNone(self.processor._topics_occurrences_index_filename, "Topics index should not be None")
-        self.assertEqual(QueryProcessorTestCase.files_index, self.processor._files_index_filename)
-        self.assertEqual(QueryProcessorTestCase.topics_occurrences_index, self.processor._topics_occurrences_index_filename)
-
         self.assertIsNotNone(self.processor._files_index)
         self.assertIsNotNone(self.processor._topics_occurrences_index)
+        self.assertIsNotNone(self.processor._topics_labels_index)
 
     def test_load_files_index(self):
-        self.processor.load_files_index()
-        self.assertTrue('JT01.xml'in self.processor._files_index)
+        self.assertTrue('JT01.xml'in self.processor._files_index._index)
         expected = [('26', 'N'), ('27', 'N'), ('22', 'H'), ('46', 'N'), ('43', 'N'), ('1', 'N'), ('8', 'N'),
                     ('47', 'N'), ('38', 'N'), ('15', 'N'), ('18', 'N'), ('31', 'N'),
                     ('37', 'N'), ('36', 'N'), ('48', 'H')]
-        actual = self.processor._files_index['JT01.xml']
+        actual = self.processor._files_index._index['JT01.xml']
 
         self.assertEqual(expected, actual)
 
     def test_load_topics_occurrences_index(self):
-        self.processor.load_topics_occurrences_index()
-        self.assertTrue('1' in self.processor._topics_occurrences_index)
+        self.assertTrue('1' in self.processor._topics_occurrences_index._index)
         expected = [('JT02.xml', 'N'), ('JT08.xml', 'N'), ('JT01.xml', 'N'), ('JT07.xml', 'N')]
-        actual = self.processor._topics_occurrences_index['1']
+        actual = self.processor._topics_occurrences_index._index['1']
 
         self.assertEqual(expected, actual)
 
     def test_load_topics_labels_index(self):
-        self.processor.load_topics_labels_index()
-        self.assertTrue('lbl_en_1' in self.processor._topics_labels_index)
+        self.assertTrue('lbl_en_1' in self.processor._topics_labels_index._index)
         expected = '1'
-        actual = self.processor._topics_labels_index['lbl_en_1']
+        actual = self.processor._topics_labels_index._index['lbl_en_1']
         print actual
 
         self.assertEqual(expected, actual)
@@ -83,6 +78,8 @@ class QueryProcessorTestCase(unittest.TestCase):
         self.assertEqual(expected_topics, actual)
 
     def test_get_topic_id_from_label(self):
+        logging.getLogger(__name__).info('begin test: test_get_topic_id_from_label')
+
         topic_label = "lbl_en_1"
         expected = '1'
         actual = self.processor.get_topic_id_from_label(topic_label)
@@ -102,7 +99,6 @@ class QueryProcessorTestCase(unittest.TestCase):
         expected = None
         actual = self.processor.get_topic_id_from_label(topic_label)
         self.assertEqual(expected, actual)
-
 
     def test_execute_by_topic_id(self):
         topic = ["1"]
