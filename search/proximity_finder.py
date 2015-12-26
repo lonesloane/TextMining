@@ -1,18 +1,34 @@
 import logging
 import logging.config
-from index.loader import TopicsOccurrencesIndex
+from index.loader import TopicsOccurrencesIndex, TopicsIndex
+
+
+class SortBy:
+    PROXIMITY_SCORE = 0
+    NB_HIGH_MATCHES = 1
+    TOTAL_MATCHES = 2
+
+    def __init__(self):
+        pass
+
+
+class ProximityScore:
+    H_H = 10000
+    N_N = 100
+    H_N = N_H = 1
+
+    def __init__(self):
+        pass
 
 
 class ProximityFinder:
     """
 
     """
+    TOPICS_INDEX_FILENAME_DEFAULT = "../output/Topics_Index"
     TOPICS_OCCURRENCES_INDEX_FILENAME_DEFAULT = "../output/Topics_Occurrences_Index"
-    PROXIMITY_SCORE = 0
-    NB_HIGH_MATCHES = 1
-    TOTAL_MATCHES = 2
 
-    def __init__(self, topics_occurrences_index_filename=None):
+    def __init__(self, topics_index_filename=None, topics_occurrences_index_filename=None):
         """
 
         :param topics_occurrences_index_filename:
@@ -24,10 +40,15 @@ class ProximityFinder:
 
         self.proximity_results = {}
         self.raw_results = []
-        self.topics_occurrences_index_filename = topics_occurrences_index_filename \
+
+        _topics_index_filename = topics_index_filename if topics_index_filename is not None \
+            else ProximityFinder.TOPICS_INDEX_FILENAME_DEFAULT
+        self.topics_index = TopicsIndex(_topics_index_filename)
+
+        _topics_occurrences_index_filename = topics_occurrences_index_filename \
             if topics_occurrences_index_filename is not None \
             else ProximityFinder.TOPICS_OCCURRENCES_INDEX_FILENAME_DEFAULT
-        self.topics_occurrences_index = TopicsOccurrencesIndex(self.topics_occurrences_index_filename)
+        self.topics_occurrences_index = TopicsOccurrencesIndex(_topics_occurrences_index_filename)
 
     def build_proximity_results(self, semantic_signature, sort_criteria=None, minimum_match_number=0,
                                 ignored_files=None):
@@ -40,23 +61,26 @@ class ProximityFinder:
         :return:
         """
         self.proximity_results = {}
-        if self.topics_occurrences_index is None:
-            self.topics_occurrences_index = TopicsOccurrencesIndex(self.topics_occurrences_index_filename)
 
         for target_topic, target_relevance in semantic_signature:
+            target_topic_lbl_en, target_topic_lbl_fr = self.topics_index.get_labels_for_topic_id(target_topic)
             matching_files = self.topics_occurrences_index.get_files_for_topic(target_topic)
             self.logger.debug("Matching files found for topic %s: %s", target_topic, matching_files)
             for matching_file, relevance in matching_files:
-                if matching_file not in self.proximity_results:
+                if matching_file in self.proximity_results:
+                    self.proximity_results[matching_file].append((target_topic,
+                                                                  target_topic_lbl_en,
+                                                                  target_topic_lbl_fr,
+                                                                  self.compute_proximity_score(target_relevance,
+                                                                                               relevance)))
+                else:
                     self.proximity_results[matching_file] = [(target_topic,
+                                                              target_topic_lbl_en,
+                                                              target_topic_lbl_fr,
                                                               self.compute_proximity_score(target_relevance,
                                                                                            relevance))]
-                else:
-                    matching_file_info = self.proximity_results[matching_file]
-                    matching_file_info.append((target_topic,
-                                               self.compute_proximity_score(target_relevance, relevance)))
 
-        self.logger.info("proximity table %s successfully built for %s", self.proximity_results, semantic_signature)
+        self.logger.debug("proximity table %s successfully built for %s", self.proximity_results, semantic_signature)
 
         if ignored_files is not None:
             self.logger.info('Trimming files: %s', ignored_files)
@@ -87,13 +111,13 @@ class ProximityFinder:
         if sort_criteria is None:
             self.logger.info("[_sort_results] No sorting criteria provided, leaving dictionary unordered.")
             self.proximity_results = list(self.proximity_results.iteritems())
-        elif sort_criteria == ProximityFinder.PROXIMITY_SCORE:
+        elif sort_criteria == SortBy.PROXIMITY_SCORE:
             sorting_label = "proximity score"
             self.proximity_results = self.sort_results_by_proximity_score()
-        elif sort_criteria == ProximityFinder.TOTAL_MATCHES:
+        elif sort_criteria == SortBy.TOTAL_MATCHES:
             sorting_label = "total number of matches"
             self.proximity_results = self.sort_results_by_number_match()
-        elif sort_criteria == ProximityFinder.NB_HIGH_MATCHES:
+        elif sort_criteria == SortBy.NB_HIGH_MATCHES:
             sorting_label = "number of highly relevant matches"
             self.proximity_results = self.sort_results_by_number_high()
         else:
@@ -106,7 +130,7 @@ class ProximityFinder:
 
     @staticmethod
     def get_proximity_score(matching_file_info):
-        return sum([score for topic, score in matching_file_info])
+        return sum([score for topic, lbl_en, lbl_fr, score in matching_file_info])
 
     def sort_results_by_proximity_score(self):
         sorted_keys = sorted(self.proximity_results.iteritems(), key=lambda (k, v): self.get_proximity_score(v),
@@ -138,7 +162,8 @@ class ProximityFinder:
         :param matching_file_info:
         :return:
         """
-        return len([topic for topic, relevance in matching_file_info if relevance == 10000])
+        return len([topic for topic, lbl_en, lbl_fr, relevance in matching_file_info
+                    if relevance == ProximityScore.H_H])
 
     def sort_results_by_number_high(self):
         """
@@ -149,16 +174,16 @@ class ProximityFinder:
                              reverse=True)
         return sorted_keys
 
-    @classmethod
-    def compute_proximity_score(cls, target_relevance, relevance):
+    @staticmethod
+    def compute_proximity_score(target_relevance, relevance):
         # H/H
         if target_relevance == relevance and target_relevance == 'H':
-            return 10000
+            return ProximityScore.H_H
         # N/N
         if target_relevance == relevance and target_relevance == 'N':
-            return 100
+            return ProximityScore.N_N
         # H/N or N/H
-        return 1
+        return ProximityScore.H_N
 
 
 if __name__ == '__main__':

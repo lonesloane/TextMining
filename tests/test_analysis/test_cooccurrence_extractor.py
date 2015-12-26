@@ -6,8 +6,10 @@ import analysis.cooccurrence_extractor as extractor
 class CoOccurrenceExtractorTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.extractor = extractor.CoOccurrenceExtractor(topics_occurrences_index_filename="../testOutput/Test_Cooccurrence_Topics_Occurrences_Index",
-                                                         files_index_filename="../testOutput/Test_Cooccurrence_Files_Index",
+        topics_occurrences_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Cooccurrence_Topics_Occurrences_Index"
+        files_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Cooccurrence_Files_Index"
+        self.extractor = extractor.CoOccurrenceExtractor(topics_occurrences_index_filename=topics_occurrences_index_filename,
+                                                         files_index_filename=files_index_filename,
                                                          depth=5)
         # self.extractor = extractor.CoOccurrenceExtractor(topics_occurrences_index_filename="../testOutput/Test_Topics_Occurrences_Index",
         #                                            files_index_filename="../testOutput/Test_Files_Index")

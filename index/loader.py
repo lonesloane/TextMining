@@ -51,6 +51,9 @@ class TopicsIndex(Index):
             index_filename = TopicsIndex.default_index_filename
         Index.__init__(self, index_filename)
 
+    def get_labels_for_topic_id(self, topic_id):
+        return self._index[topic_id]
+
 
 class TopicsOccurrencesIndex(Index):
     default_index_filename = "../output/Topics_Occurrences_Index"
@@ -71,3 +74,6 @@ class TopicsLabelsIndex(Index):
         if index_filename is None:
             index_filename = TopicsLabelsIndex.default_index_filename
         Index.__init__(self, index_filename)
+
+    def get_topic_id_for_label(self, target_topic):
+        return self._index[target_topic]

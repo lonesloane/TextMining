@@ -4,21 +4,20 @@ import search.semantic_query as search
 
 
 class QueryProcessorTestCase(unittest.TestCase):
+    files_index = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Files_Index"
+    topics_occurrences_index = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Occurrences_Index"
+    topics_labels_index = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Labels_Index"
+
     def setUp(self):
-        files_index = "../testOutput/Test_Files_Index"
-        topics_index = "../testOutput/Test_Topics_Occurrences_Index"
-        topics_labels_index = "../testOutput/Test_Topics_Labels_Index"
-        self.processor = search.QueryProcessor(files_index_filename=files_index,
-                                               topics_occurrences_index_filename=topics_index,
-                                               topics_labels_index_filename=topics_labels_index)
+        self.processor = search.QueryProcessor(files_index_filename=QueryProcessorTestCase.files_index,
+                                               topics_occurrences_index_filename=QueryProcessorTestCase.topics_occurrences_index,
+                                               topics_labels_index_filename=QueryProcessorTestCase.topics_labels_index)
 
     def test_init(self):
-        self.assertRaises(Exception, search.QueryProcessor)
-
         self.assertIsNotNone(self.processor._files_index_filename, "Files index should not be None")
         self.assertIsNotNone(self.processor._topics_occurrences_index_filename, "Topics index should not be None")
-        self.assertEqual("../testOutput/Test_Files_Index", self.processor._files_index_filename)
-        self.assertEqual("../testOutput/Test_Topics_Occurrences_Index", self.processor._topics_occurrences_index_filename)
+        self.assertEqual(QueryProcessorTestCase.files_index, self.processor._files_index_filename)
+        self.assertEqual(QueryProcessorTestCase.topics_occurrences_index, self.processor._topics_occurrences_index_filename)
 
         self.assertIsNotNone(self.processor._files_index)
         self.assertIsNotNone(self.processor._topics_occurrences_index)
