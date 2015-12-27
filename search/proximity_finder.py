@@ -1,9 +1,13 @@
 import logging
 import logging.config
+
 from index.loader import TopicsOccurrencesIndex, TopicsIndex
 
 
 class SortBy:
+    """
+
+    """
     PROXIMITY_SCORE = 0
     NB_HIGH_MATCHES = 1
     TOTAL_MATCHES = 2
@@ -13,6 +17,9 @@ class SortBy:
 
 
 class ProximityScore:
+    """
+
+    """
     H_H = 10000
     N_N = 100
     H_N = N_H = 1
@@ -91,6 +98,13 @@ class ProximityFinder:
         return self
 
     def _trim_results(self, ignored_files, minimum_hrt_match_number):
+        """
+        Removes unwanted files from proximity_results.
+
+        :param ignored_files: list of files to ignore (i.e. files for which the proximity is computed)
+        :param minimum_hrt_match_number: minimum number of highly relevant terms match required
+        :return:
+        """
         if ignored_files is None or len(ignored_files) == 0:
             ignored_files = []
         self.proximity_results = dict((target_file, scored_topic)
@@ -101,6 +115,12 @@ class ProximityFinder:
 
     @staticmethod
     def _has_minimum_hrt_matches(scored_topic, minimum_hrt_match_number):
+        """
+
+        :param scored_topic:
+        :param minimum_hrt_match_number:
+        :return:
+        """
         nb_high_match = 0
         for topic, _, _, score in scored_topic:
             if score == ProximityScore.H_H:
@@ -116,11 +136,6 @@ class ProximityFinder:
         :return:
         """
         sorting_label = ""
-#        self.logger.info("[_sort_results] building results dictionary with minimum match: %s", minimum_match_number)
-#        self.proximity_results = dict((k, v) for k, v in self.proximity_results.items()
-#                                      if len(v) >= minimum_match_number)
-#        self.logger.debug("[_sort_results] results dictionary: %s", self.proximity_results)
-
         if sort_criteria is None:
             self.logger.info("[_sort_results] No sorting criteria provided, leaving dictionary unordered.")
             self.proximity_results = list(self.proximity_results.iteritems())
@@ -143,9 +158,18 @@ class ProximityFinder:
 
     @staticmethod
     def get_proximity_score(matching_file_info):
+        """
+
+        :param matching_file_info:
+        :return:
+        """
         return sum([score for topic, lbl_en, lbl_fr, score in matching_file_info])
 
     def sort_results_by_proximity_score(self):
+        """
+
+        :return:
+        """
         sorted_keys = sorted(self.proximity_results.iteritems(), key=lambda (k, v): self.get_proximity_score(v),
                              reverse=True)
         return sorted_keys
@@ -189,6 +213,12 @@ class ProximityFinder:
 
     @staticmethod
     def compute_proximity_score(target_relevance, relevance):
+        """
+
+        :param target_relevance:
+        :param relevance:
+        :return:
+        """
         # H/H
         if target_relevance == relevance and target_relevance == 'H':
             return ProximityScore.H_H

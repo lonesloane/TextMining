@@ -5,7 +5,17 @@ LOG_LEVEL = logging.INFO
 
 
 class Index:
+    """
+    Base class for all index objects.
+
+    """
     def __init__(self, index_filename):
+        """
+
+
+        :param index_filename: Complete path to the file containing the index
+        :return:
+        """
         logging.basicConfig(level=LOG_LEVEL, format='%(name)s - %(levelname)s - %(message)s')
         self.logger = logging.getLogger(__name__)
 
@@ -17,6 +27,11 @@ class Index:
         self._load_index()
 
     def _load_index(self):
+        """
+        Loads index from file system
+
+        :return:
+        """
         self.logger.info("Loading index %s", self._index_filename)
         d = shelve.open(self._index_filename)
         self._index = d["Corpus"]
@@ -25,10 +40,19 @@ class Index:
 
     @property
     def index(self):
+        """
+
+        :return:
+        """
+        if self._index is None:
+            self._load_index()
         return self._index
 
 
 class FilesIndex(Index):
+    """
+
+    """
     default_index_filename = "../output/Files_Index"
 
     def __init__(self, index_filename=None):
@@ -37,17 +61,30 @@ class FilesIndex(Index):
         Index.__init__(self, index_filename)
 
     def get_topics_for_files(self, target_file):
+        """
+
+        :param target_file:
+        :return: sorted list of topics
+        """
         self.logger.debug("Looking for topics in file: %s" % target_file)
         result_topics = []
         result_topics.extend([t for t, _ in self._index[target_file]])
         return sorted(result_topics)
 
     def get_enrichment_for_files(self, target_file):
+        """
+
+        :param target_file:
+        :return:
+        """
         self.logger.debug("Looking for semantic enrichment in file: %s" % target_file)
         return self._index[target_file]
 
 
 class TopicsIndex(Index):
+    """
+
+    """
     default_index_filename = "../output/Topics_Index"
 
     def __init__(self, index_filename=None):
@@ -56,10 +93,18 @@ class TopicsIndex(Index):
         Index.__init__(self, index_filename)
 
     def get_labels_for_topic_id(self, topic_id):
+        """
+
+        :param topic_id:
+        :return:
+        """
         return self._index[topic_id]
 
 
 class TopicsOccurrencesIndex(Index):
+    """
+
+    """
     default_index_filename = "../output/Topics_Occurrences_Index"
 
     def __init__(self, index_filename=None):
@@ -68,10 +113,18 @@ class TopicsOccurrencesIndex(Index):
         Index.__init__(self, index_filename)
 
     def get_files_for_topic(self, topic):
+        """
+
+        :param topic:
+        :return:
+        """
         return self._index[topic]
 
 
 class TopicsLabelsIndex(Index):
+    """
+
+    """
     default_index_filename = "../output/Topics_Labels_Index"
 
     def __init__(self, index_filename=None):
@@ -80,10 +133,18 @@ class TopicsLabelsIndex(Index):
         Index.__init__(self, index_filename)
 
     def get_topic_id_for_label(self, target_topic):
+        """
+
+        :param target_topic:
+        :return:
+        """
         return self._index[target_topic]
 
 
 class TopicsTypeAheadIndex(Index):
+    """
+
+    """
     default_index_filename = "../output/Topics_Typeahead_Index"
 
     def __init__(self, index_filename=None):
@@ -92,4 +153,9 @@ class TopicsTypeAheadIndex(Index):
         Index.__init__(self, index_filename)
 
     def auto_complete(self, root):
+        """
+
+        :param root:
+        :return:
+        """
         return self._index[root]

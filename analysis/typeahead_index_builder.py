@@ -5,9 +5,19 @@ from index.loader import TopicsIndex
 
 
 class TypeAheadIndexBuilder:
+    """
+    Class used to build the index of N-grams required to provide type-ahead functionality
+
+    """
     LOG_LEVEL_DEFAULT = logging.INFO
 
     def __init__(self, input_index_filename, output_index_filename):
+        """
+
+        :param input_index_filename: Index containing the labels used to build the N-grams
+        :param output_index_filename: Complete file name where the type-ahead index will be saved
+        :return:
+        """
         logging.basicConfig(level=TypeAheadIndexBuilder.LOG_LEVEL_DEFAULT,
                             format='%(name)s - %(levelname)s - %(message)s')
         self.logger = logging.getLogger(__name__)
@@ -21,6 +31,13 @@ class TypeAheadIndexBuilder:
         return self._typeahead_index
 
     def build(self):
+        """
+        Processes all english topic labels found in the index.
+        Splits compound terms. Parses all individual letters and builds the index
+        of all N-grams associated with the topic label
+
+        :return:
+        """
         self.logger.info('Start building type ahead index')
         for lbl_en, _ in self._topics_index.values():
             self.logger.debug('Processing: %s', lbl_en)
@@ -44,7 +61,11 @@ class TypeAheadIndexBuilder:
         return self
 
     def shelve_index(self):
-        # save the index on the file system
+        """
+        Save the index on the file system.
+
+        :return:
+        """
         self.logger.info("Shelving %s", self._typeahead_index_filename)
         d = shelve.open(self._typeahead_index_filename)
         d["Corpus"] = self._typeahead_index

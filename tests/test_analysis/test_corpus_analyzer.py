@@ -28,7 +28,7 @@ class CorpusAnalyzerTestCase(unittest.TestCase):
             os.remove(TST_TOPICS_LABELS_INDEX_FILENAME)
 
     def test_create_corpus_analyzer(self):
-        self.assertIsNotNone(self.analyzer.topics_occurrences_hash)
+        self.assertIsNotNone(self.analyzer.topics_occurrences_index)
         self.assertEqual(TEST_CORPUS_ROOT_FOLDER, self.analyzer.corpus_root_folder)
 
     def test_extract_topics_labels_index(self):
@@ -52,40 +52,40 @@ class CorpusAnalyzerTestCase(unittest.TestCase):
     def test_process_enrichment_result(self):
         result_file = "JT03.xml"
         self.analyzer._process_enrichment_result(folder=TEST_CORPUS_ROOT_FOLDER, result_file=result_file)
-        self.assertEqual(self.analyzer.topics_occurrences_hash["45"], [("JT03.xml", "N")])
-        self.assertEqual(self.analyzer.topics_hash["45"], ('lbl_en_45', 'lbl_fr_45'))
-        self.assertEqual(self.analyzer.files_hash['JT03.xml'], [('30', 'N'), ('24', 'N'), ('42', 'N'), ('3', 'N'),
-                                                                ('35', 'N'), ('5', 'H'), ('18', 'N'), ('31', 'N'),
-                                                                ('14', 'N'), ('45', 'N'), ('9', 'H'), ('46', 'N'),
-                                                                ('38', 'N'), ('6', 'N'), ('7', 'N')])
+        self.assertEqual(self.analyzer.topics_occurrences_index["45"], [("JT03.xml", "N")])
+        self.assertEqual(self.analyzer.topics_index["45"], ('lbl_en_45', 'lbl_fr_45'))
+        self.assertEqual(self.analyzer.files_index['JT03.xml'], [('30', 'N'), ('24', 'N'), ('42', 'N'), ('3', 'N'),
+                                                                 ('35', 'N'), ('5', 'H'), ('18', 'N'), ('31', 'N'),
+                                                                 ('14', 'N'), ('45', 'N'), ('9', 'H'), ('46', 'N'),
+                                                                 ('38', 'N'), ('6', 'N'), ('7', 'N')])
         result_file = "JT06.xml"
         self.analyzer._process_enrichment_result(folder=TEST_CORPUS_ROOT_FOLDER, result_file=result_file)
-        self.assertEqual(self.analyzer.topics_occurrences_hash["45"], [('JT03.xml', 'N'), ('JT06.xml', 'N')])
-        self.assertEqual(self.analyzer.topics_hash["45"], ('lbl_en_45', 'lbl_fr_45'))
-        self.assertEqual(self.analyzer.files_hash['JT03.xml'], [('30', 'N'), ('24', 'N'), ('42', 'N'), ('3', 'N'),
-                                                                ('35', 'N'), ('5', 'H'), ('18', 'N'), ('31', 'N'),
-                                                                ('14', 'N'), ('45', 'N'), ('9', 'H'), ('46', 'N'),
-                                                                ('38', 'N'), ('6', 'N'), ('7', 'N')])
+        self.assertEqual(self.analyzer.topics_occurrences_index["45"], [('JT03.xml', 'N'), ('JT06.xml', 'N')])
+        self.assertEqual(self.analyzer.topics_index["45"], ('lbl_en_45', 'lbl_fr_45'))
+        self.assertEqual(self.analyzer.files_index['JT03.xml'], [('30', 'N'), ('24', 'N'), ('42', 'N'), ('3', 'N'),
+                                                                 ('35', 'N'), ('5', 'H'), ('18', 'N'), ('31', 'N'),
+                                                                 ('14', 'N'), ('45', 'N'), ('9', 'H'), ('46', 'N'),
+                                                                 ('38', 'N'), ('6', 'N'), ('7', 'N')])
 
     def test_remove_file_from_files_hash(self):
-        self.analyzer.files_hash['JT01.xml'] = [('1', 'N'), ('2', 'H')]
-        self.analyzer.files_hash['JT02.xml'] = [('3', 'N'), ('4', 'H')]
-        self.analyzer.files_hash['JT03.xml'] = [('5', 'N'), ('6', 'H')]
+        self.analyzer.files_index['JT01.xml'] = [('1', 'N'), ('2', 'H')]
+        self.analyzer.files_index['JT02.xml'] = [('3', 'N'), ('4', 'H')]
+        self.analyzer.files_index['JT03.xml'] = [('5', 'N'), ('6', 'H')]
 
-        self.assertEqual(3, len(self.analyzer.files_hash))
-        self.assertTrue(self.analyzer.files_hash.has_key('JT01.xml'))
-        self.assertTrue(self.analyzer.files_hash.has_key('JT02.xml'))
-        self.assertTrue(self.analyzer.files_hash.has_key('JT03.xml'))
+        self.assertEqual(3, len(self.analyzer.files_index))
+        self.assertTrue(self.analyzer.files_index.has_key('JT01.xml'))
+        self.assertTrue(self.analyzer.files_index.has_key('JT02.xml'))
+        self.assertTrue(self.analyzer.files_index.has_key('JT03.xml'))
         self.analyzer._remove_file_from_files_hash('JT01.xml')
-        self.assertEqual(2, len(self.analyzer.files_hash))
-        self.assertFalse(self.analyzer.files_hash.has_key('JT01.xml'))
-        self.assertTrue(self.analyzer.files_hash.has_key('JT02.xml'))
-        self.assertTrue(self.analyzer.files_hash.has_key('JT03.xml'))
+        self.assertEqual(2, len(self.analyzer.files_index))
+        self.assertFalse(self.analyzer.files_index.has_key('JT01.xml'))
+        self.assertTrue(self.analyzer.files_index.has_key('JT02.xml'))
+        self.assertTrue(self.analyzer.files_index.has_key('JT03.xml'))
 
     def test_remove_file_from_topics_occurrences_hash(self):
-        self.analyzer.files_hash['JT01.xml'] = [('1', 'N'), ('2', 'H')]
-        self.analyzer.files_hash['JT02.xml'] = [('3', 'N'), ('4', 'H')]
-        self.analyzer.files_hash['JT03.xml'] = [('5', 'N'), ('6', 'H')]
+        self.analyzer.files_index['JT01.xml'] = [('1', 'N'), ('2', 'H')]
+        self.analyzer.files_index['JT02.xml'] = [('3', 'N'), ('4', 'H')]
+        self.analyzer.files_index['JT03.xml'] = [('5', 'N'), ('6', 'H')]
         result_file = 'JT01.xml'
         uri = "1"
         relevance = "N"
@@ -119,17 +119,17 @@ class CorpusAnalyzerTestCase(unittest.TestCase):
         relevance = "N"
         self.analyzer._process_topics_occurrences(result_file=result_file, uri=uri, relevance=relevance)
 
-        self.assertEqual(4, len(self.analyzer.topics_occurrences_hash))
-        self.assertEqual([('JT01.xml', 'N'), ('JT03.xml', 'H')], self.analyzer.topics_occurrences_hash['1'])
-        self.assertEqual([('JT01.xml', 'H'), ('JT03.xml', 'N')], self.analyzer.topics_occurrences_hash['2'])
-        self.assertEqual([('JT02.xml', 'N'), ('JT04.xml', 'H')], self.analyzer.topics_occurrences_hash['3'])
-        self.assertEqual([('JT02.xml', 'H'), ('JT04.xml', 'N')], self.analyzer.topics_occurrences_hash['4'])
+        self.assertEqual(4, len(self.analyzer.topics_occurrences_index))
+        self.assertEqual([('JT01.xml', 'N'), ('JT03.xml', 'H')], self.analyzer.topics_occurrences_index['1'])
+        self.assertEqual([('JT01.xml', 'H'), ('JT03.xml', 'N')], self.analyzer.topics_occurrences_index['2'])
+        self.assertEqual([('JT02.xml', 'N'), ('JT04.xml', 'H')], self.analyzer.topics_occurrences_index['3'])
+        self.assertEqual([('JT02.xml', 'H'), ('JT04.xml', 'N')], self.analyzer.topics_occurrences_index['4'])
         self.analyzer._remove_file_from_topics_occurrences_hash('JT01.xml')
-        self.assertEqual(4, len(self.analyzer.topics_occurrences_hash))
-        self.assertEqual([('JT03.xml', 'H')], self.analyzer.topics_occurrences_hash['1'])
-        self.assertEqual([('JT03.xml', 'N')], self.analyzer.topics_occurrences_hash['2'])
-        self.assertEqual([('JT02.xml', 'N'), ('JT04.xml', 'H')], self.analyzer.topics_occurrences_hash['3'])
-        self.assertEqual([('JT02.xml', 'H'), ('JT04.xml', 'N')], self.analyzer.topics_occurrences_hash['4'])
+        self.assertEqual(4, len(self.analyzer.topics_occurrences_index))
+        self.assertEqual([('JT03.xml', 'H')], self.analyzer.topics_occurrences_index['1'])
+        self.assertEqual([('JT03.xml', 'N')], self.analyzer.topics_occurrences_index['2'])
+        self.assertEqual([('JT02.xml', 'N'), ('JT04.xml', 'H')], self.analyzer.topics_occurrences_index['3'])
+        self.assertEqual([('JT02.xml', 'H'), ('JT04.xml', 'N')], self.analyzer.topics_occurrences_index['4'])
 
     def test_dismiss_duplicates(self):
         _21_June = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testDuplicates/2015/06/21'
@@ -139,28 +139,28 @@ class CorpusAnalyzerTestCase(unittest.TestCase):
         self.analyzer._process_enrichment_result(folder=_21_June, result_file=result_file)
         result_file = "JT06.xml"
         self.analyzer._process_enrichment_result(folder=_21_June, result_file=result_file)
-        self.assertEqual(self.analyzer.topics_occurrences_hash["45"], [("JT03.xml", "N"), ("JT06.xml", "N")])
-        self.assertEqual(self.analyzer.topics_hash["45"], ('lbl_en_45', 'lbl_fr_45'))
-        self.assertEqual(self.analyzer.files_hash['JT03.xml'], [('30', 'N'), ('24', 'N'), ('42', 'N'), ('3', 'N'),
-                                                                ('35', 'N'), ('5', 'H'), ('18', 'N'), ('31', 'N'),
-                                                                ('14', 'N'), ('45', 'N'), ('9', 'H'), ('46', 'N'),
-                                                                ('38', 'N'), ('6', 'N'), ('7', 'N')])
+        self.assertEqual(self.analyzer.topics_occurrences_index["45"], [("JT03.xml", "N"), ("JT06.xml", "N")])
+        self.assertEqual(self.analyzer.topics_index["45"], ('lbl_en_45', 'lbl_fr_45'))
+        self.assertEqual(self.analyzer.files_index['JT03.xml'], [('30', 'N'), ('24', 'N'), ('42', 'N'), ('3', 'N'),
+                                                                 ('35', 'N'), ('5', 'H'), ('18', 'N'), ('31', 'N'),
+                                                                 ('14', 'N'), ('45', 'N'), ('9', 'H'), ('46', 'N'),
+                                                                 ('38', 'N'), ('6', 'N'), ('7', 'N')])
         result_file = "JT03.xml"
         self.analyzer._process_enrichment_result(folder=_23_June, result_file=result_file)
-        self.assertEqual(self.analyzer.topics_occurrences_hash["45"], [("JT06.xml", "N"), ("JT03.xml", "N")])
-        self.assertEqual(self.analyzer.topics_hash["45"], ('lbl_en_45', 'lbl_fr_45'))
-        self.assertEqual(self.analyzer.files_hash['JT03.xml'], [('30', 'N'), ('24', 'N'), ('42', 'N'), ('3', 'N'),
-                                                                ('35', 'N'), ('5', 'H'), ('18', 'N'), ('31', 'N'),
-                                                                ('14', 'N'), ('45', 'N'), ('9', 'H'), ('46', 'N'),
-                                                                ('38', 'N'), ('6', 'N'), ('7', 'N')])
+        self.assertEqual(self.analyzer.topics_occurrences_index["45"], [("JT06.xml", "N"), ("JT03.xml", "N")])
+        self.assertEqual(self.analyzer.topics_index["45"], ('lbl_en_45', 'lbl_fr_45'))
+        self.assertEqual(self.analyzer.files_index['JT03.xml'], [('30', 'N'), ('24', 'N'), ('42', 'N'), ('3', 'N'),
+                                                                 ('35', 'N'), ('5', 'H'), ('18', 'N'), ('31', 'N'),
+                                                                 ('14', 'N'), ('45', 'N'), ('9', 'H'), ('46', 'N'),
+                                                                 ('38', 'N'), ('6', 'N'), ('7', 'N')])
 
     def test_debug_duplicates(self):
         topic_occurrences = [('JT00103895.xml', 'N'), ('JT00103933.xml', 'N'), ('00088280.xml', 'H'), ('00088281.xml', 'H'), ('JT00103937.xml', 'H'), ('JT00103941.xml', 'H'), ('JT00103982.xml', 'N'), ('00088282.xml', 'N'), ('JT00104010.xml', 'N'), ('JT00104098.xml', 'N'), ('JT00104139.xml', 'N'), ('JT00104141.xml', 'N'), ('JT00104179.xml', 'N'), ('00088288.xml', 'H'), ('JT00104190.xml', 'H'), ('JT00104192.xml', 'H'), ('JT00104213.xml', 'N'), ('JT00104214.xml', 'N'), ('JT00104250.xml', 'H'), ('JT00104267.xml', 'N'), ('JT00104268.xml', 'N'), ('JTT1072203.xml', 'H'), ('IMP20007623ENG.xml', 'N'), ('JT00104293.xml', 'H'), ('JT00104300.xml', 'H'), ('JT00104302.xml', 'N'), ('JT00104327.xml', 'N'), ('JT00104330.xml', 'H'), ('JT00021334.xml', 'N'), ('JT00104348.xml', 'H'), ('JT00104357.xml', 'N'), ('JT00104367.xml', 'N'), ('JT00104368.xml', 'N'), ('JT00104374.xml', 'N'), ('JT00104380.xml', 'N'), ('JT00104382.xml', 'N'), ('JT00104386.xml', 'N'), ('JT00104406.xml', 'N'), ('JT00104408.xml', 'H'), ('JT00104412.xml', 'H'), ('JT00104414.xml', 'N'), ('JT00104462.xml', 'N'), ('JT00104466.xml', 'H'), ('JT00104467.xml', 'H'), ('00088298.xml', 'N'), ('00088299.xml', 'N'), ('JT00104479.xml', 'H'), ('JT00104507.xml', 'N'), ('JT00104509.xml', 'N'), ('JT00104514.xml', 'H'), ('JT00104535.xml', 'N'), ('JT00104543.xml', 'N'), ('JT00104551.xml', 'H'), ('JT00104553.xml', 'N'), ('IMP20006700ENG.xml', 'N'), ('IMP20006701ENG.xml', 'N'), ('JT00104566.xml', 'N'), ('JT00104574.xml', 'N'), ('JT00104611.xml', 'N'), ('JT00104612.xml', 'N'), ('JT00104624.xml', 'N'), ('JT00104636.xml', 'N'), ('JT00104685.xml', 'H'), ('00088304.xml', 'H'), ('00088305.xml', 'H'), ('JT00104677.xml', 'N'), ('JT00104686.xml', 'H'), ('JT00104688.xml', 'H'), ('JT00104694.xml', 'N'), ('JT00104718.xml', 'N'), ('00088306.xml', 'H'), ('00088307.xml', 'H'), ('JT00021337.xml', 'H'), ('JT00104811.xml', 'N'), ('JT00104818.xml', 'N'), ('JT00104846.xml', 'N'), ('JT00104878.xml', 'N'), ('JT00104882.xml', 'N'), ('JT00104886.xml', 'N'), ('JT00104894.xml', 'N'), ('00088318.xml', 'H'), ('JT00104944.xml', 'N'), ('JT00104950.xml', 'N'), ('00088331.xml', 'N'), ('JT00104999.xml', 'N'), ('JT00105004.xml', 'H'), ('JT00105009.xml', 'N'), ('JT00105023.xml', 'N'), ('JT00105026.xml', 'N'), ('JTT1086225.xml', 'N'), ('JT00105066.xml', 'H'), ('JT00105083.xml', 'N'), ('JT00105092.xml', 'H'), ('JT00105106.xml', 'N'), ('JT00105109.xml', 'N'), ('JT00105125.xml', 'H'), ('JT00105131.xml', 'H'), ('JT00105143.xml', 'N'), ('JT00105158.xml', 'N'), ('JT00105164.xml', 'N'), ('JT00105248.xml', 'N'), ('JT00105221.xml', 'N'), ('JT00105226.xml', 'H'), ('JT00105241.xml', 'H'), ('JT00105249.xml', 'N'), ('JT00105270.xml', 'N'), ('JT00105271.xml', 'N'), ('JT00105279.xml', 'N'), ('00088349.xml', 'H'), ('00088350.xml', 'H'), ('JT00105324.xml', 'H'), ('JT00105334.xml', 'N'), ('JT00105337.xml', 'N'), ('JT00105346.xml', 'N'), ('JT00105356.xml', 'N'), ('00088352.xml', 'H'), ('00088353.xml', 'N'), ('JT00020924.xml', 'N'), ('JT00105384.xml', 'H'), ('JT00105416.xml', 'N'), ('00088355.xml', 'H'), ('00088356.xml', 'H'), ('JT00105459.xml', 'H'), ('JT00105469.xml', 'N'), ('JT00105492.xml', 'N'), ('JT00105493.xml', 'N'), ('JT00105522.xml', 'H'), ('JT00105529.xml', 'H'), ('00088357.xml', 'H'), ('00088358.xml', 'H'), ('JT00105550.xml', 'H'), ('JT00105594.xml', 'N'), ('JT00105602.xml', 'H'), ('JT00105603.xml', 'H'), ('JT00105624.xml', 'N'), ('JT00105692.xml', 'H'), ('JT00105698.xml', 'N'), ('JT00105705.xml', 'H'), ('00088361.xml', 'N'), ('00088362.xml', 'N'), ('JT00105746.xml', 'N'), ('JT00105795.xml', 'H'), ('JT00105800.xml', 'N'), ('JT00105803.xml', 'N'), ('00088365.xml', 'H'), ('00088366.xml', 'N'), ('00088367.xml', 'N'), ('IMP20007623FRE.xml', 'N'), ('JT00021217.xml', 'H'), ('JT00105833.xml', 'H'), ('JT00105854.xml', 'H'), ('JT00105860.xml', 'H'), ('JT00105883.xml', 'N'), ('JT00105887.xml', 'H'), ('JT00105905.xml', 'N'), ('JT00105908.xml', 'H'), ('JT00105942.xml', 'N'), ('JT00106014.xml', 'N'), ('00088370.xml', 'H'), ('00088371.xml', 'H'), ('JT00021343.xml', 'N'), ('JT00021344.xml', 'N'), ('JT00105965.xml', 'H'), ('JT00105995.xml', 'N'), ('JT00105999.xml', 'H'), ('JT00106001.xml', 'H'), ('JT00106015.xml', 'N'), ('JT00106020.xml', 'N'), ('JT00106023.xml', 'H'), ('JT00106049.xml', 'N')]
-        self.analyzer.files_hash['JT00104374.xml'] = [('1', 'N')]
-        self.analyzer.topics_occurrences_hash["1"] = topic_occurrences
-        self.assertTrue(('JT00104374.xml', 'N') in self.analyzer.topics_occurrences_hash["1"])
+        self.analyzer.files_index['JT00104374.xml'] = [('1', 'N')]
+        self.analyzer.topics_occurrences_index["1"] = topic_occurrences
+        self.assertTrue(('JT00104374.xml', 'N') in self.analyzer.topics_occurrences_index["1"])
         self.analyzer._remove_file_from_topics_occurrences_hash('JT00104374.xml')
-        self.assertFalse(('JT00104374.xml', 'N') in self.analyzer.topics_occurrences_hash["1"])
+        self.assertFalse(('JT00104374.xml', 'N') in self.analyzer.topics_occurrences_index["1"])
 
     def test_is_posterior(self):
         _21_June = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testDuplicates/2015/06/21'
@@ -175,6 +175,7 @@ class CorpusAnalyzerTestCase(unittest.TestCase):
         _23_June = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testDuplicates/2015/06/23'
         expected_date = datetime.date(2015, 6, 21)
         actual_date = analyzer.get_date_from_folder(_21_June)
+        print actual_date
         self.assertEqual(expected_date, actual_date)
 
         expected_date = datetime.date(2015, 6, 23)
@@ -187,14 +188,14 @@ class CorpusAnalyzerTestCase(unittest.TestCase):
         relevance1 = 'N'
         self.analyzer._process_file_topics(result_file, uri1, relevance1)
         expected = [('1', 'N')]
-        actual = self.analyzer.files_hash[result_file]
+        actual = self.analyzer.files_index[result_file]
         self.assertEqual(expected, actual)
 
         uri1 = '2'
         relevance1 = 'H'
         self.analyzer._process_file_topics(result_file, uri1, relevance1)
         expected = [('1', 'N'), ('2', 'H')]
-        actual = self.analyzer.files_hash[result_file]
+        actual = self.analyzer.files_index[result_file]
         self.assertEqual(expected, actual)
 
     def test_process_topics_occurrences(self):
@@ -202,20 +203,20 @@ class CorpusAnalyzerTestCase(unittest.TestCase):
         uri = "38"
         relevance = "N"
         self.analyzer._process_topics_occurrences(result_file=result_file, uri=uri, relevance=relevance)
-        self.assertEqual(self.analyzer.topics_occurrences_hash["38"], [("JT04.xml", "N")])
+        self.assertEqual(self.analyzer.topics_occurrences_index["38"], [("JT04.xml", "N")])
 
         uri = "47"
         relevance = "H"
         self.analyzer._process_topics_occurrences(result_file=result_file, uri=uri, relevance=relevance)
-        self.assertEqual(self.analyzer.topics_occurrences_hash["38"], [("JT04.xml", "N")])
-        self.assertEqual(self.analyzer.topics_occurrences_hash["47"], [("JT04.xml", "H")])
+        self.assertEqual(self.analyzer.topics_occurrences_index["38"], [("JT04.xml", "N")])
+        self.assertEqual(self.analyzer.topics_occurrences_index["47"], [("JT04.xml", "H")])
 
         result_file = 'JT05.xml'
         uri = "38"
         relevance = "H"
         self.analyzer._process_topics_occurrences(result_file=result_file, uri=uri, relevance=relevance)
-        self.assertEqual(self.analyzer.topics_occurrences_hash["38"], [("JT04.xml", "N"), ("JT05.xml", "H")])
-        self.assertEqual(self.analyzer.topics_occurrences_hash["47"], [("JT04.xml", "H")])
+        self.assertEqual(self.analyzer.topics_occurrences_index["38"], [("JT04.xml", "N"), ("JT05.xml", "H")])
+        self.assertEqual(self.analyzer.topics_occurrences_index["47"], [("JT04.xml", "H")])
 
         # try to add same file to topic, should raise an exception
         self.assertRaises(Exception, self.analyzer._process_topics_occurrences,result_file, uri, relevance)

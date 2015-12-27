@@ -6,6 +6,9 @@ LOG_LEVEL = logging.INFO
 
 
 class QueryProcessor:
+    """
+
+    """
     _files_index_filename_default = "../output/Files_Index"
     _topics_occurrences_index_filename_default = "../output/Topics_Occurrences_Index"
     _topics_labels_index_filename_default = "../output/Topics_Labels_Index"
@@ -13,6 +16,7 @@ class QueryProcessor:
     def __init__(self, files_index_filename=None, topics_occurrences_index_filename=None,
                  topics_labels_index_filename=None):
         """
+
         :param files_index_filename: file containing the index of topics per file. Default 'output/Files_Index'
         :param topics_occurrences_index_filename: file containing the index of files per topic. Default
         'output/Topics_Occurrences_Index'
@@ -48,9 +52,20 @@ class QueryProcessor:
         self._topics_labels_index = TopicsLabelsIndex(topics_labels_index_filename)
 
     def _get_files_for_topic(self, topic):
+        """
+
+        :param topic:
+        :return:
+        """
         return [f for f, _ in self._topics_occurrences_index.get_files_for_topic(topic)]
 
     def _get_topics_for_files(self, files, ignored_topic):
+        """
+
+        :param files:
+        :param ignored_topic:
+        :return:
+        """
         result_topics = []
         for target_file in files:
             result_topics.extend([int(f) for f, _ in self._files_index.get_enrichment_for_files(target_file)

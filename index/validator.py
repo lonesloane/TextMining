@@ -2,6 +2,11 @@ import index.loader as loader
 
 
 def validate_topics_occurrences_index(topics_occurrences_index):
+    """
+
+    :param topics_occurrences_index:
+    :return:
+    """
     duplicate_files = []
     idx = 0
     print "%s topics to validate" % len(topics_occurrences_index)
@@ -22,6 +27,11 @@ def validate_topics_occurrences_index(topics_occurrences_index):
 
 
 def validate_files_index(files_index):
+    """
+
+    :param files_index:
+    :return:
+    """
     duplicate_topics = []
     idx = 0
     for file_name, signature in files_index.iteritems():
@@ -42,6 +52,11 @@ def validate_files_index(files_index):
 
 
 def validate_typeahead_index(typeahead_index):
+    """
+
+    :param typeahead_index:
+    :return:
+    """
     root = 'research and'
     print 'look up for %s:\n%s' % (root, typeahead_index[root])
 
