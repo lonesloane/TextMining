@@ -41,23 +41,22 @@ class ProximityFinder:
         self.proximity_results = {}
         self.raw_results = []
 
-        _topics_index_filename = topics_index_filename if topics_index_filename is not None \
-            else ProximityFinder.TOPICS_INDEX_FILENAME_DEFAULT
-        self.topics_index = TopicsIndex(_topics_index_filename)
+        if topics_index_filename is None:
+            topics_index_filename = ProximityFinder.TOPICS_INDEX_FILENAME_DEFAULT
+        self.topics_index = TopicsIndex(topics_index_filename)
 
-        _topics_occurrences_index_filename = topics_occurrences_index_filename \
-            if topics_occurrences_index_filename is not None \
-            else ProximityFinder.TOPICS_OCCURRENCES_INDEX_FILENAME_DEFAULT
-        self.topics_occurrences_index = TopicsOccurrencesIndex(_topics_occurrences_index_filename)
+        if topics_occurrences_index_filename is None:
+            topics_occurrences_index_filename = ProximityFinder.TOPICS_OCCURRENCES_INDEX_FILENAME_DEFAULT
+        self.topics_occurrences_index = TopicsOccurrencesIndex(topics_occurrences_index_filename)
 
-    def build_proximity_results(self, semantic_signature, sort_criteria=None, minimum_match_number=0,
+    def build_proximity_results(self, semantic_signature, sort_criteria=None, minimum_hrt_match_number=0,
                                 ignored_files=None):
         """
 
-        :param ignored_files:
         :param semantic_signature:
         :param sort_criteria:
-        :param minimum_match_number:
+        :param ignored_files:
+        :param minimum_hrt_match_number:
         :return:
         """
         self.proximity_results = {}
@@ -82,31 +81,45 @@ class ProximityFinder:
 
         self.logger.debug("proximity table %s successfully built for %s", self.proximity_results, semantic_signature)
 
-        if ignored_files is not None:
-            self.logger.info('Trimming files: %s', ignored_files)
-            self.proximity_results = self._trim_results(ignored_files)
+        if ignored_files is not None or minimum_hrt_match_number != 0:
+            self.logger.info('Keeping only files with at least %s high relevancy match.'
+                             ' Ignoring files: %s', minimum_hrt_match_number, ignored_files)
+            self._trim_results(ignored_files, minimum_hrt_match_number)
 
-        self._sort_results(sort_criteria, minimum_match_number)
+        self._sort_results(sort_criteria)
 
         return self
 
-    def _trim_results(self, ignored_files):
-        result = dict((target_file, scored_topic) for target_file, scored_topic in self.proximity_results.items()
-                      if target_file not in ignored_files)
-        return result
+    def _trim_results(self, ignored_files, minimum_hrt_match_number):
+        if ignored_files is None or len(ignored_files) == 0:
+            ignored_files = []
+        self.proximity_results = dict((target_file, scored_topic)
+                                      for target_file, scored_topic in self.proximity_results.items()
+                                      if target_file not in ignored_files and
+                                      self._has_minimum_hrt_matches(scored_topic, minimum_hrt_match_number))
+        return self
 
-    def _sort_results(self, sort_criteria, minimum_match_number):
+    @staticmethod
+    def _has_minimum_hrt_matches(scored_topic, minimum_hrt_match_number):
+        nb_high_match = 0
+        for topic, _, _, score in scored_topic:
+            if score == ProximityScore.H_H:
+                nb_high_match += 1
+            if nb_high_match >= minimum_hrt_match_number:
+                return True
+        return False
+
+    def _sort_results(self, sort_criteria):
         """
 
         :param sort_criteria:
-        :param minimum_match_number:
         :return:
         """
         sorting_label = ""
-        self.logger.info("[_sort_results] building results dictionary with minimum match: %s", minimum_match_number)
-        self.proximity_results = dict((k, v) for k, v in self.proximity_results.items()
-                                      if len(v) >= minimum_match_number)
-        self.logger.debug("[_sort_results] results dictionary: %s", self.proximity_results)
+#        self.logger.info("[_sort_results] building results dictionary with minimum match: %s", minimum_match_number)
+#        self.proximity_results = dict((k, v) for k, v in self.proximity_results.items()
+#                                      if len(v) >= minimum_match_number)
+#        self.logger.debug("[_sort_results] results dictionary: %s", self.proximity_results)
 
         if sort_criteria is None:
             self.logger.info("[_sort_results] No sorting criteria provided, leaving dictionary unordered.")

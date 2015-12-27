@@ -197,7 +197,7 @@ class CorpusAnalyzer:
 
     @staticmethod
     def shelve_index(index_filename, index_data):
-        print "Shelving %s" % index_filename
+        logging.getLogger(__name__).info("Shelving %s", index_filename)
         d = shelve.open(index_filename)
         d["Corpus"] = index_data
         d.close()
@@ -261,22 +261,22 @@ def main():
 
     # corpus_root = "/media/Data/OECD/Official Documents Enrichment/2015/06/18"
     # topics_occurrences_index = "2015_06_18_Topics_Occurrences_Index"
-    # topics_index = "2015_06_18_Topics_Index"
+    # _topics_index = "2015_06_18_Topics_Index"
     # files_index = "2015_06_18_Files_Index"
 
     # corpus_root = "../tests/testCooccurrence/"
     # topics_occurrences_index = "Test_Cooccurrence_Topics_Occurrences_Index"
-    # topics_index = "Test_Cooccurrence_Topics_Index"
+    # _topics_index = "Test_Cooccurrence_Topics_Index"
     # files_index = "Test_Cooccurrence_Files_Index"
 
     # corpus_root = "../tests/testCorpus/"
     # topics_occurrences_index = "Test_Topics_Occurrences_Index"
-    # topics_index = "Test_Topics_Index"
+    # _topics_index = "Test_Topics_Index"
     # files_index = "Test_Files_Index"
 
     # corpus_root = "../tests/testSingleFile/"
     # topics_occurrences_index = "SingleFile_Topics_Occurrences_Index"
-    # topics_index = "SingleFile_Topics_Index"
+    # _topics_index = "SingleFile_Topics_Index"
     # files_index = "SingleFile_Files_Index"
 
     logging.basicConfig(filename="../output/corpus_analyzer.log", filemode="w",

@@ -41,18 +41,27 @@ def validate_files_index(files_index):
     return duplicate_topics
 
 
+def validate_typeahead_index(typeahead_index):
+    root = 'research and'
+    print 'look up for %s:\n%s' % (root, typeahead_index[root])
+
+
 def main():
-    choice = 'files'
+    choice = 'typeahead'
+
     if choice == 'files':
         # load files index
         files_index_filename = '../output/Files_Index'
-        files_index = loader.FilesIndex(index_filename=files_index_filename)._index
-        validate_files_index(files_index)
+        index = loader.FilesIndex(files_index_filename).index
+        validate_files_index(index)
     if choice == 'occurrences':
         topics_occurrences_index_filename = '../output/Topics_Occurrences_Index'
-        topics_occurrences_index = loader.TopicsOccurrencesIndex(index_filename=topics_occurrences_index_filename)._index
-        # print topics_occurrences_index['4437']
-        validate_topics_occurrences_index(topics_occurrences_index)
+        index = loader.TopicsOccurrencesIndex(topics_occurrences_index_filename).index
+        validate_topics_occurrences_index(index)
+    if choice == 'typeahead':
+        typeahead_index_filename = '../output/Topics_Typeahead_Index'
+        index = loader.TopicsTypeAheadIndex(typeahead_index_filename).index
+        validate_typeahead_index(index)
 
 if __name__ == '__main__':
     main()

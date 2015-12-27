@@ -23,6 +23,10 @@ class Index:
         d.close()
         self.logger.info("Index loaded successfully")
 
+    @property
+    def index(self):
+        return self._index
+
 
 class FilesIndex(Index):
     default_index_filename = "../output/Files_Index"
@@ -77,3 +81,15 @@ class TopicsLabelsIndex(Index):
 
     def get_topic_id_for_label(self, target_topic):
         return self._index[target_topic]
+
+
+class TopicsTypeAheadIndex(Index):
+    default_index_filename = "../output/Topics_Typeahead_Index"
+
+    def __init__(self, index_filename=None):
+        if index_filename is None:
+            index_filename = TopicsTypeAheadIndex.default_index_filename
+        Index.__init__(self, index_filename)
+
+    def auto_complete(self, root):
+        return self._index[root]
