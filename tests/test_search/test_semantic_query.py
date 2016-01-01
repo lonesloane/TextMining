@@ -22,10 +22,11 @@ class QueryProcessorTestCase(unittest.TestCase):
 
     def test_load_files_index(self):
         self.assertTrue('JT01.xml'in self.processor._files_index._index)
-        expected = [('26', 'N'), ('27', 'N'), ('22', 'H'), ('46', 'N'), ('43', 'N'), ('1', 'N'), ('8', 'N'),
-                    ('47', 'N'), ('38', 'N'), ('15', 'N'), ('18', 'N'), ('31', 'N'),
-                    ('37', 'N'), ('36', 'N'), ('48', 'H')]
+        expected = [('18', 'N'), ('36', 'N'), ('31', 'N'), ('26', 'N'), ('15', 'N'), ('46', 'N'), ('38', 'N'),
+                    ('27', 'N'), ('43', 'N'), ('37', 'N'), ('1', 'N'), ('47', 'N'), ('48', 'H'), ('8', 'N'),
+                    ('22', 'H')]
         actual = self.processor._files_index._index['JT01.xml']
+        print actual
 
         self.assertEqual(expected, actual)
 

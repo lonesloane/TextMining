@@ -4,10 +4,14 @@ import shelve
 from index.loader import TopicsIndex
 
 
-class TypeAheadIndexBuilder:
-    """
-    Class used to build the index of N-grams required to provide type-ahead functionality
+class IndexBuilder:
+    """Class used to build an index of N-grams required to provide type-ahead functionality
 
+    Usage::
+
+        >>> from analysis.typeahead import IndexBuilder
+        >>> index_builder = IndexBuilder(input_index_filename, output_index_filename)
+        >>> index = index_builder.build().index
     """
     LOG_LEVEL_DEFAULT = logging.INFO
 
@@ -18,7 +22,7 @@ class TypeAheadIndexBuilder:
         :param output_index_filename: Complete file name where the type-ahead index will be saved
         :return:
         """
-        logging.basicConfig(level=TypeAheadIndexBuilder.LOG_LEVEL_DEFAULT,
+        logging.basicConfig(level=IndexBuilder.LOG_LEVEL_DEFAULT,
                             format='%(name)s - %(levelname)s - %(message)s')
         self.logger = logging.getLogger(__name__)
 
@@ -60,6 +64,48 @@ class TypeAheadIndexBuilder:
         self.logger.info('Finished building type ahead index')
         return self
 
+    @staticmethod
+    def extract_n_grams(labels, ignored_labels=None):
+        """
+
+        :param labels:
+        :param ignored_labels:
+        :return:
+        """
+        if ignored_labels is None:
+            ignored_labels = list()
+        typeahead_index = {}
+        logging.getLogger(__name__).info('Start building type ahead index')
+
+        for lbl_en in labels:
+
+            if lbl_en in ignored_labels:
+                logging.getLogger(__name__).debug('Ignoring: %s', lbl_en)
+                continue
+
+            logging.getLogger(__name__).debug('Processing: %s', lbl_en)
+            compound = ''
+            for word in lbl_en.split(' '):
+                root = ''
+                for letter in word:
+                    root += letter.lower()
+
+                    if root in typeahead_index:
+                        typeahead_index[root].append(lbl_en)
+                    else:
+                        typeahead_index[root] = [lbl_en]
+
+                    if compound != '':
+                        if compound+root in typeahead_index:
+                            typeahead_index[compound+root].append(lbl_en)
+                        else:
+                            typeahead_index[compound+root] = [lbl_en]
+                compound += word.lower()+' '
+
+        logging.getLogger(__name__).info('Finished building type ahead index')
+
+        return typeahead_index
+
     def shelve_index(self):
         """
         Save the index on the file system.
@@ -75,10 +121,12 @@ class TypeAheadIndexBuilder:
 def main():
     logging.basicConfig(filename="../output/typeahead_index_builder.log", filemode="w",
                         level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    topics_index_filename = '../output/Topics_Index'
-    topics_typeahead_index_filename = '../output/Topics_Typeahead_Index'
-    TypeAheadIndexBuilder(input_index_filename=topics_index_filename,
-                          output_index_filename=topics_typeahead_index_filename).build().shelve_index()
+#     topics_index_filename = '../output/Topics_Index'
+#     topics_typeahead_index_filename = '../output/Topics_Typeahead_Index'
+    topics_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Index'
+    topics_typeahead_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Typeahead_Index'
+    IndexBuilder(input_index_filename=topics_index_filename,
+                 output_index_filename=topics_typeahead_index_filename).build().shelve_index()
 
 
 if __name__ == '__main__':

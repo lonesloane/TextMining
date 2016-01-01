@@ -1,11 +1,11 @@
 import unittest
 import test_analysis.test_cooccurrence_extractor as extractor
-import test_analysis.test_corpus_analyzer as analyzer
+import test_analysis.test_corpus as analyzer
 import test_index.test_loader as loader
 import test_search.test_proximity_finder as proximity_finder
 import test_search.test_semantic_query as semantic_query
 import test_index.test_validator as validator
-import test_analysis.test_typeahead_index_builder as typeahead
+import test_analysis.test_typeahead as typeahead
 
 suite_extractor = unittest.TestLoader().loadTestsFromModule(extractor)
 suite_analyzer = unittest.TestLoader().loadTestsFromModule(analyzer)

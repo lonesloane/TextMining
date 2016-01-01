@@ -18,10 +18,10 @@ class QueryProcessor:
         """
 
         :param files_index_filename: file containing the index of topics per file. Default 'output/Files_Index'
-        :param topics_occurrences_index_filename: file containing the index of files per topic. Default
-        'output/Topics_Occurrences_Index'
-        :param topics_labels_index_filename: file containing the index of topic ids per topic label. Default
-        'output/Topics_Labels_Index'
+
+        :param topics_occurrences_index_filename: file containing the index of files per topic. Default 'output/Topics_Occurrences_Index'
+
+        :param topics_labels_index_filename: file containing the index of topic ids per topic label. Default 'output/Topics_Labels_Index'
         """
         self._topics_occurrences_index = None
         self._files_index = None

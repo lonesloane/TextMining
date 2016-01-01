@@ -1,10 +1,10 @@
 import os
 import unittest
 
-from analysis.typeahead_index_builder import TypeAheadIndexBuilder
+from analysis.typeahead import IndexBuilder
 
 
-class TypeAheadIndexBuilderTestCase(unittest.TestCase):
+class IndexBuilderTestCase(unittest.TestCase):
     def tearDown(self):
         typeahead_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_TypeAhead_Index'
         if os.path.exists(typeahead_index_filename):
@@ -13,24 +13,58 @@ class TypeAheadIndexBuilderTestCase(unittest.TestCase):
     def test_create(self):
         input_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Index'
         output_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_TypeAhead_Index'
-        typeahead_index_builder = TypeAheadIndexBuilder(input_index_filename=input_index_filename,
-                                                        output_index_filename=output_index_filename)
-        self.assertTrue(isinstance(typeahead_index_builder, TypeAheadIndexBuilder))
+        typeahead_index_builder = IndexBuilder(input_index_filename=input_index_filename,
+                                               output_index_filename=output_index_filename)
+        self.assertTrue(isinstance(typeahead_index_builder, IndexBuilder))
         self.assertIsNotNone(typeahead_index_builder._topics_index)
         print typeahead_index_builder._topics_index
         self.assertIsNotNone(typeahead_index_builder.index)
         self.assertTrue(len(typeahead_index_builder.index) == 0)
 
+    def test_extract_n_grams(self):
+        labels = ['Montaigne', 'Balzac', 'Rousseau', 'Baudelaire', 'Hugo', 'Zola', 'Flaubert', 'Chateaubriand', 'Camus']
+
+        typeahead_index = IndexBuilder.extract_n_grams(labels)
+        self.assertTrue('c' in typeahead_index)
+        self.assertTrue('ca' in typeahead_index)
+        self.assertTrue('cam' in typeahead_index)
+        self.assertTrue('camu' in typeahead_index)
+        self.assertTrue('camus' in typeahead_index)
+        self.assertTrue('bal' in typeahead_index)
+        self.assertTrue('bau' in typeahead_index)
+
+        ignored_labels = ['Camus']
+        typeahead_index = IndexBuilder.extract_n_grams(labels, ignored_labels)
+
+        self.assertTrue('c' in typeahead_index)
+        self.assertFalse('ca' in typeahead_index)
+        self.assertFalse('cam' in typeahead_index)
+        self.assertFalse('camu' in typeahead_index)
+        self.assertFalse('camus' in typeahead_index)
+
+        self.assertTrue('b' in typeahead_index)
+        self.assertTrue('ba' in typeahead_index)
+        self.assertTrue('bal' in typeahead_index)
+        self.assertTrue('bau' in typeahead_index)
+
+        ignored_labels = ['Camus', 'Balzac']
+        typeahead_index = IndexBuilder.extract_n_grams(labels, ignored_labels)
+
+        self.assertTrue('b' in typeahead_index)
+        self.assertTrue('ba' in typeahead_index)
+        self.assertFalse('bal' in typeahead_index)
+        self.assertTrue('bau' in typeahead_index)
+
     def test_build_typeahead_index(self):
         input_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Topics_Index'
         output_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_TypeAhead_Index'
-        typeahead_index_builder = TypeAheadIndexBuilder(input_index_filename=input_index_filename,
-                                                        output_index_filename=output_index_filename)
+        typeahead_index_builder = IndexBuilder(input_index_filename=input_index_filename,
+                                               output_index_filename=output_index_filename)
 
         typeahead_index_builder.build()
         self.assertFalse(len(typeahead_index_builder.index) == 0)
 
-        #genetically modified organisms
+        # genetically modified organisms
         self.assertTrue('g' in typeahead_index_builder.index)
         self.assertTrue('ge' in typeahead_index_builder.index)
         self.assertTrue('gen' in typeahead_index_builder.index)
@@ -110,8 +144,8 @@ class TypeAheadIndexBuilderTestCase(unittest.TestCase):
     def test_compound_words(self):
         input_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Topics_Index'
         output_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_TypeAhead_Index'
-        typeahead_index_builder = TypeAheadIndexBuilder(input_index_filename=input_index_filename,
-                                                        output_index_filename=output_index_filename)
+        typeahead_index_builder = IndexBuilder(input_index_filename=input_index_filename,
+                                               output_index_filename=output_index_filename)
 
         typeahead_index_builder.build()
         # gross domestic expenditure on research and development
@@ -132,8 +166,8 @@ class TypeAheadIndexBuilderTestCase(unittest.TestCase):
         self.assertFalse(os.path.isfile('/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_TypeAhead_Index'))
         input_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Index'
         output_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_TypeAhead_Index'
-        TypeAheadIndexBuilder(input_index_filename=input_index_filename,
-                              output_index_filename=output_index_filename).shelve_index()
+        IndexBuilder(input_index_filename=input_index_filename,
+                     output_index_filename=output_index_filename).shelve_index()
         self.assertTrue(os.path.isfile('/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_TypeAhead_Index'))
 
 

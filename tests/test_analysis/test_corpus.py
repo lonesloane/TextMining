@@ -1,11 +1,10 @@
 # coding=utf-8
 import os
 import shelve
-import shutil
 import unittest
 import datetime
 
-import analysis.corpus_analyzer as analyzer
+from analysis.corpus import Analyzer, get_date_from_folder
 
 TEST_CORPUS_ROOT_FOLDER = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus"
 TEST_TOPICS_OCCURRENCES_INDEX_FILENAME = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Occurrences_Index"
@@ -16,10 +15,10 @@ TST_TOPICS_LABELS_INDEX_FILENAME = "/home/stephane/Playground/PycharmProjects/Te
 TST_TOPICS_INDEX_FILENAME = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Tst_Topics_Index"
 
 
-class CorpusAnalyzerTestCase(unittest.TestCase):
+class AnalyzerTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.analyzer = analyzer.CorpusAnalyzer(corpus_root_folder=TEST_CORPUS_ROOT_FOLDER)
+        self.analyzer = Analyzer(corpus_root_folder=TEST_CORPUS_ROOT_FOLDER)
 
     def tearDown(self):
         if os.path.isfile(TST_TOPICS_OCCURRENCES_INDEX_FILENAME):
@@ -34,8 +33,8 @@ class CorpusAnalyzerTestCase(unittest.TestCase):
     def test_extract_topics_labels_index(self):
         self.assertFalse(os.path.isfile(TST_TOPICS_LABELS_INDEX_FILENAME))
 
-        analyzer.CorpusAnalyzer.extract_topics_labels_index(topics_index_filename=TEST_TOPICS_INDEX_FILENAME,
-                                                            topics_labels_index_filename=TST_TOPICS_LABELS_INDEX_FILENAME)
+        Analyzer.extract_topics_labels_index(topics_index_filename=TEST_TOPICS_INDEX_FILENAME,
+                                             topics_labels_index_filename=TST_TOPICS_LABELS_INDEX_FILENAME)
 
         self.assertTrue(os.path.isfile(TST_TOPICS_LABELS_INDEX_FILENAME))
 
@@ -73,14 +72,14 @@ class CorpusAnalyzerTestCase(unittest.TestCase):
         self.analyzer.files_index['JT03.xml'] = [('5', 'N'), ('6', 'H')]
 
         self.assertEqual(3, len(self.analyzer.files_index))
-        self.assertTrue(self.analyzer.files_index.has_key('JT01.xml'))
-        self.assertTrue(self.analyzer.files_index.has_key('JT02.xml'))
-        self.assertTrue(self.analyzer.files_index.has_key('JT03.xml'))
-        self.analyzer._remove_file_from_files_hash('JT01.xml')
+        self.assertTrue('JT01.xml' in self.analyzer.files_index)
+        self.assertTrue('JT02.xml' in self.analyzer.files_index)
+        self.assertTrue('JT03.xml' in self.analyzer.files_index)
+        self.analyzer._remove_file_from_files_index('JT01.xml')
         self.assertEqual(2, len(self.analyzer.files_index))
-        self.assertFalse(self.analyzer.files_index.has_key('JT01.xml'))
-        self.assertTrue(self.analyzer.files_index.has_key('JT02.xml'))
-        self.assertTrue(self.analyzer.files_index.has_key('JT03.xml'))
+        self.assertFalse('JT01.xml' in self.analyzer.files_index)
+        self.assertTrue('JT02.xml' in self.analyzer.files_index)
+        self.assertTrue('JT03.xml' in self.analyzer.files_index)
 
     def test_remove_file_from_topics_occurrences_hash(self):
         self.analyzer.files_index['JT01.xml'] = [('1', 'N'), ('2', 'H')]
@@ -124,7 +123,7 @@ class CorpusAnalyzerTestCase(unittest.TestCase):
         self.assertEqual([('JT01.xml', 'H'), ('JT03.xml', 'N')], self.analyzer.topics_occurrences_index['2'])
         self.assertEqual([('JT02.xml', 'N'), ('JT04.xml', 'H')], self.analyzer.topics_occurrences_index['3'])
         self.assertEqual([('JT02.xml', 'H'), ('JT04.xml', 'N')], self.analyzer.topics_occurrences_index['4'])
-        self.analyzer._remove_file_from_topics_occurrences_hash('JT01.xml')
+        self.analyzer._remove_file_from_topics_occurrences_index('JT01.xml')
         self.assertEqual(4, len(self.analyzer.topics_occurrences_index))
         self.assertEqual([('JT03.xml', 'H')], self.analyzer.topics_occurrences_index['1'])
         self.assertEqual([('JT03.xml', 'N')], self.analyzer.topics_occurrences_index['2'])
@@ -159,7 +158,7 @@ class CorpusAnalyzerTestCase(unittest.TestCase):
         self.analyzer.files_index['JT00104374.xml'] = [('1', 'N')]
         self.analyzer.topics_occurrences_index["1"] = topic_occurrences
         self.assertTrue(('JT00104374.xml', 'N') in self.analyzer.topics_occurrences_index["1"])
-        self.analyzer._remove_file_from_topics_occurrences_hash('JT00104374.xml')
+        self.analyzer._remove_file_from_topics_occurrences_index('JT00104374.xml')
         self.assertFalse(('JT00104374.xml', 'N') in self.analyzer.topics_occurrences_index["1"])
 
     def test_is_posterior(self):
@@ -174,12 +173,12 @@ class CorpusAnalyzerTestCase(unittest.TestCase):
         _21_June = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testDuplicates/2015/06/21'
         _23_June = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testDuplicates/2015/06/23'
         expected_date = datetime.date(2015, 6, 21)
-        actual_date = analyzer.get_date_from_folder(_21_June)
+        actual_date = get_date_from_folder(_21_June)
         print actual_date
         self.assertEqual(expected_date, actual_date)
 
         expected_date = datetime.date(2015, 6, 23)
-        actual_date = analyzer.get_date_from_folder(_23_June)
+        actual_date = get_date_from_folder(_23_June)
         self.assertEqual(expected_date, actual_date)
 
     def test_process_file_topics(self):
@@ -219,17 +218,17 @@ class CorpusAnalyzerTestCase(unittest.TestCase):
         self.assertEqual(self.analyzer.topics_occurrences_index["47"], [("JT04.xml", "H")])
 
         # try to add same file to topic, should raise an exception
-        self.assertRaises(Exception, self.analyzer._process_topics_occurrences,result_file, uri, relevance)
+        self.assertRaises(Exception, self.analyzer._process_topics_occurrences, result_file, uri, relevance)
 
     def test_strip_uri(self):
         uri = "http://kim.oecd.org/Taxonomy/Topics#T187"
-        result = analyzer.CorpusAnalyzer._strip_uri(uri)
+        result = Analyzer._strip_uri(uri)
         self.assertEqual("187", result)
 
     def test_shelve_index(self):
         expected = {"testTopic": [("JT00", "N"), ("JT01", "H")]}
-        analyzer.CorpusAnalyzer.shelve_index(index_filename=TST_TOPICS_OCCURRENCES_INDEX_FILENAME,
-                                             index_data=expected)
+        Analyzer.shelve_index(index_filename=TST_TOPICS_OCCURRENCES_INDEX_FILENAME,
+                              index_data=expected)
 
         import shelve
         d = shelve.open(TST_TOPICS_OCCURRENCES_INDEX_FILENAME)

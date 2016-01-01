@@ -21,7 +21,7 @@ def get_date_from_folder(folder):
     return datetime.date(year, month, day)
 
 
-class CorpusAnalyzer:
+class Analyzer:
     """Class used to analyze the topics repartition across the given corpus
     and build the dictionary of files with their associated topics
 
@@ -44,7 +44,7 @@ class CorpusAnalyzer:
         :param corpus_root_folder: path to the root of the corpus.
         :return:
         """
-        logging.basicConfig(level=CorpusAnalyzer.LOG_LEVEL_DEFAULT, format='%(name)s - %(levelname)s - %(message)s')
+        logging.basicConfig(level=Analyzer.LOG_LEVEL_DEFAULT, format='%(name)s - %(levelname)s - %(message)s')
         self.logger = logging.getLogger(__name__)
 
         self.topics_occurrences_index = {}
@@ -53,7 +53,7 @@ class CorpusAnalyzer:
         self.processed_files = {}
 
         self.corpus_root_folder = corpus_root_folder if corpus_root_folder is not None \
-            else CorpusAnalyzer.CORPUS_ROOT_FOLDER_DEFAULT
+            else Analyzer.CORPUS_ROOT_FOLDER_DEFAULT
 
         self.logger.info("Initialized with corpus root folder: %s", self.corpus_root_folder)
 
@@ -72,13 +72,13 @@ class CorpusAnalyzer:
         """
 
         if topics_occurrences_index_filename is None:
-            topics_occurrences_index_filename = CorpusAnalyzer.TOPICS_OCCURRENCES_INDEX_FILENAME_DEFAULT
+            topics_occurrences_index_filename = Analyzer.TOPICS_OCCURRENCES_INDEX_FILENAME_DEFAULT
 
         if topics_index_filename is None:
-            topics_index_filename = CorpusAnalyzer.TOPICS_INDEX_FILENAME_DEFAULT
+            topics_index_filename = Analyzer.TOPICS_INDEX_FILENAME_DEFAULT
 
         if files_index_filename is None:
-            files_index_filename = CorpusAnalyzer.FILES_INDEX_FILENAME_DEFAULT
+            files_index_filename = Analyzer.FILES_INDEX_FILENAME_DEFAULT
 
         idx = 0
         for root, dirs, files_list in os.walk(self.corpus_root_folder):
@@ -123,8 +123,8 @@ class CorpusAnalyzer:
                 # remove previous occurrences in various indexes to be replaced by this one
                 self.logger.info("Removing previous occurrences of %s in various indexes to be replaced by this one",
                                  result_file)
-                self._remove_file_from_topics_occurrences_hash(result_file)
-                self._remove_file_from_files_hash(result_file)
+                self._remove_file_from_topics_occurrences_index(result_file)
+                self._remove_file_from_files_index(result_file)
         else:
             self.processed_files[result_file] = folder
 
@@ -143,7 +143,7 @@ class CorpusAnalyzer:
             self._process_topics_occurrences(result_file, uri, relevance)
             self._process_topics_dictionary(uri, label_en, label_fr)
 
-    def _remove_file_from_files_hash(self, result_file):
+    def _remove_file_from_files_index(self, result_file):
         """
         Remove any existing occurrence of result file from the files index.
 
@@ -156,7 +156,7 @@ class CorpusAnalyzer:
         self.logger.info("Removing occurrence of %s in files index", result_file)
         del self.files_index[result_file]
 
-    def _remove_file_from_topics_occurrences_hash(self, result_file):
+    def _remove_file_from_topics_occurrences_index(self, result_file):
         """
         Remove any existing occurrence of result file from any of the topics.
 
@@ -276,18 +276,18 @@ class CorpusAnalyzer:
         :return:
         """
         if topics_index_filename is None:
-            topics_index_filename = CorpusAnalyzer.TOPICS_INDEX_FILENAME_DEFAULT
+            topics_index_filename = Analyzer.TOPICS_INDEX_FILENAME_DEFAULT
         if topics_labels_index_filename is None:
-            topics_labels_index_filename = CorpusAnalyzer.TOPICS_LABELS_INDEX_FILENAME_DEFAULT
+            topics_labels_index_filename = Analyzer.TOPICS_LABELS_INDEX_FILENAME_DEFAULT
         topics_labels_index = dict()
 
-        topics_index = CorpusAnalyzer.load_topics_index(topics_index_filename)
+        topics_index = Analyzer.load_topics_index(topics_index_filename)
         for topic, labels in topics_index.iteritems():
             topics_labels_index[labels[0]] = topic
             topics_labels_index[labels[1]] = topic
 
         # Save the index to the filesystem
-        CorpusAnalyzer.shelve_index(topics_labels_index_filename, topics_labels_index)
+        Analyzer.shelve_index(topics_labels_index_filename, topics_labels_index)
 
     @staticmethod
     def load_topics_index(topics_index_filename):
@@ -324,11 +324,11 @@ class CorpusAnalyzer:
 
 
 def main():
-    corpus_root = "/media/Data/OECD/Official Documents Enrichment/Documents"
-    topics_occurrences_index = "Topics_Occurrences_Index"
-    topics_index = "Topics_Index"
-    files_index = "Files_Index"
-    topics_labels_index = "Topics_Labels_Index"
+    # corpus_root = "/media/Data/OECD/Official Documents Enrichment/Documents"
+    # topics_occurrences_index = "Topics_Occurrences_Index"
+    # topics_index = "Topics_Index"
+    # files_index = "Files_Index"
+    # topics_labels_index = "Topics_Labels_Index"
 
     # corpus_root = "/media/Data/OECD/Official Documents Enrichment/2015/06/18"
     # topics_occurrences_index = "2015_06_18_Topics_Occurrences_Index"
@@ -340,10 +340,11 @@ def main():
     # _topics_index = "Test_Cooccurrence_Topics_Index"
     # files_index = "Test_Cooccurrence_Files_Index"
 
-    # corpus_root = "../tests/testCorpus/"
-    # topics_occurrences_index = "Test_Topics_Occurrences_Index"
-    # _topics_index = "Test_Topics_Index"
-    # files_index = "Test_Files_Index"
+    corpus_root = "../tests/testCorpus/"
+    topics_occurrences_index = "Test_Topics_Occurrences_Index"
+    topics_index = "Test_Topics_Index"
+    files_index = "Test_Files_Index"
+    topics_labels_index = "Test_Topics_Labels_Index"
 
     # corpus_root = "../tests/testSingleFile/"
     # topics_occurrences_index = "SingleFile_Topics_Occurrences_Index"
@@ -353,7 +354,7 @@ def main():
     logging.basicConfig(filename="../output/corpus_analyzer.log", filemode="w",
                         level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-    analyzer = CorpusAnalyzer(corpus_root_folder=corpus_root)
+    analyzer = Analyzer(corpus_root_folder=corpus_root)
 
     print "Begin extract indexes"
     analyzer.extract_indexes(topics_index_filename=topics_index,
@@ -362,8 +363,8 @@ def main():
     print "End extract indexes"
 
     print "Begin extract topics_labels index"
-    CorpusAnalyzer.extract_topics_labels_index(topics_index_filename=topics_index,
-                                               topics_labels_index_filename=topics_labels_index)
+    Analyzer.extract_topics_labels_index(topics_index_filename=topics_index,
+                                         topics_labels_index_filename=topics_labels_index)
     print "End extract topics_labels index"
 
 
