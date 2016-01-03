@@ -51,6 +51,12 @@ def validate_files_index(files_index):
     return duplicate_topics
 
 
+def validate_topics_index(topics_index):
+    print '%s topics found in index' % len(topics_index)
+    lbl_en, lbl_fr = topics_index['19']
+    print (lbl_en, lbl_fr)
+
+
 def validate_typeahead_index(typeahead_index):
     """
 
@@ -62,7 +68,7 @@ def validate_typeahead_index(typeahead_index):
 
 
 def main():
-    choice = 'typeahead'
+    choice = 'topics'
 
     if choice == 'files':
         # load files index
@@ -77,6 +83,10 @@ def main():
         typeahead_index_filename = '../output/Topics_Typeahead_Index'
         index = loader.TopicsTypeAheadIndex(typeahead_index_filename).index
         validate_typeahead_index(index)
+    if choice == 'topics':
+        topics_index_filename = '../output/Topics_Index'
+        index = loader.TopicsIndex(topics_index_filename).index
+        validate_topics_index(index)
 
 if __name__ == '__main__':
     main()
