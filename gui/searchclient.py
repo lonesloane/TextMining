@@ -3,9 +3,10 @@ from Tkinter import *
 import ttk
 
 from analysis import typeahead
-from index import loader
 import search.semantic_query as semantic
-from index.loader import TopicsIndex
+from cmdline.proximity_search import proximity_score
+from index.loader import TopicsIndex, FilesIndex, TopicsTypeAheadIndex
+import search.proximity_finder as proximity
 
 
 class AutoCompleteEntry(ttk.Entry):
@@ -148,6 +149,7 @@ def search_documents_by_topics():
         results_list.delete(result)
     for document in matching_documents:
         results_list.insert('', END, text=document)
+    results_list.selection_set(results_list.get_children()[0])
 
     global typeahead_index
     typeahead_index = typeahead.IndexBuilder().build(topics_index=build_topics_index(matching_topics))
@@ -165,14 +167,54 @@ def build_topics_index(matching_topics):
     return result
 
 
+def result_selected(event):
+    logging.getLogger(__name__).debug('Fire event: result selected')
+    selected_index = results_list.selection()
+    selected_item = results_list.item(selected_index)
+    target_file = selected_item['text']
+    logging.getLogger().debug('Selection: %s', target_file)
+    semantic_signature = files_index.get_enrichment_for_files(target_file)
+    logging.getLogger().debug('Semantic signature: %s', semantic_signature)
+
+    global signature
+    signature.set(get_detailed_semantic_signature(semantic_signature))
+
+    results = finder.build_proximity_results(semantic_signature=semantic_signature,
+#                                             minimum_hrt_match_number=hrt_match_number,
+                                             sort_criteria=proximity.SortBy.PROXIMITY_SCORE,
+                                             ignored_files=[target_file]).proximity_results
+    proximity_text = ''
+    proximity_text += 'Found {nb} files "related" to file {file}s\n'.format(nb=len(results), file=target_file)
+    for i in range(len(results) if len(results) < 20 else 20):
+        proximity_text += '--------------------------------------------------\n'
+        proximity_text += 'File: {file} - Proximity score: {score} - Nb matches: {nb}\n'.format(file=results[i][0],
+                                                                                                score=proximity_score(results[i][1]),
+                                                                                                nb=len(results[i][1]))
+        proximity_text += '--------------------------------------------------\n'
+        for topic_lbl, score in [(topic_lbl, score) for _, topic_lbl, _, score in results[i][1]]:
+            proximity_text += '\t- {topic}: {score}\n'.format(topic=topic_lbl, score=score)
+
+    global proximity_results
+    proximity_results.insert('1.0', proximity_text)
+
+
+def get_detailed_semantic_signature(semantic_signature):
+    result = 'Semantic signature:'
+    for topic_id, relevance in semantic_signature:
+        result += '\n- topic: {topic_id} - relevance: {relevance}'.format(topic_id=topic_id,
+                                                                          relevance=relevance)
+    return result
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
 
     files_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Files_Index'
+#    files_index = FilesIndex(files_index_filename)
+    files_index = FilesIndex()
     topics_occurrences_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Occurrences_Index'
     topics_labels_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Labels_Index'
 
-#    topics_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Index'
+    topics_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Index'
 #    topics_index = TopicsIndex(topics_index_filename).index
     topics_index = TopicsIndex().index
 
@@ -180,10 +222,12 @@ if __name__ == '__main__':
 #                                        topics_occurrences_index_filename=topics_occurrences_index_filename,
 #                                        topics_labels_index_filename=topics_labels_index_filename)
     processor = semantic.QueryProcessor()
-
+#    finder = proximity.ProximityFinder(topics_index_filename=topics_index_filename,
+#                                       topics_occurrences_index_filename=topics_occurrences_index_filename)
+    finder = proximity.ProximityFinder()
     typeahead_index_filename = '../output/Topics_Typeahead_Index'
 #    typeahead_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Typeahead_Index'
-    typeahead_index = loader.TopicsTypeAheadIndex(typeahead_index_filename).index
+    typeahead_index = TopicsTypeAheadIndex(typeahead_index_filename).index
 
     w = 800  # width for the Tk root
     h = 650  # height for the Tk root
@@ -202,23 +246,49 @@ if __name__ == '__main__':
 
     # Create application components
     mainframe = ttk.Frame(root, padding="3 3 12 12")
+
+    search_frame = ttk.Frame(mainframe)
     search_entry = AutoCompleteEntry(mainframe, listboxLength=10, width=32)
     search_button = Button(mainframe, text='Search', command=search_documents_by_topics)
 
     topics_frame = ttk.Frame(mainframe)
-    topics_list = ttk.Treeview(topics_frame, columns=('id', 'lbl_en', 'lbl_fr'), displaycolumns=0, height=10)
+    topics_list = ttk.Treeview(topics_frame, columns=('id', 'lbl_en', 'lbl_fr'), displaycolumns=0, height=15)
     topics_list.column(0, width=120)
+
     results_frame = ttk.Frame(mainframe)
-    results_list = ttk.Treeview(results_frame, height=10)
+    results_list = ttk.Treeview(results_frame, height=15)
+    results_list.bind("<Button-1>", result_selected)
+    yscroll_result = ttk.Scrollbar(results_frame, orient=VERTICAL,
+                                command=results_list.yview)
+    results_list['yscrollcommand'] = yscroll_result.set
+    xscroll_result = ttk.Scrollbar(results_frame, orient=HORIZONTAL,
+                                command=results_list.xview)
+    results_list['xscrollcommand'] = xscroll_result.set
+
+    signature = StringVar()
+    semantic_signature_label = ttk.Label(mainframe, textvariable=signature)
+
+    proximity_frame = ttk.Frame(mainframe)
+    proximity_results = Text(proximity_frame, width=70, height=15)
+    yscroll_proximity = ttk.Scrollbar(proximity_frame, orient=VERTICAL,
+                                command=proximity_results.yview)
+    proximity_results['yscrollcommand'] = yscroll_proximity.set
 
     # Position elements on screen
     mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
-    search_entry.grid(row=0, column=0)
-    search_button.grid(row=0, column=1)
-    topics_frame.grid(row=1, column=0, columnspan=2)
+    search_frame.grid(row=0, column=0, columnspan=4)
+    search_entry.grid(row=0, column=0, sticky=(W,))
+    search_button.grid(row=0, column=1, sticky=(W,))
+    topics_frame.grid(row=1, column=0, columnspan=2, sticky=(W, E))
     topics_list.grid()
-    results_frame.grid(row=1, column=2)
-    results_list.grid()
+    results_frame.grid(row=1, column=2, columnspan=2, sticky=(E,  W))
+    results_list.grid(row=0, column=0, sticky=(E,  W))
+    yscroll_result.grid(row=0, column=1, sticky=(N, S))
+    xscroll_result.grid(row=1, column=0, sticky=(E, W))
+    semantic_signature_label.grid(row=2, column=0, columnspan=2, sticky=(W, E))
+    proximity_frame.grid(row=2, column=1, columnspan=2, sticky=(W, E))
+    proximity_results.grid(row=0, column=0)
+    yscroll_proximity.grid(row=0, column=1, sticky=(N, S))
 
     # Configure elements
     mainframe.columnconfigure(0, weight=1)
