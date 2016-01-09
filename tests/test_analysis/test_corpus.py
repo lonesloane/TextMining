@@ -1,4 +1,5 @@
 # coding=utf-8
+import logging
 import os
 import shelve
 import unittest
@@ -18,6 +19,7 @@ TST_TOPICS_INDEX_FILENAME = "/home/stephane/Playground/PycharmProjects/TextMinin
 class AnalyzerTestCase(unittest.TestCase):
 
     def setUp(self):
+        logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
         self.analyzer = Analyzer(corpus_root_folder=TEST_CORPUS_ROOT_FOLDER)
 
     def tearDown(self):
@@ -48,17 +50,29 @@ class AnalyzerTestCase(unittest.TestCase):
         self.assertTrue("30", topics_labels_index["lbl_en_30"])
         self.assertTrue("30", topics_labels_index["lbl_fr_30"])
 
+    def test_process_enrichment_result_only_highly_relevant(self):
+        result_file = "JT03.xml"
+        self.analyzer._process_enrichment_result(folder=TEST_CORPUS_ROOT_FOLDER, result_file=result_file,
+                                                 only_highly_relevant=True)
+        self.assertEqual(self.analyzer.topics_occurrences_index["45"], [("JT03.xml", "N")])
+        self.assertTrue('5' in self.analyzer.topics_index)
+        self.assertFalse('30' in self.analyzer.topics_index)
+
     def test_process_enrichment_result(self):
         result_file = "JT03.xml"
         self.analyzer._process_enrichment_result(folder=TEST_CORPUS_ROOT_FOLDER, result_file=result_file)
         self.assertEqual(self.analyzer.topics_occurrences_index["45"], [("JT03.xml", "N")])
+        self.assertTrue('5' in self.analyzer.topics_index)
+        self.assertTrue('30' in self.analyzer.topics_index)
         self.assertEqual(self.analyzer.topics_index["45"], ('lbl_en_45', 'lbl_fr_45'))
         self.assertEqual(self.analyzer.files_index['JT03.xml'], [('30', 'N'), ('24', 'N'), ('42', 'N'), ('3', 'N'),
                                                                  ('35', 'N'), ('5', 'H'), ('18', 'N'), ('31', 'N'),
                                                                  ('14', 'N'), ('45', 'N'), ('9', 'H'), ('46', 'N'),
                                                                  ('38', 'N'), ('6', 'N'), ('7', 'N')])
+
         result_file = "JT06.xml"
         self.analyzer._process_enrichment_result(folder=TEST_CORPUS_ROOT_FOLDER, result_file=result_file)
+        self.assertTrue('45' in self.analyzer.topics_index)
         self.assertEqual(self.analyzer.topics_occurrences_index["45"], [('JT03.xml', 'N'), ('JT06.xml', 'N')])
         self.assertEqual(self.analyzer.topics_index["45"], ('lbl_en_45', 'lbl_fr_45'))
         self.assertEqual(self.analyzer.files_index['JT03.xml'], [('30', 'N'), ('24', 'N'), ('42', 'N'), ('3', 'N'),

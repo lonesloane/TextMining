@@ -1,8 +1,6 @@
 import logging
 import logging.config
 
-from index.loader import TopicsOccurrencesIndex, TopicsIndex
-
 
 class SortBy:
     """
@@ -32,34 +30,25 @@ class ProximityFinder:
     """
 
     """
-    TOPICS_INDEX_FILENAME_DEFAULT = "../output/Topics_Index"
-    TOPICS_OCCURRENCES_INDEX_FILENAME_DEFAULT = "../output/Topics_Occurrences_Index"
 
-    def __init__(self, topics_index_filename=None, topics_occurrences_index_filename=None):
-        """
-
-        :param topics_occurrences_index_filename:
-        :return:
-        """
+    def __init__(self, topics_index, topics_occurrences_index, files_index=None):
         logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
         # logging.config.fileConfig('logging.conf')
         self.logger = logging.getLogger(__name__)
 
+        self.topics_index = topics_index
+        self.topics_occurrences_index = topics_occurrences_index
+        if files_index is not None:
+            self.files_index = files_index
+
         self.proximity_results = {}
         self.raw_results = []
 
-        if topics_index_filename is None:
-            topics_index_filename = ProximityFinder.TOPICS_INDEX_FILENAME_DEFAULT
-        self.topics_index = TopicsIndex(topics_index_filename)
-
-        if topics_occurrences_index_filename is None:
-            topics_occurrences_index_filename = ProximityFinder.TOPICS_OCCURRENCES_INDEX_FILENAME_DEFAULT
-        self.topics_occurrences_index = TopicsOccurrencesIndex(topics_occurrences_index_filename)
-
     def build_proximity_results(self, semantic_signature, sort_criteria=None, minimum_hrt_match_number=0,
-                                ignored_files=None):
+                                    required_topics=None, ignored_files=None):
         """
 
+        :param required_topics:
         :param semantic_signature:
         :param sort_criteria:
         :param ignored_files:
@@ -70,9 +59,11 @@ class ProximityFinder:
 
         for target_topic, target_relevance in semantic_signature:
             target_topic_lbl_en, target_topic_lbl_fr = self.topics_index.get_labels_for_topic_id(target_topic)
-            matching_files = self.topics_occurrences_index.get_files_for_topic(target_topic)
-            self.logger.debug("Matching files found for topic %s: %s", target_topic, matching_files)
-            for matching_file, relevance in matching_files:
+            relevant_files = self.topics_occurrences_index.get_files_for_topic(target_topic)
+            if required_topics is not None:
+                relevant_files = self._trim_matching_files(relevant_files, required_topics)
+            self.logger.debug("Matching files found for topic %s: %s", target_topic, relevant_files)
+            for matching_file, relevance in relevant_files:
                 if matching_file in self.proximity_results:
                     self.proximity_results[matching_file].append((target_topic,
                                                                   target_topic_lbl_en,
@@ -93,9 +84,29 @@ class ProximityFinder:
                              ' Ignoring files: %s', minimum_hrt_match_number, ignored_files)
             self._trim_results(ignored_files, minimum_hrt_match_number)
 
-        self._sort_results(sort_criteria)
+        if sort_criteria is not None:
+            self._sort_results(sort_criteria)
 
         return self
+
+    def _trim_matching_files(self, relevant_files, required_topics):
+        trimmed_files = []
+        for relevant_file in relevant_files:
+            ok = True
+            for topic in required_topics:
+                if not self._contains_topic(relevant_file, topic):
+                    ok = False
+                    break
+            if ok:
+                trimmed_files.append(relevant_file)
+        return trimmed_files
+
+    def _contains_topic(self, relevant_file, topic):
+        assert self.files_index is not None
+        self.logger.debug('Looking for topic:%s in file:%s', topic, relevant_file)
+        self.logger.debug('self.files_index.index[f]:%s', self.files_index.index[relevant_file[0]])
+
+        return topic in [t for t, _ in self.files_index.index[relevant_file[0]]]
 
     def _trim_results(self, ignored_files, minimum_hrt_match_number):
         """
@@ -136,10 +147,7 @@ class ProximityFinder:
         :return:
         """
         sorting_label = ""
-        if sort_criteria is None:
-            self.logger.info("[_sort_results] No sorting criteria provided, leaving dictionary unordered.")
-            self.proximity_results = list(self.proximity_results.iteritems())
-        elif sort_criteria == SortBy.PROXIMITY_SCORE:
+        if sort_criteria == SortBy.PROXIMITY_SCORE:
             sorting_label = "proximity score"
             self.proximity_results = self.sort_results_by_proximity_score()
         elif sort_criteria == SortBy.TOTAL_MATCHES:
@@ -151,8 +159,7 @@ class ProximityFinder:
         else:
             raise Exception("invalid sorting criteria: %s", sort_criteria)
 
-        if sort_criteria is not None:
-            self.logger.info("Results sorted by %s", sorting_label)
+        self.logger.info("Results sorted by %s", sorting_label)
 
         return self
 
@@ -227,6 +234,27 @@ class ProximityFinder:
             return ProximityScore.N_N
         # H/N or N/H
         return ProximityScore.H_N
+
+
+def get_total_proximity_score(scored_topics, semantic_signature=None):
+    result = 0
+    for _, _, _, score in scored_topics:
+        result += score
+    if semantic_signature is None:
+        return result
+    else:
+        max_possible_score = get_max_score(semantic_signature)
+        return result*100/max_possible_score
+
+
+def get_max_score(semantic_signature):
+    total = 0
+    for topic, relevance in semantic_signature:
+        if relevance == 'N':
+            total += ProximityScore.N_N
+        if relevance == 'H':
+            total += ProximityScore.H_H
+    return total
 
 
 if __name__ == '__main__':

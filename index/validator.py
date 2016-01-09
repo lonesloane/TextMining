@@ -57,6 +57,12 @@ def validate_topics_index(topics_index):
     print (lbl_en, lbl_fr)
 
 
+def validate_topics_index_highly(topics_index):
+    print '%s topics found in index' % len(topics_index)
+    for topic, details in topics_index.iteritems():
+        print topic, details
+
+
 def validate_typeahead_index(typeahead_index):
     """
 
@@ -64,11 +70,23 @@ def validate_typeahead_index(typeahead_index):
     :return:
     """
     root = 'research and'
+    print '%s elements in typeahead index' % len(typeahead_index)
+    print 'look up for %s:\n%s' % (root, typeahead_index[root])
+
+
+def validate_typeahead_index_highly(typeahead_index):
+    """
+
+    :param typeahead_index:
+    :return:
+    """
+    root = 'research'
+    print '%s elements in typeahead index' % len(typeahead_index)
     print 'look up for %s:\n%s' % (root, typeahead_index[root])
 
 
 def main():
-    choice = 'topics'
+    choice = 'typeahead_highly'
 
     if choice == 'files':
         # load files index
@@ -83,10 +101,18 @@ def main():
         typeahead_index_filename = '../output/Topics_Typeahead_Index'
         index = loader.TopicsTypeAheadIndex(typeahead_index_filename).index
         validate_typeahead_index(index)
+    if choice == 'typeahead_highly':
+        typeahead_index_filename = '../output/Topics_Typeahead_Index_H'
+        index = loader.TopicsTypeAheadIndex(typeahead_index_filename).index
+        validate_typeahead_index_highly(index)
     if choice == 'topics':
         topics_index_filename = '../output/Topics_Index'
         index = loader.TopicsIndex(topics_index_filename).index
         validate_topics_index(index)
+    if choice == 'topics_highly':
+        topics_index_filename = '../output/Topics_Index_H'
+        index = loader.TopicsIndex(topics_index_filename).index
+        validate_topics_index_highly(index)
 
 if __name__ == '__main__':
     main()

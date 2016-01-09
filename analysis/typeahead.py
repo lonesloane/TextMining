@@ -138,10 +138,10 @@ class IndexBuilder:
 def main():
     logging.basicConfig(filename="../output/typeahead_index_builder.log", filemode="w",
                         level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    topics_index_filename = '../output/Topics_Index'
-    topics_typeahead_index_filename = '../output/Topics_Typeahead_Index'
-#    topics_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Index'
-#    topics_typeahead_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/
+#    topics_index_filename = '../output/Topics_Index_H'
+#    topics_typeahead_index_filename = '../output/Topics_Typeahead_Index_H'
+    topics_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Index_H'
+    topics_typeahead_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Typeahead_Index_H'
     index_builder = IndexBuilder(input_index_filename=topics_index_filename,)
     index_builder.build()
     index_builder.shelve_index(topics_typeahead_index_filename)

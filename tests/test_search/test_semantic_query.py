@@ -2,18 +2,23 @@ import logging
 import unittest
 
 import search.semantic_query as search
+from index.loader import FilesIndex, TopicsOccurrencesIndex, TopicsLabelsIndex
 
 
 class QueryProcessorTestCase(unittest.TestCase):
 
-    files_index = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Files_Index"
-    topics_occurrences_index = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Occurrences_Index"
-    topics_labels_index = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Labels_Index"
+    _files_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Files_Index"
+    _topics_occurrences_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Occurrences_Index"
+    _topics_labels_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Labels_Index"
 
     def setUp(self):
-        self.processor = search.QueryProcessor(files_index_filename=QueryProcessorTestCase.files_index,
-                                               topics_occurrences_index_filename=QueryProcessorTestCase.topics_occurrences_index,
-                                               topics_labels_index_filename=QueryProcessorTestCase.topics_labels_index)
+        self._files_index = FilesIndex(self._files_index_filename)
+        self._topics_occurrences_index = TopicsOccurrencesIndex(self._topics_occurrences_index_filename)
+        self._topics_labels_index = TopicsLabelsIndex(self._topics_labels_index_filename)
+
+        self.processor = search.QueryProcessor(files_index=self._files_index,
+                                               topics_occurrences_index=self._topics_occurrences_index,
+                                               topics_labels_index=self._topics_labels_index)
 
     def test_init(self):
         self.assertIsNotNone(self.processor._files_index)

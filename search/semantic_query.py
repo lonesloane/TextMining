@@ -6,50 +6,14 @@ LOG_LEVEL = logging.INFO
 
 
 class QueryProcessor:
-    """
 
-    """
-    _files_index_filename_default = "../output/Files_Index"
-    _topics_occurrences_index_filename_default = "../output/Topics_Occurrences_Index"
-    _topics_labels_index_filename_default = "../output/Topics_Labels_Index"
-
-    def __init__(self, files_index_filename=None, topics_occurrences_index_filename=None,
-                 topics_labels_index_filename=None):
-        """
-
-        :param files_index_filename: file containing the index of topics per file. Default 'output/Files_Index'
-
-        :param topics_occurrences_index_filename: file containing the index of files per topic. Default 'output/Topics_Occurrences_Index'
-
-        :param topics_labels_index_filename: file containing the index of topic ids per topic label. Default 'output/Topics_Labels_Index'
-        """
-        self._topics_occurrences_index = None
-        self._files_index = None
-        self._topics_labels_index = None
+    def __init__(self, files_index, topics_occurrences_index, topics_labels_index):
+        self._files_index = files_index
+        self._topics_occurrences_index = topics_occurrences_index
+        self._topics_labels_index = topics_labels_index
 
         logging.basicConfig(level=LOG_LEVEL, format='%(name)s - %(levelname)s - %(message)s')
         self.logger = logging.getLogger(__name__)
-
-        if files_index_filename is None:
-            files_index_filename = QueryProcessor._files_index_filename_default
-        self.logger.debug("Files Index: %s", files_index_filename)
-
-        if topics_occurrences_index_filename is None:
-            topics_occurrences_index_filename = QueryProcessor._topics_occurrences_index_filename_default
-        self.logger.debug("Topics Occurrences Index: %s", topics_occurrences_index_filename)
-
-        if topics_labels_index_filename is None:
-            topics_labels_index_filename = QueryProcessor._topics_labels_index_filename_default
-        self.logger.debug("Topics Labels Index: %s", topics_labels_index_filename)
-
-        self.logger.info("Loading files index from %s", files_index_filename)
-        self._files_index = FilesIndex(files_index_filename)
-
-        self.logger.info("Loading topics index from %s", topics_occurrences_index_filename)
-        self._topics_occurrences_index = TopicsOccurrencesIndex(topics_occurrences_index_filename)
-
-        self.logger.info("Loading topics labels index from %s", topics_labels_index_filename)
-        self._topics_labels_index = TopicsLabelsIndex(topics_labels_index_filename)
 
     def _get_files_for_topic(self, topic):
         """

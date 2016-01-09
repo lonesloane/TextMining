@@ -1,15 +1,24 @@
+import logging
 import unittest
 import search.proximity_finder as finder
+from index.loader import TopicsOccurrencesIndex, TopicsIndex, FilesIndex
 
 
 class ProximityFinderTestCase(unittest.TestCase):
-    topics_occurrences_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Occurrences_Index"
-    topics_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Index"
+    _topics_occurrences_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Occurrences_Index"
+    _topics_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Index"
+    _files_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Files_Index"
 
     def setUp(self):
+        logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
+        self._topics_index = TopicsIndex(self._topics_index_filename)
+        self._topics_occurrences_index = TopicsOccurrencesIndex(self._topics_occurrences_index_filename)
+        self._files_index = FilesIndex(self._files_index_filename)
+
         self.finder = finder.ProximityFinder(
-            topics_index_filename=ProximityFinderTestCase.topics_index_filename,
-            topics_occurrences_index_filename=ProximityFinderTestCase.topics_occurrences_index_filename)
+            topics_index=self._topics_index,
+            topics_occurrences_index=self._topics_occurrences_index,
+            files_index=self._files_index)
 
     def test_create(self):
         expected = [('JT02.xml', 'N'), ('JT04.xml', 'N'), ('JT01.xml', 'H'), ('JT06.xml', 'N')]
@@ -112,19 +121,77 @@ class ProximityFinderTestCase(unittest.TestCase):
                      ('43', 'N'), ('10', 'N'), ('9', 'N'), ('20', 'H'), ('16', 'N'), ('40', 'N'), ('25', 'H'),
                      ('27', 'N')]
         results = self.finder.build_proximity_results(semantic_signature=signature).proximity_results
-        expected_1 = ('JT01.xml', [('47', 'lbl_en_47', 'lbl_fr_47', 100), ('18', 'lbl_en_18', 'lbl_fr_18', 100),
-                                   ('43', 'lbl_en_43', 'lbl_fr_43', 100), ('27', 'lbl_en_27', 'lbl_fr_27', 100)])
-        expected_2 = ('JT04.xml', [('44', 'lbl_en_44', 'lbl_fr_44', 100), ('39', 'lbl_en_39', 'lbl_fr_39', 100),
-                                   ('47', 'lbl_en_47', 'lbl_fr_47', 1), ('20', 'lbl_en_20', 'lbl_fr_20', 1)])
-        expected_3 = ('JT02.xml', [('30', 'lbl_en_30', 'lbl_fr_30', 100), ('9', 'lbl_en_9', 'lbl_fr_9', 100),
+        expected_1 = [('47', 'lbl_en_47', 'lbl_fr_47', 100), ('18', 'lbl_en_18', 'lbl_fr_18', 100),
+                                   ('43', 'lbl_en_43', 'lbl_fr_43', 100), ('27', 'lbl_en_27', 'lbl_fr_27', 100)]
+        expected_2 = [('44', 'lbl_en_44', 'lbl_fr_44', 100), ('39', 'lbl_en_39', 'lbl_fr_39', 100),
+                                   ('47', 'lbl_en_47', 'lbl_fr_47', 1), ('20', 'lbl_en_20', 'lbl_fr_20', 1)]
+        expected_3 = [('30', 'lbl_en_30', 'lbl_fr_30', 100), ('9', 'lbl_en_9', 'lbl_fr_9', 100),
                                    ('20', 'lbl_en_20', 'lbl_fr_20', 10000), ('25', 'lbl_en_25', 'lbl_fr_25', 1),
-                                   ('27', 'lbl_en_27', 'lbl_fr_27', 100)])
-        actual_1 = results[0]
-        actual_2 = results[1]
-        actual_3 = results[-1]
+                                   ('27', 'lbl_en_27', 'lbl_fr_27', 100)]
+        actual_1 = results['JT01.xml']
+        actual_2 = results['JT04.xml']
+        actual_3 = results['JT02.xml']
         self.assertEqual(expected_1, actual_1)
         self.assertEqual(expected_2, actual_2)
         self.assertEqual(expected_3, actual_3)
+
+    def test_build_proximity_results_with_required_topics(self):
+        signature = [('44', 'N'), ('39', 'N'), ('11', 'N'), ('7', 'N'), ('47', 'N'), ('30', 'N'), ('18', 'N'),
+                     ('43', 'N'), ('10', 'N'), ('9', 'N'), ('20', 'H'), ('16', 'N'), ('40', 'N'), ('25', 'H'),
+                     ('27', 'N')]
+        required_topics = ['20']
+        results = self.finder.build_proximity_results(semantic_signature=signature,
+                                                      required_topics=required_topics).proximity_results
+        self.assertEqual(2, len(results))
+        expected_2 = [('44', 'lbl_en_44', 'lbl_fr_44', 100), ('39', 'lbl_en_39', 'lbl_fr_39', 100),
+                                   ('47', 'lbl_en_47', 'lbl_fr_47', 1), ('20', 'lbl_en_20', 'lbl_fr_20', 1)]
+        expected_3 = [('30', 'lbl_en_30', 'lbl_fr_30', 100), ('9', 'lbl_en_9', 'lbl_fr_9', 100),
+                                   ('20', 'lbl_en_20', 'lbl_fr_20', 10000), ('25', 'lbl_en_25', 'lbl_fr_25', 1),
+                                   ('27', 'lbl_en_27', 'lbl_fr_27', 100)]
+        actual_2 = results['JT04.xml']
+        actual_3 = results['JT02.xml']
+        self.assertEqual(expected_2, actual_2)
+        self.assertEqual(expected_3, actual_3)
+
+        required_topics = ['20', '25']
+        results = self.finder.build_proximity_results(semantic_signature=signature,
+                                                      required_topics=required_topics).proximity_results
+        self.assertEqual(1, len(results))
+        expected_3 = [('30', 'lbl_en_30', 'lbl_fr_30', 100), ('9', 'lbl_en_9', 'lbl_fr_9', 100),
+                                   ('20', 'lbl_en_20', 'lbl_fr_20', 10000), ('25', 'lbl_en_25', 'lbl_fr_25', 1),
+                                   ('27', 'lbl_en_27', 'lbl_fr_27', 100)]
+        actual_3 = results['JT02.xml']
+        self.assertEqual(expected_3, actual_3)
+
+    def test_contains_topic(self):
+        f = ('JT04.xml', 'N')
+        topic = '44'
+        self.assertTrue(self.finder._contains_topic(f, topic))
+
+        topic = '33'
+        self.assertFalse(self.finder._contains_topic(f, topic))
+
+    def test_trim_matching_files(self):
+        actual_relevant_files = self._topics_occurrences_index.get_files_for_topic('44')
+        expected_relevant_files = [('JT08.xml', 'N'), ('JT05.xml', 'N'), ('JT04.xml', 'N'), ('JT07.xml', 'H'),
+                                   ('JT10.xml', 'N')]
+        self.assertListEqual(expected_relevant_files, actual_relevant_files)
+
+        trimmed_relevant_files = self.finder._trim_matching_files(actual_relevant_files, ['20'])
+        print trimmed_relevant_files
+        expected_trimmed = [('JT04.xml', 'N')]
+        self.assertListEqual(expected_trimmed, trimmed_relevant_files)
+
+        trimmed_relevant_files = self.finder._trim_matching_files(actual_relevant_files, ['44'])
+        print trimmed_relevant_files
+        expected_trimmed = [('JT08.xml', 'N'), ('JT05.xml', 'N'), ('JT04.xml', 'N'), ('JT07.xml', 'H'),
+                            ('JT10.xml', 'N')]
+        self.assertListEqual(expected_trimmed, trimmed_relevant_files)
+
+        trimmed_relevant_files = self.finder._trim_matching_files(actual_relevant_files, ['44', '20'])
+        print trimmed_relevant_files
+        expected_trimmed = [('JT04.xml', 'N')]
+        self.assertListEqual(expected_trimmed, trimmed_relevant_files)
 
     def test_sort_by_proximity_score(self):
         signature = [('44', 'N'), ('39', 'N'), ('11', 'N'), ('7', 'N'), ('47', 'N'), ('30', 'N'), ('18', 'N'),
@@ -197,6 +264,23 @@ class ProximityFinderTestCase(unittest.TestCase):
                                                                minimum_hrt_match_number=4).proximity_results
         actual_5 = len(sorted_results_5)
         self.assertEqual(actual_5, 0)
+
+    def test_get_total_proximity_score(self):
+        signature = [('44', 'N'), ('39', 'N'), ('11', 'H'), ('7', 'N'), ('47', 'N'), ('30', 'N'), ('18', 'N'),
+                     ('43', 'N'), ('10', 'N'), ('9', 'N'), ('20', 'H'), ('16', 'N'), ('40', 'N'), ('25', 'H'),
+                     ('27', 'N')]
+        scored_topics = [('44', 'lbl_44', 'lbl_44', 100), ('39', 'lbl_44', 'lbl_44', 100),
+                     ('11', 'lbl_44', 'lbl_44', 10000), ('7', 'lbl_44', 'lbl_44', 1),
+                     ('47', 'lbl_44', 'lbl_44', 100), ('30', 'lbl_44', 'lbl_44', 100),
+                     ('18', 'lbl_44', 'lbl_44', 1), ('43', 'lbl_44', 'lbl_44', 100),
+                     ('10', 'lbl_44', 'lbl_44', 10000)]
+        expected = 20502
+        actual = finder.get_total_proximity_score(scored_topics)
+        self.assertEqual(expected, actual)
+
+        expected = 65
+        actual = finder.get_total_proximity_score(scored_topics, signature)
+        self.assertEqual(expected, actual)
 
 
 if __name__ == '__main__':
