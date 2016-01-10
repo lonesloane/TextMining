@@ -21,6 +21,10 @@ class AnalyzerTestCase(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
         self.analyzer = Analyzer(corpus_root_folder=TEST_CORPUS_ROOT_FOLDER)
+        self.analyzer.process_topics_occurrences_index = True
+        self.analyzer.process_topics_index = True
+        self.analyzer.process_files_index = True
+
 
     def tearDown(self):
         if os.path.isfile(TST_TOPICS_OCCURRENCES_INDEX_FILENAME):
@@ -61,6 +65,7 @@ class AnalyzerTestCase(unittest.TestCase):
     def test_process_enrichment_result(self):
         result_file = "JT03.xml"
         self.analyzer._process_enrichment_result(folder=TEST_CORPUS_ROOT_FOLDER, result_file=result_file)
+        print self.analyzer.topics_occurrences_index
         self.assertEqual(self.analyzer.topics_occurrences_index["45"], [("JT03.xml", "N")])
         self.assertTrue('5' in self.analyzer.topics_index)
         self.assertTrue('30' in self.analyzer.topics_index)

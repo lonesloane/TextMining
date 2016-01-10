@@ -12,6 +12,7 @@ class QueryProcessorTestCase(unittest.TestCase):
     _topics_labels_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Labels_Index"
 
     def setUp(self):
+        logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
         self._files_index = FilesIndex(self._files_index_filename)
         self._topics_occurrences_index = TopicsOccurrencesIndex(self._topics_occurrences_index_filename)
         self._topics_labels_index = TopicsLabelsIndex(self._topics_labels_index_filename)
@@ -150,6 +151,15 @@ class QueryProcessorTestCase(unittest.TestCase):
         self.assertListEqual(sorted(expected_files), sorted(actual_files))
         self.assertListEqual(expected_topics, actual_topics)
 
+    def test_execute_ordered(self):
+        # Validates results are ordered according to topics relevance
+        topic = ['22', '31']
+        expected_files = ['JT04.xml', 'JT01.xml', 'JT02.xml']
+        actual_files, actual_topics = self.processor.execute(topic, order_by_relevance=True)
+        print actual_files
+        self.assertListEqual(sorted(expected_files), sorted(actual_files))  # check same elements
+        self.assertEqual('JT04.xml', actual_files[0])  # check actual order
+        self.assertEqual('JT01.xml', actual_files[1])  # check actual order
 
 if __name__ == '__main__':
     unittest.main()

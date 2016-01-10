@@ -145,7 +145,7 @@ def search_documents_by_topics():
     topics_ids = [str(topics_list.item(topic_id)['values'][0]) for topic_id in topics_list.get_children()]
     logging.getLogger(__name__).info('Searching documents for topics: %s', topics_ids)
 
-    matching_documents, matching_topics = processor.execute(topics_ids)
+    matching_documents, matching_topics = processor.execute(topics_ids, order_by_relevance=True)
     logging.getLogger(__name__).debug('Found documents for topics: %s', matching_documents)
     logging.getLogger(__name__).debug('Found topics: %s', matching_topics)
 

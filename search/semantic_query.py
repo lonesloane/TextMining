@@ -1,7 +1,5 @@
 import logging
 
-from index.loader import FilesIndex, TopicsOccurrencesIndex, TopicsLabelsIndex
-
 LOG_LEVEL = logging.INFO
 
 
@@ -23,13 +21,15 @@ class QueryProcessor:
         """
         return [f for f, _ in self._topics_occurrences_index.get_files_for_topic(topic)]
 
-    def _get_topics_for_files(self, files, ignored_topic):
+    def _get_topics_for_files(self, files, ignored_topic=None):
         """
 
         :param files:
         :param ignored_topic:
         :return:
         """
+        if ignored_topic is None:
+            ignored_topic = list()
         result_topics = []
         for target_file in files:
             result_topics.extend([int(f) for f, _ in self._files_index.get_enrichment_for_files(target_file)
@@ -47,9 +47,10 @@ class QueryProcessor:
         except:
             return None
 
-    def execute(self, topics):
+    def execute(self, topics, order_by_relevance=False):
         """
 
+        :param order_by_relevance:
         :rtype: Tuple[list, list]
         :param topics: List of topics for which to search files and co_occurring topics
         :return: list of files matching the topics and list of topics found in these files (minus topics)
@@ -62,9 +63,34 @@ class QueryProcessor:
             else:
                 result_files = result_files.intersection(single_topic_files)
 
+        result_files = list(result_files)
+        if order_by_relevance:
+            result_files = self.sort_result_files(result_files, topics)
+        else:
+            self.logger.debug('Leaving results unordered')
+
         result_topics = self._get_topics_for_files(result_files, topics)
 
-        return list(result_files), result_topics
+        return result_files, result_topics
+
+    def sort_result_files(self, result_files, topics):
+        self.logger.debug('Sorting files: %s on topics: %s', result_files, topics)
+        scored_files = []
+        for f in result_files:
+            score = 0
+            f_topics = self._files_index.get_enrichment_for_files(f)
+            self.logger.debug('File: %s has topics: %s', f, f_topics)
+            for t, relevance in f_topics:
+                if t in topics:
+                    if relevance == 'N':
+                        score += 100
+                    if relevance == 'H':
+                        score += 10000
+            self.logger.debug('File: %s has score: %s', f, score)
+            scored_files.append((f, score))
+            scored_files.sort(key=lambda scored_file: scored_file[1], reverse=True)
+
+        return [f for f, score in scored_files]
 
 
 def main():

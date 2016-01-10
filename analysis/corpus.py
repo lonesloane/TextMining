@@ -367,23 +367,25 @@ def main():
     # _topics_index = "SingleFile_Topics_Index"
     # files_index = "SingleFile_Files_Index"
 
-    corpus_root = "/media/Data/OECD/Official Documents Enrichment/Documents"
+#    corpus_root = "/media/Data/OECD/Official Documents Enrichment/Documents"
     analyzer = Analyzer(corpus_root_folder=corpus_root)
 
     print "Begin extract indexes"
-    topics_index = "Topics_Index_H"
-    analyzer.extract_indexes(topics_index_filename=topics_index,
-                             only_highly_relevant=True)
+#    topics_index = "Topics_Index_H"
 #    analyzer.extract_indexes(topics_index_filename=topics_index,
-#                             topics_occurrences_index_filename=topics_occurrences_index,
-#                             files_index_filename=files_index)
+#                             only_highly_relevant=True)
+    analyzer.extract_indexes(topics_index_filename=topics_index,
+                             topics_occurrences_index_filename=topics_occurrences_index,
+                             files_index_filename=files_index)
     print "End extract indexes"
-    '''
+
     print "Begin extract topics_labels index"
+    topics_index = "Test_Topics_Index"
+    topics_labels_index = "Test_Topics_Labels_Index"
     Analyzer.extract_topics_labels_index(topics_index_filename=topics_index,
                                          topics_labels_index_filename=topics_labels_index)
     print "End extract topics_labels index"
-    '''
+
 
 if __name__ == '__main__':
     main()
