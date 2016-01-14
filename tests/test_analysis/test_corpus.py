@@ -25,7 +25,6 @@ class AnalyzerTestCase(unittest.TestCase):
         self.analyzer.process_topics_index = True
         self.analyzer.process_files_index = True
 
-
     def tearDown(self):
         if os.path.isfile(TST_TOPICS_OCCURRENCES_INDEX_FILENAME):
             os.remove(TST_TOPICS_OCCURRENCES_INDEX_FILENAME)
@@ -56,7 +55,8 @@ class AnalyzerTestCase(unittest.TestCase):
 
     def test_process_enrichment_result_only_highly_relevant(self):
         result_file = "JT03.xml"
-        self.analyzer._process_enrichment_result(folder=TEST_CORPUS_ROOT_FOLDER, result_file=result_file,
+        folder = TEST_CORPUS_ROOT_FOLDER + '/2014/06/15'
+        self.analyzer._process_enrichment_result(folder=folder, result_file=result_file,
                                                  only_highly_relevant=True)
         self.assertEqual(self.analyzer.topics_occurrences_index["45"], [("JT03.xml", "N")])
         self.assertTrue('5' in self.analyzer.topics_index)
@@ -64,8 +64,8 @@ class AnalyzerTestCase(unittest.TestCase):
 
     def test_process_enrichment_result(self):
         result_file = "JT03.xml"
-        self.analyzer._process_enrichment_result(folder=TEST_CORPUS_ROOT_FOLDER, result_file=result_file)
-        print self.analyzer.topics_occurrences_index
+        folder = TEST_CORPUS_ROOT_FOLDER + '/2014/06/15'
+        self.analyzer._process_enrichment_result(folder=folder, result_file=result_file)
         self.assertEqual(self.analyzer.topics_occurrences_index["45"], [("JT03.xml", "N")])
         self.assertTrue('5' in self.analyzer.topics_index)
         self.assertTrue('30' in self.analyzer.topics_index)
@@ -76,7 +76,8 @@ class AnalyzerTestCase(unittest.TestCase):
                                                                  ('38', 'N'), ('6', 'N'), ('7', 'N')])
 
         result_file = "JT06.xml"
-        self.analyzer._process_enrichment_result(folder=TEST_CORPUS_ROOT_FOLDER, result_file=result_file)
+        folder = TEST_CORPUS_ROOT_FOLDER + '/2014/11/30'
+        self.analyzer._process_enrichment_result(folder=folder, result_file=result_file)
         self.assertTrue('45' in self.analyzer.topics_index)
         self.assertEqual(self.analyzer.topics_occurrences_index["45"], [('JT03.xml', 'N'), ('JT06.xml', 'N')])
         self.assertEqual(self.analyzer.topics_index["45"], ('lbl_en_45', 'lbl_fr_45'))
@@ -94,11 +95,33 @@ class AnalyzerTestCase(unittest.TestCase):
         self.assertTrue('JT01.xml' in self.analyzer.files_index)
         self.assertTrue('JT02.xml' in self.analyzer.files_index)
         self.assertTrue('JT03.xml' in self.analyzer.files_index)
+
         self.analyzer._remove_file_from_files_index('JT01.xml')
+
         self.assertEqual(2, len(self.analyzer.files_index))
         self.assertFalse('JT01.xml' in self.analyzer.files_index)
         self.assertTrue('JT02.xml' in self.analyzer.files_index)
         self.assertTrue('JT03.xml' in self.analyzer.files_index)
+
+    def test_remove_file_from_files_dates_index(self):
+        _21Juin = datetime.date(2015, 6, 21)
+        _22Juin = datetime.date(2015, 6, 22)
+        _23Juin = datetime.date(2015, 6, 23)
+        self.analyzer.files_dates_index['JT01.xml'] = _21Juin
+        self.analyzer.files_dates_index['JT02.xml'] = _22Juin
+        self.analyzer.files_dates_index['JT03.xml'] = _23Juin
+
+        self.assertEqual(3, len(self.analyzer.files_dates_index))
+        self.assertTrue('JT01.xml' in self.analyzer.files_dates_index)
+        self.assertTrue('JT02.xml' in self.analyzer.files_dates_index)
+        self.assertTrue('JT03.xml' in self.analyzer.files_dates_index)
+
+        self.analyzer._remove_file_from_files_dates_index('JT01.xml')
+
+        self.assertEqual(2, len(self.analyzer.files_dates_index))
+        self.assertFalse('JT01.xml' in self.analyzer.files_dates_index)
+        self.assertTrue('JT02.xml' in self.analyzer.files_dates_index)
+        self.assertTrue('JT03.xml' in self.analyzer.files_dates_index)
 
     def test_remove_file_from_topics_occurrences_hash(self):
         self.analyzer.files_index['JT01.xml'] = [('1', 'N'), ('2', 'H')]
@@ -215,6 +238,22 @@ class AnalyzerTestCase(unittest.TestCase):
         expected = [('1', 'N'), ('2', 'H')]
         actual = self.analyzer.files_index[result_file]
         self.assertEqual(expected, actual)
+
+    def test_process_file_date(self):
+        _21_June = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testDuplicates/2015/06/21'
+        _23_June = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testDuplicates/2015/06/23'
+        self.analyzer.processed_files['JT01.xml'] = _21_June
+        self.analyzer.processed_files['JT02.xml'] = _23_June
+
+        self.analyzer._process_file_date('JT01.xml')
+        expected = datetime.date(2015, 6, 21)
+        self.assertEqual(expected, self.analyzer.files_dates_index['JT01.xml'])
+
+        self.analyzer._process_file_date('JT02.xml')
+        expected = datetime.date(2015, 6, 23)
+        self.assertEqual(expected, self.analyzer.files_dates_index['JT02.xml'])
+
+        self.assertRaises(Exception, self.analyzer.files_dates_index,'JT02.xml')
 
     def test_process_topics_occurrences(self):
         result_file = 'JT04.xml'

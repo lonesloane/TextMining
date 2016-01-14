@@ -28,7 +28,7 @@ class QueryProcessorTestCase(unittest.TestCase):
 
     def test_load_files_index(self):
         self.assertTrue('JT01.xml'in self.processor._files_index._index)
-        expected = [('18', 'N'), ('36', 'N'), ('31', 'N'), ('26', 'N'), ('15', 'N'), ('46', 'N'), ('38', 'N'),
+        expected = [('18', 'N'), ('36', 'N'), ('30', 'N'), ('26', 'N'), ('15', 'N'), ('46', 'N'), ('38', 'N'),
                     ('27', 'N'), ('43', 'N'), ('37', 'N'), ('1', 'N'), ('47', 'N'), ('48', 'H'), ('8', 'N'),
                     ('22', 'H')]
         actual = self.processor._files_index._index['JT01.xml']
@@ -117,7 +117,7 @@ class QueryProcessorTestCase(unittest.TestCase):
         self.assertListEqual(sorted(expected_files), sorted(actual_files))
         self.assertListEqual(expected_topics, actual_topics)
 
-        topic = ["1", "31"]
+        topic = ["1", "30"]
         expected_files = ['JT01.xml', 'JT02.xml', 'JT08.xml']
         expected_topics = [2, 3, 6, 8, 9, 10, 14, 15, 18, 20, 22, 24, 25, 26, 27, 28, 30, 33, 35, 36, 37, 38, 40,
                            42, 43, 44, 46, 47, 48]
@@ -126,7 +126,7 @@ class QueryProcessorTestCase(unittest.TestCase):
         self.assertListEqual(sorted(expected_files), sorted(actual_files))
         self.assertListEqual(expected_topics, actual_topics)
 
-        topic = ["31", "1"]
+        topic = ["30", "1"]
         expected_files = ['JT01.xml', 'JT02.xml', 'JT08.xml']
         expected_topics = [2, 3, 6, 8, 9, 10, 14, 15, 18, 20, 22, 24, 25, 26, 27, 28, 30, 33, 35, 36, 37, 38, 40,
                            42, 43, 44, 46, 47, 48]
@@ -135,7 +135,7 @@ class QueryProcessorTestCase(unittest.TestCase):
         self.assertListEqual(sorted(expected_files), sorted(actual_files))
         self.assertListEqual(expected_topics, actual_topics)
 
-        topic = ["1", "31", "42"]
+        topic = ["1", "30", "42"]
         expected_files = ['JT02.xml']
         expected_topics = [2, 3, 6, 9, 20, 22, 24, 25, 27, 30, 35, 37]
         actual_files, actual_topics = self.processor.execute(topic)
@@ -143,7 +143,7 @@ class QueryProcessorTestCase(unittest.TestCase):
         self.assertListEqual(sorted(expected_files), sorted(actual_files))
         self.assertListEqual(expected_topics, actual_topics)
 
-        topic = ["31", "42", "1"]
+        topic = ["30", "42", "1"]
         expected_files = ['JT02.xml']
         expected_topics = [2, 3, 6, 9, 20, 22, 24, 25, 27, 30, 35, 37]
         actual_files, actual_topics = self.processor.execute(topic)
@@ -153,7 +153,7 @@ class QueryProcessorTestCase(unittest.TestCase):
 
     def test_execute_ordered(self):
         # Validates results are ordered according to topics relevance
-        topic = ['22', '31']
+        topic = ['22', '30']
         expected_files = ['JT04.xml', 'JT01.xml', 'JT02.xml']
         actual_files, actual_topics = self.processor.execute(topic, order_by_relevance=True)
         print actual_files

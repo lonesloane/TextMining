@@ -98,6 +98,7 @@ class AutoCompleteEntry(ttk.Entry):
             self.var.set('')
 
             topics_list.insert('', END, text=values[1], values=(values[0], values[1], values[2]))
+            topics_list.selection_set(topics_list.get_children()[0])
 
             self.topics_typeahead_list.destroy()
             self.scroll.destroy()
@@ -157,8 +158,9 @@ def search_documents_by_topics():
 
     global typeahead_index
     typeahead_index = typeahead.IndexBuilder().build(topics_index=build_topics_index(matching_topics))
-    global signature
-    signature.set(get_search_results_details(len(matching_documents), len(matching_topics)))
+    global semantic_signature_text
+    semantic_signature_text.delete('1.0', END)
+    semantic_signature_text.insert('1.0', get_search_results_details(len(matching_documents), len(matching_topics)))
 
 
 def get_search_results_details(nb_documents, nb_topics):
@@ -180,10 +182,25 @@ def build_topics_index(matching_topics):
     return result
 
 
+def topic_selected(event):
+    logging.getLogger(__name__).debug('Fire event: topic selected')
+    selected_index = topics_list.selection()
+    selected_item = topics_list.item(selected_index)
+    logging.getLogger().debug('Selected index: %s - selection: %s', selected_index, selected_item)
+    topic_id = selected_item['values'][0]
+    logging.getLogger().debug('Selection: %s', topic_id)
+    topics_list.delete(selected_index)
+    if len(topics_list.get_children()) > 0:
+        search_documents_by_topics()
+    else:
+        reset_all()
+
+
 def result_selected(event):
     logging.getLogger(__name__).debug('Fire event: result selected')
     selected_index = results_list.selection()
     selected_item = results_list.item(selected_index)
+    logging.getLogger().debug('Selection: %s', selected_item)
     target_file = selected_item['text']
     logging.getLogger().debug('Selection: %s', target_file)
     semantic_signature = files_index.get_enrichment_for_files(target_file)
@@ -196,31 +213,47 @@ def result_selected(event):
                                              sort_criteria=proximity.SortBy.PROXIMITY_SCORE,
                                              required_topics=required_topics,
                                              ignored_files=[target_file]).proximity_results
-    proximity_text = ''
-    proximity_text += 'Found {nb} files "related" to file {file}s\n'.format(nb=len(results), file=target_file)
-    for i in range(len(results) if len(results) < 20 else 20):
-        proximity_text += '--------------------------------------------------\n'
-        proximity_text += ('File: {file} - Proximity score: {score}% '
-                           '- Nb matches: {nb}\n').format(file=results[i][0],
-                                                          score=proximity.get_total_proximity_score(results[i][1],
-                                                                                                    semantic_signature),
-                                                          nb=len(results[i][1]))
-        proximity_text += '--------------------------------------------------\n'
-        for topic_lbl, score in [(topic_lbl, score) for _, topic_lbl, _, score in results[i][1]]:
-            proximity_text += '\t- {topic}: {score}\n'.format(topic=topic_lbl, score=score)
+    update_proximity_results(results, semantic_signature, target_file)
+    update_semantic_signature_text(semantic_signature)
 
+
+def update_proximity_results(results, semantic_signature, target_file):
     global proximity_results
     proximity_results.delete('1.0', END)
-    proximity_results.insert('1.0', proximity_text)
-    global signature
-    signature.set(get_detailed_semantic_signature(semantic_signature))
+
+    proximity_results.tag_configure('highlight_result', font='"Deja Vu Sans Mono" 12 bold')
+    proximity_results.insert('1.0', 'Found {nb} files "related" to file {file}s\n'.format(nb=len(results),
+                                                                                          file=target_file))
+    for i in range(len(results) if len(results) < 20 else 20):
+        proximity_results.insert(END, '--------------------------------------------------\n')
+        proximity_results.insert(END, ('File: {file} - Proximity score: {score}% '
+                                       '- Nb matches: {nb}\n').format(file=results[i][0],
+                                                                      score=proximity.get_total_proximity_score(results[i][1],
+                                                                                                                semantic_signature),
+                                                                      nb=len(results[i][1])))
+        proximity_results.insert(END, '--------------------------------------------------\n')
+        for topic_lbl, score in [(topic_lbl, score) for _, topic_lbl, _, score in results[i][1]]:
+            if score == 10000:
+                proximity_results.insert(END, '\t- {topic}: {score}\n'.format(topic=topic_lbl, score=score),
+                                         ('highlight_result'))
+            else:
+                proximity_results.insert(END, '\t- {topic}: {score}\n'.format(topic=topic_lbl, score=score))
 
 
-def get_detailed_semantic_signature(semantic_signature):
-    result = 'Topic\tRelevance:'
+def update_semantic_signature_text(semantic_signature):
+    global semantic_signature_text
+    semantic_signature_text.tag_configure('highlight_result', font='"Deja Vu Sans Mono" 12 bold')
+    semantic_signature_text.delete('1.0', END)
+
+    semantic_signature_text.insert('1.0', 'Topic \t\t(Relevance):')
     for topic_id, relevance in semantic_signature:
-        result += '\n{topic_lbl_en}\t\t{relevance}'.format(topic_lbl_en=get_topic_label(topic_id),relevance=relevance)
-    return result
+        if relevance == 'H':
+            semantic_signature_text.insert(END, '\n-{topic_lbl_en} \t\t({relevance})'
+                                           .format(topic_lbl_en=get_topic_label(topic_id), relevance=relevance),
+                                           'highlight_result')
+        else:
+            semantic_signature_text.insert(END, '\n-{topic_lbl_en} \t\t({relevance})'
+                                           .format(topic_lbl_en=get_topic_label(topic_id), relevance=relevance))
 
 
 def get_topic_label(topic_id):
@@ -233,8 +266,8 @@ def reset_all():
     global proximity_results
     proximity_results.delete('1.0', END)
     # Delete semantic signature
-    global signature
-    signature.set('')
+    global semantic_signature_text
+    semantic_signature_text.delete('1.0', END)
     # Delete results list
     for result in results_list.get_children():
         results_list.delete(result)
@@ -248,20 +281,25 @@ def reset_all():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
-
+    # Get configuration parameters
     config = ConfigParser.SafeConfigParser()
 #    config.read('search_client.conf')
     config.read('search_client_test.conf')
 
+    # Set appropriate logging level
+    log_level = logging.INFO if config.get('LOGGING', 'level') == 'INFO' else logging.DEBUG
+    logging.basicConfig(level=log_level, format='%(name)s - %(levelname)s - %(message)s')
+
+    # Load all various indexes used throughout the application
     index_folder = config.get('INDEX', 'index_dir')
     files_index_filename = config.get('INDEX', 'files_index_filename')
+    files_dates_index_filename = config.get('INDEX', 'files_dates_index_filename')
     topics_index_filename = config.get('INDEX', 'topics_index_filename')
     topics_occurrences_index_filename = config.get('INDEX', 'topics_occurrences_index_filename')
     topics_labels_index_filename = config.get('INDEX', 'topics_labels_index_filename')
     typeahead_index_filename = config.get('INDEX', 'typeahead_index_filename')
-
     files_index = index.loader.FilesIndex(os.path.join(index_folder, files_index_filename))
+    files_dates_index = index.loader.FilesDatesIndex(os.path.join(index_folder, files_dates_index_filename))
     topics_index = index.loader.TopicsIndex(os.path.join(index_folder, topics_index_filename))
     typeahead_index = index.loader.TopicsTypeAheadIndex(os.path.join(index_folder, typeahead_index_filename)).index
     typeahead_index_full = typeahead_index  # keep this version since the typeahead index is dynamically re-calculated
@@ -269,6 +307,7 @@ if __name__ == '__main__':
                                                                                 topics_occurrences_index_filename))
     topics_labels_index = index.loader.TopicsLabelsIndex(os.path.join(index_folder, topics_labels_index_filename))
 
+    # Initialize the main business components
     processor = semantic.QueryProcessor(files_index=files_index,
                                         topics_occurrences_index=topics_occurrences_index,
                                         topics_labels_index=topics_labels_index)
@@ -276,7 +315,8 @@ if __name__ == '__main__':
                                        topics_occurrences_index=topics_occurrences_index,
                                        files_index=files_index)
 
-    w = 800  # width for the Tk root
+    # Set up UI
+    w = 850  # width for the Tk root
     h = 720  # height for the Tk root
     root = Tk()
     root.title('Semantic Search')
@@ -294,43 +334,40 @@ if __name__ == '__main__':
     # Create application components
     mainframe = ttk.Frame(root, padding="3 3 12 12")
 
-    search_frame = ttk.Frame(mainframe)
     search_entry = AutoCompleteEntry(mainframe, listboxLength=10, width=32)
     search_button = Button(mainframe, text='Search', command=search_documents_by_topics)
     reset_button = Button(mainframe, text='Reset', command=reset_all)
 
-    topics_frame = ttk.Frame(mainframe)
-    topics_list = ttk.Treeview(topics_frame, columns=('id', 'lbl_en', 'lbl_fr'), displaycolumns=0, height=12)
-    topics_list.column(0, width=120)
+    topics_list = ttk.Treeview(mainframe, columns=('id', 'lbl_en', 'lbl_fr'), displaycolumns=0, height=12)
+    topics_list.column(0, width=20)
+    topics_list.bind('<Button-1>', topic_selected)
 
     results_frame = ttk.Frame(mainframe)
     results_list = ttk.Treeview(results_frame, height=12)
-    results_list.bind("<Button-1>", result_selected)
+    results_list.bind('<Button-1>', result_selected)
     yscroll_result = ttk.Scrollbar(results_frame, orient=VERTICAL, command=results_list.yview)
     results_list['yscrollcommand'] = yscroll_result.set
 
     signature = StringVar()
-    semantic_signature_label = ttk.Label(results_frame, textvariable=signature)
+    semantic_signature_text = Text(mainframe, height=12, width=35)
 
     proximity_frame = ttk.Frame(mainframe)
-    proximity_results = Text(proximity_frame, width=70, height=25)
+    proximity_results = Text(proximity_frame, width=115, height=25)
     yscroll_proximity = ttk.Scrollbar(proximity_frame, orient=VERTICAL, command=proximity_results.yview)
     proximity_results['yscrollcommand'] = yscroll_proximity.set
 
     # Position elements on screen
-    mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
-    search_frame.grid(row=0, column=0, columnspan=4)
-    search_entry.grid(row=0, column=0, sticky=(W,))
-    search_button.grid(row=0, column=1, sticky=(W,))
-    reset_button.grid(row=0, column=2, sticky=(W,))
-    topics_frame.grid(row=1, column=0, columnspan=2, sticky=(W, E))
-    topics_list.grid()
-    results_frame.grid(row=1, column=2, columnspan=2, sticky=(E,  W))
-    results_list.grid(row=0, column=0, sticky=(E,  W))
+    mainframe.grid(column=0, row=0, columnspan=6, rowspan=3, sticky=(N, W, E, S))
+    search_entry.grid(row=0, column=0, sticky=(W))
+    search_button.grid(row=0, column=1, sticky=(W))
+    reset_button.grid(row=0, column=2, sticky=(W))
+    topics_list.grid(sticky=(W, E), row=1, column=0, columnspan=2)
+    results_frame.grid(row=1, column=2, sticky=(W, E), columnspan=2)
+    results_list.grid(row=0, column=0, sticky=(W, E))
     yscroll_result.grid(row=0, column=1, sticky=(N, S))
-    semantic_signature_label.grid(row=0, column=2, columnspan=2, sticky=(W, E))
-    proximity_frame.grid(row=2, column=0, columnspan=5, sticky=(W, E))
-    proximity_results.grid(row=0, column=0, columnspan=4)
+    semantic_signature_text.grid(row=1, column=4, sticky=(S, N, W))
+    proximity_frame.grid(row=2, column=0, columnspan=6, sticky=(W, E))
+    proximity_results.grid(row=0, column=0, columnspan=5, sticky=(W, E))
     yscroll_proximity.grid(row=0, column=5, sticky=(N, S))
 
     # Configure elements
@@ -345,4 +382,5 @@ if __name__ == '__main__':
     s = ttk.Style()
     s.configure('TopicsList.Treeview', background='grey')
 
+    # Lift off!!!
     root.mainloop()

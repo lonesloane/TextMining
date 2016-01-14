@@ -51,6 +51,12 @@ def validate_files_index(files_index):
     return duplicate_topics
 
 
+def validate_files_dates_index(files_dates_index):
+    print '%s files found in index' % len(files_dates_index)
+    file_date = files_dates_index.values()[0]
+    print 'sample date: %s' % file_date
+
+
 def validate_topics_index(topics_index):
     print '%s topics found in index' % len(topics_index)
     lbl_en, lbl_fr = topics_index['19']
@@ -86,13 +92,19 @@ def validate_typeahead_index_highly(typeahead_index):
 
 
 def main():
-    choice = 'typeahead_highly'
+    choice = 'files_dates'
 
     if choice == 'files':
         # load files index
         files_index_filename = '../output/Files_Index'
         index = loader.FilesIndex(files_index_filename).index
         validate_files_index(index)
+    if choice == 'files_dates':
+        # load files index
+#        files_dates_index_filename = '../output/Files_Dates_Index'
+        files_dates_index_filename = '../tests/testOutput/Test_Files_Dates_Index'
+        index = loader.FilesDatesIndex(files_dates_index_filename).index
+        validate_files_dates_index(index)
     if choice == 'occurrences':
         topics_occurrences_index_filename = '../output/Topics_Occurrences_Index'
         index = loader.TopicsOccurrencesIndex(topics_occurrences_index_filename).index

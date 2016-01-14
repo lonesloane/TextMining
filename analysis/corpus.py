@@ -1,7 +1,7 @@
 import logging
 import os
 import shelve
-import xml.etree.cElementTree as Et
+import lxml.etree
 from sys import exc_info
 import datetime
 
@@ -23,19 +23,17 @@ def get_date_from_folder(folder):
 
 class Analyzer:
     """Class used to analyze the topics repartition across the given corpus
-    and build the dictionary of files with their associated topics
-
-    :param corpus_root_folder: Location of the corpus. All sub-folders are processed recursively. Defaults to ~/Corpus
-
+    and build the various dictionaries for the files and their associated topics
     """
 
     # region --- default values ---
     CORPUS_ROOT_FOLDER_DEFAULT = "~/Corpus"
-#    TOPICS_OCCURRENCES_INDEX_FILENAME_DEFAULT = "Topics_Occurrences_Index"
-#   TOPICS_INDEX_FILENAME_DEFAULT = "Topics_Index"
+    #    TOPICS_OCCURRENCES_INDEX_FILENAME_DEFAULT = "Topics_Occurrences_Index"
+    #   TOPICS_INDEX_FILENAME_DEFAULT = "Topics_Index"
     TOPICS_LABELS_INDEX_FILENAME_DEFAULT = "Topics_Labels_Index"
-#    FILES_INDEX_FILENAME_DEFAULT = "Files_Index"
+    #    FILES_INDEX_FILENAME_DEFAULT = "Files_Index"
     LOG_LEVEL_DEFAULT = logging.DEBUG
+
     # endregion
 
     def __init__(self, corpus_root_folder=None):
@@ -50,9 +48,11 @@ class Analyzer:
         self.process_topics_occurrences_index = False
         self.process_topics_index = False
         self.process_files_index = False
+        self.process_files_dates_index = False
         self.topics_occurrences_index = {}
         self.topics_index = {}
         self.files_index = {}
+        self.files_dates_index = {}
         self.processed_files = {}
 
         self.corpus_root_folder = corpus_root_folder if corpus_root_folder is not None \
@@ -62,6 +62,7 @@ class Analyzer:
 
     def extract_indexes(self,
                         files_index_filename=None,
+                        files_dates_index_filename=None,
                         topics_occurrences_index_filename=None,
                         topics_index_filename=None,
                         only_highly_relevant=False):
@@ -71,6 +72,7 @@ class Analyzer:
         - topics occurrences index: for each topic, list of (file, relevance)
         - topics index: for each topic, (english label, french label)
 
+        :param files_dates_index_filename:
         :param only_highly_relevant:
         :param files_index_filename:
         :param topics_occurrences_index_filename:
@@ -84,6 +86,8 @@ class Analyzer:
             self.process_topics_index = True
         if files_index_filename is not None:
             self.process_files_index = True
+        if files_dates_index_filename is not None:
+            self.process_files_dates_index = True
 
         idx = 0
         for root, dirs, files_list in os.walk(self.corpus_root_folder):
@@ -107,6 +111,9 @@ class Analyzer:
         if self.process_files_index:
             self.shelve_index(index_filename=files_index_filename,
                               index_data=self.files_index)
+        if self.process_files_dates_index:
+            self.shelve_index(index_filename=files_dates_index_filename,
+                              index_data=self.files_dates_index)
 
         return self
 
@@ -133,15 +140,19 @@ class Analyzer:
                                  result_file)
                 self._remove_file_from_topics_occurrences_index(result_file)
                 self._remove_file_from_files_index(result_file)
+                self._remove_file_from_files_dates_index(result_file)
         else:
             self.processed_files[result_file] = folder
 
+        if self.process_files_dates_index:
+            self._process_file_date(result_file)
+
         try:
-            tree = Et.ElementTree(file=os.path.join(folder, result_file))
+            doc = lxml.etree.parse(os.path.join(folder, result_file))
         except Exception, e:
             self.logger.error("Failed to load xml content for file: %s", result_file, exc_info=True)
             return
-        root = tree.getroot()
+        root = doc.getroot()
         for subject in root.findall("./annotation/subject"):
             uri = self._strip_uri(subject.get('uri'))
             label_en = subject.get('label_en')
@@ -168,6 +179,13 @@ class Analyzer:
             return
         self.logger.info("Removing occurrence of %s in files index", result_file)
         del self.files_index[result_file]
+
+    def _remove_file_from_files_dates_index(self, result_file):
+        if result_file not in self.files_dates_index:
+            self.logger.info("File %s not found in topics occurrences index. Nothing to remove.", result_file)
+            return
+        self.logger.info("Removing occurrence of %s in files index", result_file)
+        del self.files_dates_index[result_file]
 
     def _remove_file_from_topics_occurrences_index(self, result_file):
         """
@@ -224,6 +242,15 @@ class Analyzer:
             self.files_index[result_file].append((uri, relevance))
         else:
             self.files_index[result_file] = [(uri, relevance)]
+
+    def _process_file_date(self, result_file):
+        self.logger.debug('Processing date for file %s', result_file)
+        file_date = get_date_from_folder(self.processed_files[result_file])
+        if result_file in self.files_dates_index:
+            raise Exception('File %s already added to the index', result_file)
+        else:
+            self.logger.debug('Date %s found for file %s', file_date, result_file)
+            self.files_dates_index[result_file] = file_date
 
     def _process_topics_occurrences(self, result_file, uri, relevance):
         """
@@ -338,50 +365,38 @@ class Analyzer:
 
 def main():
     logging.basicConfig(filename="../output/corpus_analyzer.log", filemode="w",
-                        level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+                        level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-    # corpus_root = "/media/Data/OECD/Official Documents Enrichment/Documents"
+    extract_indexes()
+
+    #extract_topics_labels_index()
+
+
+def extract_indexes():
+    corpus_root = "/media/Data/OECD/Official Documents Enrichment/Documents"
     # topics_occurrences_index = "Topics_Occurrences_Index"
     # topics_index = "Topics_Index"
     # files_index = "Files_Index"
-    # topics_labels_index = "Topics_Labels_Index"
+    files_dates_index = "Files_Dates_Index"
 
-    # corpus_root = "/media/Data/OECD/Official Documents Enrichment/2015/06/18"
-    # topics_occurrences_index = "2015_06_18_Topics_Occurrences_Index"
-    # _topics_index = "2015_06_18_Topics_Index"
-    # files_index = "2015_06_18_Files_Index"
+    # corpus_root = "../tests/testCorpus/"
+    # topics_occurrences_index = "Test_Topics_Occurrences_Index"
+    # topics_index = "Test_Topics_Index"
+    # files_index = "Test_Files_Index"
+    # files_dates_index = "Test_Files_Dates_Index"
 
-    # corpus_root = "../tests/testCooccurrence/"
-    # topics_occurrences_index = "Test_Cooccurrence_Topics_Occurrences_Index"
-    # _topics_index = "Test_Cooccurrence_Topics_Index"
-    # files_index = "Test_Cooccurrence_Files_Index"
-
-    corpus_root = "../tests/testCorpus/"
-    topics_occurrences_index = "Test_Topics_Occurrences_Index"
-    topics_index = "Test_Topics_Index"
-    files_index = "Test_Files_Index"
-    topics_labels_index = "Test_Topics_Labels_Index"
-
-    # corpus_root = "../tests/testSingleFile/"
-    # topics_occurrences_index = "SingleFile_Topics_Occurrences_Index"
-    # _topics_index = "SingleFile_Topics_Index"
-    # files_index = "SingleFile_Files_Index"
-
-#    corpus_root = "/media/Data/OECD/Official Documents Enrichment/Documents"
     analyzer = Analyzer(corpus_root_folder=corpus_root)
-
     print "Begin extract indexes"
-#    topics_index = "Topics_Index_H"
-#    analyzer.extract_indexes(topics_index_filename=topics_index,
-#                             only_highly_relevant=True)
-    analyzer.extract_indexes(topics_index_filename=topics_index,
-                             topics_occurrences_index_filename=topics_occurrences_index,
-                             files_index_filename=files_index)
+    analyzer.extract_indexes(files_dates_index_filename=files_dates_index)
     print "End extract indexes"
 
+
+def extract_topics_labels_index():
     print "Begin extract topics_labels index"
+    # topics_index = "Topics_Index"
     topics_index = "Test_Topics_Index"
     topics_labels_index = "Test_Topics_Labels_Index"
+    # topics_labels_index = "Topics_Labels_Index"
     Analyzer.extract_topics_labels_index(topics_index_filename=topics_index,
                                          topics_labels_index_filename=topics_labels_index)
     print "End extract topics_labels index"

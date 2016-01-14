@@ -14,7 +14,6 @@ class IndexBuilder:
         """
 
         :param input_index_filename: Index containing the labels used to build the N-grams
-        :param output_index_filename: Complete file name where the type-ahead index will be saved
         :return:
         """
         logging.basicConfig(level=IndexBuilder.LOG_LEVEL_DEFAULT,

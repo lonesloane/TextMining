@@ -81,6 +81,27 @@ class FilesIndex(Index):
         return self._index[target_file]
 
 
+class FilesDatesIndex(Index):
+    """
+
+    """
+    default_index_filename = "../output/Files_Dates_Index"
+
+    def __init__(self, index_filename=None):
+        if index_filename is None:
+            index_filename = FilesDatesIndex.default_index_filename
+        Index.__init__(self, index_filename)
+
+    def get_date_for_file(self, target_file):
+        """
+
+        :param target_file:
+        :return: sorted list of topics
+        """
+        self.logger.debug("Looking for date for file: %s" % target_file)
+        return self.index[target_file]
+
+
 class TopicsIndex(Index):
     """
 

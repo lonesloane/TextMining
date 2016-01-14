@@ -6,6 +6,13 @@ LOG_LEVEL = logging.INFO
 class QueryProcessor:
 
     def __init__(self, files_index, topics_occurrences_index, topics_labels_index):
+        """
+
+        :param files_index:
+        :param topics_occurrences_index:
+        :param topics_labels_index:
+        :return:
+        """
         self._files_index = files_index
         self._topics_occurrences_index = topics_occurrences_index
         self._topics_labels_index = topics_labels_index
