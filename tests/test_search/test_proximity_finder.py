@@ -21,7 +21,7 @@ class ProximityFinderTestCase(unittest.TestCase):
             files_index=self._files_index)
 
     def test_create(self):
-        expected = [('JT02.xml', 'N'), ('JT04.xml', 'N'), ('JT01.xml', 'H'), ('JT06.xml', 'N')]
+        expected = [('JT02.xml', 'N'), ('JT04.xml', 'H'), ('JT01.xml', 'H'), ('JT06.xml', 'N')]
         actual = self.finder.topics_occurrences_index.get_files_for_topic('22')
 
         self.assertEqual(expected, actual)

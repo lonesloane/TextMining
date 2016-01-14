@@ -365,7 +365,7 @@ class Analyzer:
 
 def main():
     logging.basicConfig(filename="../output/corpus_analyzer.log", filemode="w",
-                        level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+                        level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     extract_indexes()
 

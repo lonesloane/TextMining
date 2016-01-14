@@ -19,21 +19,21 @@ class FilesIndexTestCase(unittest.TestCase):
     def test_create(self):
         values = loader.FilesIndex(FilesIndexTestCase.index_filename).index
         print values['JT01.xml']
-        expected = [('18', 'N'), ('36', 'N'), ('30', 'N'), ('26', 'N'), ('15', 'N'), ('46', 'N'), ('38', 'N'),
+        expected = [('18', 'N'), ('36', 'N'), ('31', 'N'), ('26', 'N'), ('15', 'N'), ('46', 'N'), ('38', 'N'),
                     ('27', 'N'), ('43', 'N'), ('37', 'N'), ('1', 'N'), ('47', 'N'), ('48', 'H'), ('8', 'N'),
                     ('22', 'H')]
         self.assertEquals(expected, values['JT01.xml'])
 
     def test_get_topics_for_files(self):
         target_file = 'JT03.xml'
-        expected = ['14', '18', '24', '3', '30', '30', '35', '38', '42', '45', '46', '5', '6', '7', '9']
+        expected = ['14', '18', '24', '3', '30', '31', '35', '38', '42', '45', '46', '5', '6', '7', '9']
         actual = loader.FilesIndex(FilesIndexTestCase.index_filename).get_topics_for_files(target_file)
         self.assertEqual(expected, actual)
 
     def test_get_enrichment_for_files(self):
         target_file = 'JT03.xml'
         expected = [('30', 'N'), ('24', 'N'), ('42', 'N'), ('3', 'N'), ('35', 'N'), ('5', 'H'), ('18', 'N'),
-                    ('30', 'N'), ('14', 'N'), ('45', 'N'), ('9', 'H'), ('46', 'N'), ('38', 'N'), ('6', 'N'), ('7', 'N')]
+                    ('31', 'N'), ('14', 'N'), ('45', 'N'), ('9', 'H'), ('46', 'N'), ('38', 'N'), ('6', 'N'), ('7', 'N')]
         actual = loader.FilesIndex(FilesIndexTestCase.index_filename).get_enrichment_for_files(target_file)
         print actual
         self.assertEqual(expected, actual)
@@ -89,7 +89,7 @@ class TopicsLabelsIndexTestCase(unittest.TestCase):
 
     def test_create(self):
         values = loader.TopicsLabelsIndex(TopicsLabelsIndexTestCase.index_filename).index
-        self.assertEquals('30', values['lbl_fr_31'])
+        self.assertEquals('31', values['lbl_fr_31'])
 
     def test_get_topic_id_for_labels(self):
         target_topic = 'lbl_en_1'
