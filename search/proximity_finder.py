@@ -33,7 +33,6 @@ class ProximityFinder:
 
     def __init__(self, topics_index, topics_occurrences_index, files_index=None):
         logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
-        # logging.config.fileConfig('logging.conf')
         self.logger = logging.getLogger(__name__)
 
         self.topics_index = topics_index

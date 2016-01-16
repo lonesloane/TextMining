@@ -1,3 +1,4 @@
+import logging
 import os
 import unittest
 
@@ -243,4 +244,5 @@ class IndexBuilderTestCase(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
     unittest.main()

@@ -1,3 +1,4 @@
+import logging
 import os
 import unittest
 import analysis.cooccurrence_extractor as extractor
@@ -33,41 +34,34 @@ class CoOccurrenceExtractorTestCase(unittest.TestCase):
         target_topic = "3"
         expected = sorted(['11', '10', '6', '9'])
         actual = self.extractor._extract_topics_for_file(target_file, target_topic)
-        print "extract (%s): " % target_topic, actual
         self.assertEqual(expected, sorted(actual))
 
         target_topic = "3-9"
         expected = sorted(['11', '10', '6'])
         actual = self.extractor._extract_topics_for_file(target_file, target_topic)
-        print "extract (%s): " % target_topic, actual
         self.assertEqual(expected, sorted(actual))
 
         target_topic = "3-6-9"
         expected = sorted(['11', '10'])
         actual = self.extractor._extract_topics_for_file(target_file, target_topic)
-        print "extract (%s): " % target_topic, actual
         self.assertEqual(expected, sorted(actual))
 
         target_topic = "3-6-9-11"
         expected = ['10']
         actual = self.extractor._extract_topics_for_file(target_file, target_topic)
-        print "extract (%s): " % target_topic, actual
         self.assertEqual(expected, actual)
 
         target_topic = "3-6-9-10-11"
         expected = []
         actual = self.extractor._extract_topics_for_file(target_file, target_topic)
-        print "extract (%s): " % target_topic, actual
         self.assertEqual(expected, actual)
 
         target_topic = "3-6-9-10-33"
-        print "extract (%s): " % target_topic, actual
         self.assertRaises(AssertionError, self.extractor._extract_topics_for_file, target_file, target_topic)
 
     def test_find_unary_cooccurrences(self):
         target = "3"
         co_occurrences = self.extractor.find_cooccurrences(target)
-        print "co_occurrences: ", co_occurrences
 
         expected = 2
         self.assertEqual(expected, co_occurrences['6'])
@@ -158,4 +152,5 @@ class CoOccurrenceExtractorTestCase(unittest.TestCase):
         self.assertEqual(expected, actual)
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
     unittest.main()

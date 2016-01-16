@@ -283,12 +283,14 @@ def reset_all():
 if __name__ == '__main__':
     # Get configuration parameters
     config = ConfigParser.SafeConfigParser()
-#    config.read('search_client.conf')
-    config.read('search_client_test.conf')
+    config.read('search_client.conf')
+#    config.read('search_client_test.conf')
 
     # Set appropriate logging level
-    log_level = logging.INFO if config.get('LOGGING', 'level') == 'INFO' else logging.DEBUG
-    logging.basicConfig(level=log_level, format='%(name)s - %(levelname)s - %(message)s')
+    numeric_level = getattr(logging, config.get('LOGGING', 'level').upper(), None)
+    if not isinstance(numeric_level, int):
+        raise ValueError('Invalid log level: %s' % config.get('LOGGING', 'level'))
+    logging.basicConfig(level=numeric_level, format='%(name)s - %(levelname)s - %(message)s')
 
     # Load all various indexes used throughout the application
     index_folder = config.get('INDEX', 'index_dir')
@@ -299,7 +301,7 @@ if __name__ == '__main__':
     topics_labels_index_filename = config.get('INDEX', 'topics_labels_index_filename')
     typeahead_index_filename = config.get('INDEX', 'typeahead_index_filename')
     files_index = index.loader.FilesIndex(os.path.join(index_folder, files_index_filename))
-    files_dates_index = index.loader.FilesDatesIndex(os.path.join(index_folder, files_dates_index_filename))
+#    files_dates_index = index.loader.FilesDatesIndex(os.path.join(index_folder, files_dates_index_filename))
     topics_index = index.loader.TopicsIndex(os.path.join(index_folder, topics_index_filename))
     typeahead_index = index.loader.TopicsTypeAheadIndex(os.path.join(index_folder, typeahead_index_filename)).index
     typeahead_index_full = typeahead_index  # keep this version since the typeahead index is dynamically re-calculated

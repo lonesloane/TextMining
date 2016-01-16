@@ -216,7 +216,6 @@ class AnalyzerTestCase(unittest.TestCase):
         _23_June = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testDuplicates/2015/06/23'
         expected_date = datetime.date(2015, 6, 21)
         actual_date = get_date_from_folder(_21_June)
-        print actual_date
         self.assertEqual(expected_date, actual_date)
 
         expected_date = datetime.date(2015, 6, 23)
@@ -296,4 +295,5 @@ class AnalyzerTestCase(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
     unittest.main()

@@ -10,7 +10,6 @@ class ProximityFinderTestCase(unittest.TestCase):
     _files_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Files_Index"
 
     def setUp(self):
-        logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
         self._topics_index = TopicsIndex(self._topics_index_filename)
         self._topics_occurrences_index = TopicsOccurrencesIndex(self._topics_occurrences_index_filename)
         self._files_index = FilesIndex(self._files_index_filename)
@@ -94,7 +93,6 @@ class ProximityFinderTestCase(unittest.TestCase):
         expected = {'JT07.xml': [('44', '', '', 1), ('11', '', '', 100), ('18', '', '', 10000), ('10', '', '', 10000),
                                  ('9', '', '', 100), ('16', '', '', 100), ('40', '', '', 10000)]}
         actual = self.finder._trim_results(['JT01.xml'], 2).proximity_results
-        print actual
 
         self.assertEqual(1, len(actual))
         self.assertFalse('JT04.xml' in actual)
@@ -178,18 +176,15 @@ class ProximityFinderTestCase(unittest.TestCase):
         self.assertListEqual(expected_relevant_files, actual_relevant_files)
 
         trimmed_relevant_files = self.finder._trim_matching_files(actual_relevant_files, ['20'])
-        print trimmed_relevant_files
         expected_trimmed = [('JT04.xml', 'N')]
         self.assertListEqual(expected_trimmed, trimmed_relevant_files)
 
         trimmed_relevant_files = self.finder._trim_matching_files(actual_relevant_files, ['44'])
-        print trimmed_relevant_files
         expected_trimmed = [('JT08.xml', 'N'), ('JT05.xml', 'N'), ('JT04.xml', 'N'), ('JT07.xml', 'H'),
                             ('JT10.xml', 'N')]
         self.assertListEqual(expected_trimmed, trimmed_relevant_files)
 
         trimmed_relevant_files = self.finder._trim_matching_files(actual_relevant_files, ['44', '20'])
-        print trimmed_relevant_files
         expected_trimmed = [('JT04.xml', 'N')]
         self.assertListEqual(expected_trimmed, trimmed_relevant_files)
 
@@ -284,4 +279,5 @@ class ProximityFinderTestCase(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
     unittest.main()

@@ -1,3 +1,4 @@
+import logging
 import unittest
 import index.validator as validator
 
@@ -23,4 +24,5 @@ class IndexValidatorTestCase(unittest.TestCase):
         self.assertEqual([('2', 'JT01.xml')], duplicate_files)
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
     unittest.main()

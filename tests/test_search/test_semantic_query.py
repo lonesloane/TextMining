@@ -12,7 +12,6 @@ class QueryProcessorTestCase(unittest.TestCase):
     _topics_labels_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Labels_Index"
 
     def setUp(self):
-        logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
         self._files_index = FilesIndex(self._files_index_filename)
         self._topics_occurrences_index = TopicsOccurrencesIndex(self._topics_occurrences_index_filename)
         self._topics_labels_index = TopicsLabelsIndex(self._topics_labels_index_filename)
@@ -32,7 +31,6 @@ class QueryProcessorTestCase(unittest.TestCase):
                     ('27', 'N'), ('43', 'N'), ('37', 'N'), ('1', 'N'), ('47', 'N'), ('48', 'H'), ('8', 'N'),
                     ('22', 'H')]
         actual = self.processor._files_index._index['JT01.xml']
-        print actual
 
         self.assertEqual(expected, actual)
 
@@ -47,7 +45,6 @@ class QueryProcessorTestCase(unittest.TestCase):
         self.assertTrue('lbl_en_1' in self.processor._topics_labels_index._index)
         expected = '1'
         actual = self.processor._topics_labels_index._index['lbl_en_1']
-        print actual
 
         self.assertEqual(expected, actual)
 
@@ -156,10 +153,10 @@ class QueryProcessorTestCase(unittest.TestCase):
         topic = ['22', '31']
         expected_files = ['JT04.xml', 'JT01.xml', 'JT02.xml']
         actual_files, actual_topics = self.processor.execute(topic, order_by_relevance=True)
-        print actual_files
         self.assertListEqual(sorted(expected_files), sorted(actual_files))  # check same elements
         self.assertEqual('JT04.xml', actual_files[0])  # check actual order
         self.assertEqual('JT01.xml', actual_files[1])  # check actual order
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
     unittest.main()

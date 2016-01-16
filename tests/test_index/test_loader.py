@@ -1,3 +1,4 @@
+import logging
 import unittest
 import datetime
 
@@ -18,7 +19,6 @@ class FilesIndexTestCase(unittest.TestCase):
 
     def test_create(self):
         values = loader.FilesIndex(FilesIndexTestCase.index_filename).index
-        print values['JT01.xml']
         expected = [('18', 'N'), ('36', 'N'), ('31', 'N'), ('26', 'N'), ('15', 'N'), ('46', 'N'), ('38', 'N'),
                     ('27', 'N'), ('43', 'N'), ('37', 'N'), ('1', 'N'), ('47', 'N'), ('48', 'H'), ('8', 'N'),
                     ('22', 'H')]
@@ -35,7 +35,6 @@ class FilesIndexTestCase(unittest.TestCase):
         expected = [('30', 'N'), ('24', 'N'), ('42', 'N'), ('3', 'N'), ('35', 'N'), ('5', 'H'), ('18', 'N'),
                     ('31', 'N'), ('14', 'N'), ('45', 'N'), ('9', 'H'), ('46', 'N'), ('38', 'N'), ('6', 'N'), ('7', 'N')]
         actual = loader.FilesIndex(FilesIndexTestCase.index_filename).get_enrichment_for_files(target_file)
-        print actual
         self.assertEqual(expected, actual)
 
 
@@ -109,8 +108,8 @@ class TopicsTypeAheadIndexTestCase(unittest.TestCase):
         expected = ['genetic resources', 'genetic improvement', 'plant genetics', 'human genetics', 'animal genetics',
                     'genetic engineering', 'genetics', 'genetically modified organisms']
         actual = type_ahead_index.auto_complete('genet')
-        print actual
         self.assertEqual(expected, actual)
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
     unittest.main()

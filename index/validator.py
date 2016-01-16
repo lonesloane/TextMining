@@ -1,3 +1,5 @@
+import logging
+
 import index.loader as loader
 
 
@@ -9,7 +11,7 @@ def validate_topics_occurrences_index(topics_occurrences_index):
     """
     duplicate_files = []
     idx = 0
-    print "%s topics to validate" % len(topics_occurrences_index)
+    logging.getLogger(__name__).info('%s topics to validate', len(topics_occurrences_index))
     for topic, files_list in topics_occurrences_index.iteritems():
         idx += 1
         file_names = []
@@ -18,11 +20,11 @@ def validate_topics_occurrences_index(topics_occurrences_index):
                 file_names.append(file_name)
             else:
                 duplicate_files.append((topic, file_name))
-                print 'File %s found multiple times for topic %s' % (file_name, topic)
+                logging.getLogger(__name__).info('File %s found multiple times for topic %s', file_name, topic)
         if idx % 10 == 0:
-            print "%s topics processed" % idx
+            logging.getLogger(__name__).info('%s topics processed', idx)
 
-    print 'Found %s duplicate files' % len(duplicate_files)
+    logging.getLogger(__name__).info('Found %s duplicate files', len(duplicate_files))
     return duplicate_files
 
 
@@ -42,31 +44,31 @@ def validate_files_index(files_index):
                 uri_list.append(uri)
             else:
                 duplicate_topics.append((uri, file_name))
-                print 'URI %s found multiple times for file %s' % (uri, file_name)
+                logging.getLogger(__name__).info('URI %s found multiple times for file %s', uri, file_name)
 
         if idx % 100 == 0:
-            print "%s files processed..." % idx
+            logging.getLogger(__name__).info('%s files processed...', idx)
 
-    print 'Found %s duplicate topics' % len(duplicate_topics)
+    logging.getLogger(__name__).info('Found %s duplicate topics', len(duplicate_topics))
     return duplicate_topics
 
 
 def validate_files_dates_index(files_dates_index):
-    print '%s files found in index' % len(files_dates_index)
+    logging.getLogger(__name__).info('%s files found in index', len(files_dates_index))
     file_date = files_dates_index.values()[0]
-    print 'sample date: %s' % file_date
+    logging.getLogger(__name__).info('sample date: %s', file_date)
 
 
 def validate_topics_index(topics_index):
-    print '%s topics found in index' % len(topics_index)
+    logging.getLogger(__name__).info('%s topics found in index', len(topics_index))
     lbl_en, lbl_fr = topics_index['19']
-    print (lbl_en, lbl_fr)
+    logging.getLogger(__name__).info((lbl_en, lbl_fr))
 
 
 def validate_topics_index_highly(topics_index):
-    print '%s topics found in index' % len(topics_index)
+    logging.getLogger(__name__).info('%s topics found in index', len(topics_index))
     for topic, details in topics_index.iteritems():
-        print topic, details
+        logging.getLogger(__name__).info(topic, details)
 
 
 def validate_typeahead_index(typeahead_index):
@@ -76,8 +78,8 @@ def validate_typeahead_index(typeahead_index):
     :return:
     """
     root = 'research and'
-    print '%s elements in typeahead index' % len(typeahead_index)
-    print 'look up for %s:\n%s' % (root, typeahead_index[root])
+    logging.getLogger(__name__).info('%s elements in typeahead index', len(typeahead_index))
+    logging.getLogger(__name__).info('look up for %s:\n%s', root, typeahead_index[root])
 
 
 def validate_typeahead_index_highly(typeahead_index):
@@ -87,12 +89,13 @@ def validate_typeahead_index_highly(typeahead_index):
     :return:
     """
     root = 'research'
-    print '%s elements in typeahead index' % len(typeahead_index)
-    print 'look up for %s:\n%s' % (root, typeahead_index[root])
+    logging.getLogger(__name__).info('%s elements in typeahead index', len(typeahead_index))
+    logging.getLogger(__name__).info('look up for %s:\n%s', root, typeahead_index[root])
 
 
 def main():
     choice = 'files_dates'
+    logging.getLogger(__name__).info('Validation scenario: %s', choice)
 
     if choice == 'files':
         # load files index
@@ -127,4 +130,5 @@ def main():
         validate_topics_index_highly(index)
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
     main()

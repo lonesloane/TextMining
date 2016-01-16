@@ -1,3 +1,4 @@
+import ConfigParser
 import logging
 import os
 import shelve
@@ -28,12 +29,7 @@ class Analyzer:
 
     # region --- default values ---
     CORPUS_ROOT_FOLDER_DEFAULT = "~/Corpus"
-    #    TOPICS_OCCURRENCES_INDEX_FILENAME_DEFAULT = "Topics_Occurrences_Index"
-    #   TOPICS_INDEX_FILENAME_DEFAULT = "Topics_Index"
-    TOPICS_LABELS_INDEX_FILENAME_DEFAULT = "Topics_Labels_Index"
-    #    FILES_INDEX_FILENAME_DEFAULT = "Files_Index"
     LOG_LEVEL_DEFAULT = logging.DEBUG
-
     # endregion
 
     def __init__(self, corpus_root_folder=None):
@@ -42,7 +38,6 @@ class Analyzer:
         :param corpus_root_folder: path to the root of the corpus.
         :return:
         """
-        logging.basicConfig(level=Analyzer.LOG_LEVEL_DEFAULT, format='%(name)s - %(levelname)s - %(message)s')
         self.logger = logging.getLogger(__name__)
 
         self.process_topics_occurrences_index = False
@@ -307,7 +302,7 @@ class Analyzer:
         d.close()
 
     @staticmethod
-    def extract_topics_labels_index(topics_index_filename=None, topics_labels_index_filename=None):
+    def extract_topics_labels_index(topics_index_filename, topics_labels_index_filename):
         """
         Builds an index of (label_english, label_french) for all topics from the data found in topics_index_filename
 
@@ -315,10 +310,7 @@ class Analyzer:
         :param topics_labels_index_filename: file where the topics labels index will be saved
         :return:
         """
-        if topics_index_filename is None:
-            topics_index_filename = Analyzer.TOPICS_INDEX_FILENAME_DEFAULT
-        if topics_labels_index_filename is None:
-            topics_labels_index_filename = Analyzer.TOPICS_LABELS_INDEX_FILENAME_DEFAULT
+        assert os.path.isfile(topics_index_filename)
         topics_labels_index = dict()
 
         topics_index = Analyzer.load_topics_index(topics_index_filename)
@@ -363,21 +355,12 @@ class Analyzer:
         return duplicates
 
 
-def main():
-    logging.basicConfig(filename="../output/corpus_analyzer.log", filemode="w",
-                        level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-    extract_indexes()
-
-    #extract_topics_labels_index()
-
-
 def extract_indexes():
     corpus_root = "/media/Data/OECD/Official Documents Enrichment/Documents"
-    # topics_occurrences_index = "Topics_Occurrences_Index"
-    # topics_index = "Topics_Index"
-    # files_index = "Files_Index"
-    files_dates_index = "Files_Dates_Index"
+    topics_occurrences_index = "Topics_Occurrences_Index"
+    topics_index = "Topics_Index"
+    files_index = "Files_Index"
+    # files_dates_index = "Files_Dates_Index"
 
     # corpus_root = "../tests/testCorpus/"
     # topics_occurrences_index = "Test_Topics_Occurrences_Index"
@@ -386,9 +369,11 @@ def extract_indexes():
     # files_dates_index = "Test_Files_Dates_Index"
 
     analyzer = Analyzer(corpus_root_folder=corpus_root)
-    print "Begin extract indexes"
-    analyzer.extract_indexes(files_dates_index_filename=files_dates_index)
-    print "End extract indexes"
+    logging.getLogger(__name__).info('Begin extract indexes')
+    analyzer.extract_indexes(files_index_filename=files_index,
+                             topics_occurrences_index_filename=topics_occurrences_index,
+                             topics_index_filename=topics_index)
+    logging.getLogger(__name__).info('End extract indexes')
 
 
 def extract_topics_labels_index():
@@ -400,6 +385,36 @@ def extract_topics_labels_index():
     Analyzer.extract_topics_labels_index(topics_index_filename=topics_index,
                                          topics_labels_index_filename=topics_labels_index)
     print "End extract topics_labels index"
+
+
+def main():
+    # Get configuration parameters
+    config = ConfigParser.SafeConfigParser()
+    config.read('corpus.conf')
+    # Set appropriate logging level
+    numeric_level = getattr(logging, config.get('LOGGING', 'level').upper(), None)
+    if not isinstance(numeric_level, int):
+        raise ValueError('Invalid log level: %s' % config.get('LOGGING', 'level'))
+
+    logger = logging.getLogger(__name__)
+    logger.setLevel(numeric_level)
+    # create file handler which logs even debug messages
+    fh = logging.FileHandler('../output/corpus_analyzer.log', mode='w')
+    fh.setLevel(logging.DEBUG)
+    # create console handler with a higher log level
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+    # create formatter and add it to the handlers
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    fh.setFormatter(formatter)
+    ch.setFormatter(formatter)
+    # add the handlers to the logger
+    logger.addHandler(fh)
+    logger.addHandler(ch)
+
+    extract_indexes()
+
+    # extract_topics_labels_index()
 
 
 if __name__ == '__main__':
