@@ -90,9 +90,9 @@ class CoOccurrenceExtractor:
 
         self.logger.info("*"*4+" Extracting co_occurrences for: %s in file %s", root_topic, map_file)
 
-        target_co_topics = self._extract_topic_cooccurrences(root_topic, map_file)
+        # target_co_topics = self._extract_topic_cooccurrences(root_topic, map_file)
         target_co_topics = sorted([int(co_topic) for co_topic, _ in self._files_table[map_file]
-                                    if int(co_topic) > self._max_topic_from_root(root_topic)])
+                                   if int(co_topic) > self._max_topic_from_root(root_topic)])
 
         if target_co_topics is None or len(target_co_topics) == 0:
             self.logger.debug("*"*5+" No co_occurrences found...")

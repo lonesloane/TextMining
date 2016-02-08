@@ -5,7 +5,7 @@ LOG_LEVEL = logging.INFO
 
 class QueryProcessor:
 
-    def __init__(self, files_index, topics_occurrences_index, topics_labels_index):
+    def __init__(self, files_index, topics_occurrences_index, topics_labels_index, topics_index):
         """
 
         :param files_index:
@@ -16,6 +16,7 @@ class QueryProcessor:
         self._files_index = files_index
         self._topics_occurrences_index = topics_occurrences_index
         self._topics_labels_index = topics_labels_index
+        self._topics_index = topics_index
 
         logging.basicConfig(level=LOG_LEVEL, format='%(name)s - %(levelname)s - %(message)s')
         self.logger = logging.getLogger(__name__)
@@ -51,6 +52,12 @@ class QueryProcessor:
         """
         try:
             return self._topics_labels_index.get_topic_id_for_label(topic_label)
+        except:
+            return None
+
+    def get_topic_labels_from_id(self, topic_id):
+        try:
+            return self._topics_index.get_labels_for_topic_id(topic_id)
         except:
             return None
 
@@ -98,6 +105,31 @@ class QueryProcessor:
             scored_files.sort(key=lambda scored_file: scored_file[1], reverse=True)
 
         return [f for f, score in scored_files]
+
+    def search_documents_by_topics(self, topics, order_by_relevance=False):
+        documents = list()
+        result_files, result_topics = self.execute(topics, order_by_relevance)
+        for result_file in result_files:
+            document = dict()
+            semantic_signature = list()
+            enrichment_result = self._files_index.get_enrichment_for_files(result_file)
+            for item in enrichment_result:
+                signature_item = dict()
+                topic_id = item[0]
+                relevance = item[1]
+                topic_labels = self.get_topic_labels_from_id(topic_id)
+                signature_item['id'] = topic_id
+                signature_item['label'] = {'en': topic_labels[0], 'fr': topic_labels[1]}
+                signature_item['relevance'] = relevance
+                semantic_signature.append(signature_item)
+            document['name'] = result_file
+            document['semantic_signature'] = semantic_signature
+            documents.append(document)
+
+        result = dict()
+        result['documents'] = documents
+        result['topics'] = result_topics
+        return result
 
 
 def main():

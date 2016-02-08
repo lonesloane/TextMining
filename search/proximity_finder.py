@@ -44,7 +44,7 @@ class ProximityFinder:
         self.raw_results = []
 
     def build_proximity_results(self, semantic_signature, sort_criteria=None, minimum_hrt_match_number=0,
-                                    required_topics=None, ignored_files=None):
+                                required_topics=None, ignored_files=None):
         """
 
         :param required_topics:
@@ -145,7 +145,6 @@ class ProximityFinder:
         :param sort_criteria:
         :return:
         """
-        sorting_label = ""
         if sort_criteria == SortBy.PROXIMITY_SCORE:
             sorting_label = "proximity score"
             self.proximity_results = self.sort_results_by_proximity_score()

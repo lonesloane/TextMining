@@ -104,7 +104,7 @@ def main():
         validate_files_index(index)
     if choice == 'files_dates':
         # load files index
-#        files_dates_index_filename = '../output/Files_Dates_Index'
+        # files_dates_index_filename = '../output/Files_Dates_Index'
         files_dates_index_filename = '../tests/testOutput/Test_Files_Dates_Index'
         index = loader.FilesDatesIndex(files_dates_index_filename).index
         validate_files_dates_index(index)

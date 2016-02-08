@@ -16,6 +16,9 @@ class AutoCompleteEntry(ttk.Entry):
         logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
         self.logger = logging.getLogger(__name__)
 
+        self.topics_typeahead_list = None
+        self.scroll = None
+
         if len(args) > 0:
             self.parent = args[0]
 
@@ -44,6 +47,7 @@ class AutoCompleteEntry(ttk.Entry):
         empty_frame = ttk.Frame(self.list_frame)  # Necessary to force the window manager to redraw the widget
         empty_frame.grid()
 
+    # noinspection PyUnusedLocal
     def changed(self, name, index, mode):
         if self.var.get() == '':
             if self.listboxUp:
@@ -89,6 +93,7 @@ class AutoCompleteEntry(ttk.Entry):
         self.logger.debug('nb matches found: %s', len(typeahead_index[self.var.get()]))
         return typeahead_index[self.var.get()]
 
+    # noinspection PyUnusedLocal
     def selection(self, event):
         if self.listboxUp:
             selected_index = self.topics_typeahead_list.selection()
@@ -107,6 +112,7 @@ class AutoCompleteEntry(ttk.Entry):
             self.icursor(END)
             search_documents_by_topics()
 
+    # noinspection PyUnusedLocal
     def move_up(self, event):
         if self.listboxUp:
             focused = self.topics_typeahead_list.focus()
@@ -124,6 +130,7 @@ class AutoCompleteEntry(ttk.Entry):
                 self.topics_typeahead_list.selection_set(previous_item)
                 self.topics_typeahead_list.focus(previous_item)
 
+    # noinspection PyUnusedLocal
     def move_down(self, event):
         if self.listboxUp:
             focused = self.topics_typeahead_list.focus()
@@ -182,6 +189,7 @@ def build_topics_index(matching_topics):
     return result
 
 
+# noinspection PyUnusedLocal
 def topic_selected(event):
     logging.getLogger(__name__).debug('Fire event: topic selected')
     selected_index = topics_list.selection()
@@ -193,9 +201,10 @@ def topic_selected(event):
     if len(topics_list.get_children()) > 0:
         search_documents_by_topics()
     else:
-        reset_all()
+        reset_gui()
 
 
+# noinspection PyUnusedLocal
 def result_selected(event):
     logging.getLogger(__name__).debug('Fire event: result selected')
     selected_index = results_list.selection()
@@ -206,7 +215,7 @@ def result_selected(event):
     semantic_signature = files_index.get_enrichment_for_files(target_file)
     logging.getLogger().debug('Semantic signature: %s', semantic_signature)
 
-    required_topics = [str(topics_list.item(topic_id)['values'][0]) for topic_id in topics_list.get_children()]
+    required_topics = get_list_selected_topics()
     hrt_match_number = 0  # minimum number of highly relevant terms matching
     results = finder.build_proximity_results(semantic_signature=semantic_signature,
                                              minimum_hrt_match_number=hrt_match_number,
@@ -217,7 +226,23 @@ def result_selected(event):
     update_semantic_signature_text(semantic_signature)
 
 
+def get_list_selected_topics():
+    """
+    Retrieve the list of topics currently selected by the user
+    :return:
+    """
+    return [str(topics_list.item(topic_id)['values'][0]) for topic_id in topics_list.get_children()]
+
+
 def update_proximity_results(results, semantic_signature, target_file):
+    """
+    Change text area 'Proximmity Result' according to the files in results
+    and the semantic signature of the target file
+    :param results:
+    :param semantic_signature:
+    :param target_file:
+    :return:
+    """
     global proximity_results
     proximity_results.delete('1.0', END)
 
@@ -235,7 +260,7 @@ def update_proximity_results(results, semantic_signature, target_file):
         for topic_lbl, score in [(topic_lbl, score) for _, topic_lbl, _, score in results[i][1]]:
             if score == 10000:
                 proximity_results.insert(END, '\t- {topic}: {score}\n'.format(topic=topic_lbl, score=score),
-                                         ('highlight_result'))
+                                         'highlight_result')
             else:
                 proximity_results.insert(END, '\t- {topic}: {score}\n'.format(topic=topic_lbl, score=score))
 
@@ -260,7 +285,11 @@ def get_topic_label(topic_id):
     return topics_index.get_labels_for_topic_id(topic_id)[0]
 
 
-def reset_all():
+def reset_gui():
+    """
+    Reset all elements of GUI to default values
+    :return:
+    """
     logging.getLogger(__name__).info('Resetting interface....')
     # Delete proximity results
     global proximity_results
@@ -280,109 +309,111 @@ def reset_all():
     typeahead_index = typeahead_index_full
 
 
-if __name__ == '__main__':
-    # Get configuration parameters
-    config = ConfigParser.SafeConfigParser()
-    config.read('search_client.conf')
-#    config.read('search_client_test.conf')
+# if __name__ == '__main__':
+# Get configuration parameters
+basedir = os.path.abspath(os.path.dirname(__file__))
+config = ConfigParser.SafeConfigParser()
+# config.read(os.path.join(basedir, 'search_client.conf'))
+config.read(os.path.join(basedir, 'search_client_test.conf'))
 
-    # Set appropriate logging level
-    numeric_level = getattr(logging, config.get('LOGGING', 'level').upper(), None)
-    if not isinstance(numeric_level, int):
-        raise ValueError('Invalid log level: %s' % config.get('LOGGING', 'level'))
-    logging.basicConfig(level=numeric_level, format='%(name)s - %(levelname)s - %(message)s')
+# Set appropriate logging level
+numeric_level = getattr(logging, config.get('LOGGING', 'level').upper(), None)
+if not isinstance(numeric_level, int):
+    raise ValueError('Invalid log level: %s' % config.get('LOGGING', 'level'))
+logging.basicConfig(level=numeric_level, format='%(name)s - %(levelname)s - %(message)s')
 
-    # Load all various indexes used throughout the application
-    index_folder = config.get('INDEX', 'index_dir')
-    files_index_filename = config.get('INDEX', 'files_index_filename')
-    files_dates_index_filename = config.get('INDEX', 'files_dates_index_filename')
-    topics_index_filename = config.get('INDEX', 'topics_index_filename')
-    topics_occurrences_index_filename = config.get('INDEX', 'topics_occurrences_index_filename')
-    topics_labels_index_filename = config.get('INDEX', 'topics_labels_index_filename')
-    typeahead_index_filename = config.get('INDEX', 'typeahead_index_filename')
-    files_index = index.loader.FilesIndex(os.path.join(index_folder, files_index_filename))
+# Load all various indexes used throughout the application
+index_folder = config.get('INDEX', 'index_dir')
+files_index_filename = config.get('INDEX', 'files_index_filename')
+files_dates_index_filename = config.get('INDEX', 'files_dates_index_filename')
+topics_index_filename = config.get('INDEX', 'topics_index_filename')
+topics_occurrences_index_filename = config.get('INDEX', 'topics_occurrences_index_filename')
+topics_labels_index_filename = config.get('INDEX', 'topics_labels_index_filename')
+typeahead_index_filename = config.get('INDEX', 'typeahead_index_filename')
+
+files_index = index.loader.FilesIndex(os.path.join(index_folder, files_index_filename))
 #    files_dates_index = index.loader.FilesDatesIndex(os.path.join(index_folder, files_dates_index_filename))
-    topics_index = index.loader.TopicsIndex(os.path.join(index_folder, topics_index_filename))
-    typeahead_index = index.loader.TopicsTypeAheadIndex(os.path.join(index_folder, typeahead_index_filename)).index
-    typeahead_index_full = typeahead_index  # keep this version since the typeahead index is dynamically re-calculated
-    topics_occurrences_index = index.loader.TopicsOccurrencesIndex(os.path.join(index_folder,
-                                                                                topics_occurrences_index_filename))
-    topics_labels_index = index.loader.TopicsLabelsIndex(os.path.join(index_folder, topics_labels_index_filename))
+topics_index = index.loader.TopicsIndex(os.path.join(index_folder, topics_index_filename))
+typeahead_index = index.loader.TopicsTypeAheadIndex(os.path.join(index_folder, typeahead_index_filename)).index
+typeahead_index_full = typeahead_index  # keep this version since the typeahead index is dynamically re-calculated
+topics_occurrences_index = index.loader.TopicsOccurrencesIndex(os.path.join(index_folder,
+                                                                            topics_occurrences_index_filename))
+topics_labels_index = index.loader.TopicsLabelsIndex(os.path.join(index_folder, topics_labels_index_filename))
 
-    # Initialize the main business components
-    processor = semantic.QueryProcessor(files_index=files_index,
-                                        topics_occurrences_index=topics_occurrences_index,
-                                        topics_labels_index=topics_labels_index)
-    finder = proximity.ProximityFinder(topics_index=topics_index,
-                                       topics_occurrences_index=topics_occurrences_index,
-                                       files_index=files_index)
+# Initialize the main business components
+processor = semantic.QueryProcessor(files_index=files_index,
+                                    topics_occurrences_index=topics_occurrences_index,
+                                    topics_labels_index=topics_labels_index)
+finder = proximity.ProximityFinder(topics_index=topics_index,
+                                   topics_occurrences_index=topics_occurrences_index,
+                                   files_index=files_index)
 
-    # Set up UI
-    w = 850  # width for the Tk root
-    h = 720  # height for the Tk root
-    root = Tk()
-    root.title('Semantic Search')
-    root.minsize(width=w, height=h)
-    # get screen width and height
-    ws = root.winfo_screenwidth()  # width of the screen
-    hs = root.winfo_screenheight()  # height of the screen
-    # calculate x and y coordinates for the Tk root window
-    x = (ws/2) - (w/2)
-    y = (hs/2) - (h/2)
-    # set the dimensions of the screen
-    # and where it is placed
-    root.geometry('%dx%d+%d+%d' % (w, h, x, y))
+# Set up UI
+w = 850  # width for the Tk root
+h = 720  # height for the Tk root
+root = Tk()
+root.title('Semantic Search')
+root.minsize(width=w, height=h)
+# get screen width and height
+ws = root.winfo_screenwidth()  # width of the screen
+hs = root.winfo_screenheight()  # height of the screen
+# calculate x and y coordinates for the Tk root window
+x = (ws/2) - (w/2)
+y = (hs/2) - (h/2)
+# set the dimensions of the screen
+# and where it is placed
+root.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
-    # Create application components
-    mainframe = ttk.Frame(root, padding="3 3 12 12")
+# Create application components
+mainframe = ttk.Frame(root, padding="3 3 12 12")
 
-    search_entry = AutoCompleteEntry(mainframe, listboxLength=10, width=32)
-    search_button = Button(mainframe, text='Search', command=search_documents_by_topics)
-    reset_button = Button(mainframe, text='Reset', command=reset_all)
+search_entry = AutoCompleteEntry(mainframe, listboxLength=10, width=32)
+search_button = Button(mainframe, text='Search', command=search_documents_by_topics)
+reset_button = Button(mainframe, text='Reset', command=reset_gui)
 
-    topics_list = ttk.Treeview(mainframe, columns=('id', 'lbl_en', 'lbl_fr'), displaycolumns=0, height=12)
-    topics_list.column(0, width=20)
-    topics_list.bind('<Button-1>', topic_selected)
+topics_list = ttk.Treeview(mainframe, columns=('id', 'lbl_en', 'lbl_fr'), displaycolumns=0, height=12)
+topics_list.column(0, width=20)
+topics_list.bind('<Button-1>', topic_selected)
 
-    results_frame = ttk.Frame(mainframe)
-    results_list = ttk.Treeview(results_frame, height=12)
-    results_list.bind('<Button-1>', result_selected)
-    yscroll_result = ttk.Scrollbar(results_frame, orient=VERTICAL, command=results_list.yview)
-    results_list['yscrollcommand'] = yscroll_result.set
+results_frame = ttk.Frame(mainframe)
+results_list = ttk.Treeview(results_frame, height=12)
+results_list.bind('<Button-1>', result_selected)
+yscroll_result = ttk.Scrollbar(results_frame, orient=VERTICAL, command=results_list.yview)
+results_list['yscrollcommand'] = yscroll_result.set
 
-    signature = StringVar()
-    semantic_signature_text = Text(mainframe, height=12, width=35)
+signature = StringVar()
+semantic_signature_text = Text(mainframe, height=12, width=35)
 
-    proximity_frame = ttk.Frame(mainframe)
-    proximity_results = Text(proximity_frame, width=115, height=25)
-    yscroll_proximity = ttk.Scrollbar(proximity_frame, orient=VERTICAL, command=proximity_results.yview)
-    proximity_results['yscrollcommand'] = yscroll_proximity.set
+proximity_frame = ttk.Frame(mainframe)
+proximity_results = Text(proximity_frame, width=115, height=25)
+yscroll_proximity = ttk.Scrollbar(proximity_frame, orient=VERTICAL, command=proximity_results.yview)
+proximity_results['yscrollcommand'] = yscroll_proximity.set
 
-    # Position elements on screen
-    mainframe.grid(column=0, row=0, columnspan=6, rowspan=3, sticky=(N, W, E, S))
-    search_entry.grid(row=0, column=0, sticky=(W))
-    search_button.grid(row=0, column=1, sticky=(W))
-    reset_button.grid(row=0, column=2, sticky=(W))
-    topics_list.grid(sticky=(W, E), row=1, column=0, columnspan=2)
-    results_frame.grid(row=1, column=2, sticky=(W, E), columnspan=2)
-    results_list.grid(row=0, column=0, sticky=(W, E))
-    yscroll_result.grid(row=0, column=1, sticky=(N, S))
-    semantic_signature_text.grid(row=1, column=4, sticky=(S, N, W))
-    proximity_frame.grid(row=2, column=0, columnspan=6, sticky=(W, E))
-    proximity_results.grid(row=0, column=0, columnspan=5, sticky=(W, E))
-    yscroll_proximity.grid(row=0, column=5, sticky=(N, S))
+# Position elements on screen
+mainframe.grid(column=0, row=0, columnspan=6, rowspan=3, sticky=(N, W, E, S))
+search_entry.grid(row=0, column=0, sticky=W)
+search_button.grid(row=0, column=1, sticky=W)
+reset_button.grid(row=0, column=2, sticky=W)
+topics_list.grid(sticky=(W, E), row=1, column=0, columnspan=2)
+results_frame.grid(row=1, column=2, sticky=(W, E), columnspan=2)
+results_list.grid(row=0, column=0, sticky=(W, E))
+yscroll_result.grid(row=0, column=1, sticky=(N, S))
+semantic_signature_text.grid(row=1, column=4, sticky=(S, N, W))
+proximity_frame.grid(row=2, column=0, columnspan=6, sticky=(W, E))
+proximity_results.grid(row=0, column=0, columnspan=5, sticky=(W, E))
+yscroll_proximity.grid(row=0, column=5, sticky=(N, S))
 
-    # Configure elements
-    mainframe.columnconfigure(0, weight=1)
-    mainframe.rowconfigure(0, weight=1)
+# Configure elements
+mainframe.columnconfigure(0, weight=1)
+mainframe.rowconfigure(0, weight=1)
 
-    # Give some extra space around elements
-    for child in mainframe.winfo_children():
-        child.grid_configure(padx=5, pady=5)
+# Give some extra space around elements
+for child in mainframe.winfo_children():
+    child.grid_configure(padx=5, pady=5)
 
-    # Custom style
-    s = ttk.Style()
-    s.configure('TopicsList.Treeview', background='grey')
+# Custom style
+s = ttk.Style()
+s.configure('TopicsList.Treeview', background='grey')
 
-    # Lift off!!!
-    root.mainloop()
+# Lift off!!!
+root.mainloop()
