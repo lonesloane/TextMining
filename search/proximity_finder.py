@@ -41,12 +41,13 @@ class ProximityFinder:
             self.files_index = files_index
 
         self.proximity_results = {}
-        self.raw_results = []
 
     def build_proximity_results(self, semantic_signature, sort_criteria=None, minimum_hrt_match_number=0,
-                                required_topics=None, ignored_files=None):
+                                required_topics=None, ignored_files=None, hf=None, b=0):
         """
 
+        :param b:
+        :param hf:
         :param required_topics:
         :param semantic_signature:
         :param sort_criteria:
@@ -86,7 +87,13 @@ class ProximityFinder:
         if sort_criteria is not None:
             self._sort_results(sort_criteria)
 
+        if hf is not None:
+            self._paginate(hf, b)
+
         return self
+
+    def _paginate(self, hf, b=0):
+        self.proximity_results = self.proximity_results[b:b+hf]
 
     def _trim_matching_files(self, relevant_files, required_topics):
         trimmed_files = []
@@ -254,6 +261,19 @@ def get_max_score(semantic_signature):
             total += ProximityScore.H_H
     return total
 
+
+def jsonify(proximity_results):
+    jsonified_results = list()
+    for elem in proximity_results:
+        f = elem[0]
+        details = elem[1]
+        details = [dict(zip(['topic', 'lbl_en', 'lbl_fr', 'score'], tup)) for tup in details]
+        result = dict()
+        result['filename'] = f
+        result['semantic_signature'] = details
+        jsonified_results.append(result)
+
+    return jsonified_results
 
 if __name__ == '__main__':
     logging.basicConfig(filename="proximity_finder.log", filemode="w",

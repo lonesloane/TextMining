@@ -4,7 +4,7 @@ import logging
 import os
 
 import sys
-from flask import Flask, jsonify, abort
+from flask import Flask, jsonify, abort, request
 
 import index.loader
 import search.semantic_query as semantic
@@ -41,13 +41,13 @@ topics_occurrences_index = index.loader.TopicsOccurrencesIndex(os.path.join(inde
 topics_labels_index = index.loader.TopicsLabelsIndex(os.path.join(index_folder, topics_labels_index_filename))
 
 # Initialize the main business components
-processor = semantic.QueryProcessor(files_index=files_index,
-                                    topics_occurrences_index=topics_occurrences_index,
-                                    topics_labels_index=topics_labels_index,
-                                    topics_index=topics_index)
-finder = proximity.ProximityFinder(topics_index=topics_index,
-                                   topics_occurrences_index=topics_occurrences_index,
-                                   files_index=files_index)
+query_processor = semantic.QueryProcessor(files_index=files_index,
+                                          topics_occurrences_index=topics_occurrences_index,
+                                          topics_labels_index=topics_labels_index,
+                                          topics_index=topics_index)
+proximity_finder = proximity.ProximityFinder(topics_index=topics_index,
+                                             topics_occurrences_index=topics_occurrences_index,
+                                             files_index=files_index)
 
 app = Flask(__name__, static_url_path='', static_folder='/home/stephane/Playground/React/semantic-search-ui')
 
@@ -81,16 +81,35 @@ def get_documents(topic_id_list):
         try:
             topics = topic_id_list[1:-1].split(',')
             logging.info("topics: " + " ".join(topics))
-            return jsonify({'search_results': processor.search_documents_by_topics(topics)})
+            return jsonify({'search_results': query_processor.search_documents_by_topics(topics,
+                                                                                         order_by_relevance=True,
+                                                                                         hf=20)})
         except TypeError as e:
-            logging.error("processor.execute failed: %s", e.message)
+            logging.error("query_processor.execute failed: %s", e.message)
             abort(404)
         except:
-            logging.error("processor.execute failed: %s", sys.exc_info()[0])
+            logging.error("query_processor.execute failed: %s", sys.exc_info()[0])
             abort(404)
     else:
         logging.error("Invalid topics list: " + topic_id_list)
         abort(404)
+
+
+@app.route('/semantic-search/api/1.0/document-details', methods=['POST'])
+def get_document_details():
+    if not request.json or 'documentId' not in request.json:
+        abort(400)
+    logging.info('get_document_details for: ' + request.json['documentId'])
+    document_id = request.json['documentId']
+    enrichment_result = query_processor.get_enrichment_for_files(target_file=document_id)
+    semantic_signature = query_processor.build_semantic_signature(enrichment_result=enrichment_result)
+    proximity_results = proximity_finder.build_proximity_results(semantic_signature=enrichment_result,
+                                                                 sort_criteria=proximity.SortBy.PROXIMITY_SCORE,
+                                                                 ignored_files=[document_id],
+                                                                 hf=20).proximity_results
+    proximity_results = proximity.jsonify(proximity_results)
+    return jsonify({'details': {'semantic_signature': semantic_signature,
+                                'proximity_results': proximity_results}})
 
 
 if __name__ == '__main__':

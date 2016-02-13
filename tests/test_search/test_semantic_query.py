@@ -56,7 +56,7 @@ class QueryProcessorTestCase(unittest.TestCase):
         self.assertTrue('1' in self.processor._topics_index.index)
         expected = ('lbl_en_1', 'lbl_fr_1')
 #        actual = self.processor._topics_index.index['1']
-        actual = self.processor._topics_index.get_topic_labels_from_id('1')
+        actual = self.processor.get_topic_labels_from_id('1')
 
         self.assertEqual(expected, actual)
 
@@ -175,8 +175,19 @@ class QueryProcessorTestCase(unittest.TestCase):
         self.assertEqual('JT04.xml', actual_files[0])  # check actual order
         self.assertEqual('JT01.xml', actual_files[1])  # check actual order
 
+    def test_build_semantic_signature(self):
+        enrichment_result = [('2', 'H'), ('3', 'N')]
+        expected_result = [
+            {'relevance': 'H', 'id': '2', 'label': {'fr': 'lbl_fr_2', 'en': 'lbl_en_2'}},
+            {'relevance': 'N', 'id': '3', 'label': {'fr': 'lbl_fr_3', 'en': 'lbl_en_3'}}
+        ]
+
+        actual_result = self.processor.build_semantic_signature(enrichment_result)
+
+        self.assertEqual(expected_result, actual_result)
+
     def test_search_documents_by_topics(self):
-        topic_list = ["1"]
+        topic_list = ['1']
         expected_result = {'topics': [
             2, 3, 5, 6, 8, 9, 10, 11, 14, 15, 16, 18, 20, 22, 24, 25, 26, 27, 28, 30, 31, 33,
             35, 36, 37, 38, 40, 41, 42, 43, 44, 45, 46, 47, 48],
@@ -252,6 +263,15 @@ class QueryProcessorTestCase(unittest.TestCase):
         actual_result = self.processor.search_documents_by_topics(topic_list)
         logging.getLogger(__name__).info('test_search_documents_by_topics: %s', actual_result)
         self.assertEqual(ordered(expected_result), ordered(actual_result))
+
+    def test_search_documents_by_topics_paginated(self):
+        topic_list = ['9']
+        actual_result = self.processor.search_documents_by_topics(topic_list)
+        self.assertEqual(5, len(actual_result['documents']))
+        actual_result = self.processor.search_documents_by_topics(topics=topic_list, hf=3, b=0)
+        self.assertEqual(3, len(actual_result['documents']))
+        actual_result = self.processor.search_documents_by_topics(topics=topic_list, hf=3, b=3)
+        self.assertEqual(2, len(actual_result['documents']))
 
 
 def ordered(obj):

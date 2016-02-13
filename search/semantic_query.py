@@ -106,22 +106,23 @@ class QueryProcessor:
 
         return [f for f, score in scored_files]
 
-    def search_documents_by_topics(self, topics, order_by_relevance=False):
+    def search_documents_by_topics(self, topics, order_by_relevance=False, hf=20, b=0):
+        """
+
+        :param topics:
+        :param order_by_relevance:
+        :param hf: number of hits per page
+        :param b: base page number
+        :return:
+        """
         documents = list()
         result_files, result_topics = self.execute(topics, order_by_relevance)
+        if hf != -1:  # hf=-1 means no pagination. Else, keep only 'hf' documents in the result list, starting from 'b'
+            result_files = result_files[b:b+hf]
         for result_file in result_files:
+            enrichment_result = self.get_enrichment_for_files(result_file)
             document = dict()
-            semantic_signature = list()
-            enrichment_result = self._files_index.get_enrichment_for_files(result_file)
-            for item in enrichment_result:
-                signature_item = dict()
-                topic_id = item[0]
-                relevance = item[1]
-                topic_labels = self.get_topic_labels_from_id(topic_id)
-                signature_item['id'] = topic_id
-                signature_item['label'] = {'en': topic_labels[0], 'fr': topic_labels[1]}
-                signature_item['relevance'] = relevance
-                semantic_signature.append(signature_item)
+            semantic_signature = self.build_semantic_signature(enrichment_result)
             document['name'] = result_file
             document['semantic_signature'] = semantic_signature
             documents.append(document)
@@ -130,6 +131,22 @@ class QueryProcessor:
         result['documents'] = documents
         result['topics'] = result_topics
         return result
+
+    def get_enrichment_for_files(self, target_file):
+        return self._files_index.get_enrichment_for_files(target_file=target_file)
+
+    def build_semantic_signature(self, enrichment_result):
+        semantic_signature = list()
+        for item in enrichment_result:
+            signature_item = dict()
+            topic_id = item[0]
+            relevance = item[1]
+            topic_labels = self.get_topic_labels_from_id(topic_id)
+            signature_item['id'] = topic_id
+            signature_item['label'] = {'en': topic_labels[0], 'fr': topic_labels[1]}
+            signature_item['relevance'] = relevance
+            semantic_signature.append(signature_item)
+        return semantic_signature
 
 
 def main():
