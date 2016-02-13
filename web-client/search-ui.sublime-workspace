@@ -1,0 +1,1411 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"top",
+				"topicslist"
+			],
+			[
+				"render",
+				"renderResultItems"
+			],
+			[
+				"ren",
+				"renderResultItem"
+			],
+			[
+				"va",
+				"value"
+			],
+			[
+				"han",
+				"handleClick"
+			],
+			[
+				"Rea",
+				"ReactRouter"
+			],
+			[
+				"Re",
+				"ReactRouter"
+			],
+			[
+				"hell",
+				"helloMessage"
+			],
+			[
+				"Reac",
+				"ReactDom"
+			],
+			[
+				"handle",
+				"handleMouseLeave"
+			],
+			[
+				"Image",
+				"ImagePreview"
+			],
+			[
+				"t",
+				"topicId"
+			],
+			[
+				"Rou",
+				"Route"
+			],
+			[
+				"Topi",
+				"TopicStore"
+			],
+			[
+				"ap",
+				"apiKey"
+			],
+			[
+				"rend",
+				"renderCount"
+			],
+			[
+				"Ch",
+				"Child2"
+			],
+			[
+				"text",
+				"textChanged"
+			],
+			[
+				"s",
+				"state"
+			],
+			[
+				"btn",
+				"btn-default"
+			],
+			[
+				"tex",
+				"textChanged"
+			],
+			[
+				"margin",
+				"margin-bottom"
+			],
+			[
+				"handl",
+				"handleInputChange"
+			],
+			[
+				"cla",
+				"className"
+			],
+			[
+				"thu",
+				"thumbnailProps"
+			],
+			[
+				"T",
+				"Thumbnail"
+			],
+			[
+				"B",
+				"Badge"
+			],
+			[
+				"ia",
+				"imageUrl"
+			],
+			[
+				"pro",
+				"props"
+			],
+			[
+				"crea",
+				"createClass"
+			],
+			[
+				"pr",
+				"props"
+			],
+			[
+				"per",
+				"persistenceConf"
+			],
+			[
+				"dp",
+				"dp_dev"
+			],
+			[
+				"reply",
+				"replyHandler"
+			],
+			[
+				"log",
+				"logger"
+			],
+			[
+				"new",
+				"new_run"
+			],
+			[
+				"do",
+				"doCompare"
+			],
+			[
+				"test",
+				"testRunner"
+			],
+			[
+				"n",
+				"null"
+			],
+			[
+				"sto",
+				"storage_manager"
+			],
+			[
+				"SPI",
+				"SPI_Templates"
+			],
+			[
+				"me",
+				"metafield"
+			],
+			[
+				"resul",
+				"resultCell"
+			],
+			[
+				"val",
+				"_validatesearch"
+			],
+			[
+				"v",
+				"value"
+			],
+			[
+				"_v",
+				"_validatecase_Contains"
+			],
+			[
+				"e",
+				"equal"
+			],
+			[
+				"_",
+				"_buildQueryString"
+			],
+			[
+				"exp",
+				"expected_runs"
+			],
+			[
+				"load",
+				"load_runs"
+			],
+			[
+				"save",
+				"save_runs"
+			],
+			[
+				"select",
+				"select_previous_run"
+			],
+			[
+				"is",
+				"ispassed"
+			],
+			[
+				"expe",
+				"expectedMeta"
+			],
+			[
+				"loa",
+				"load_lastButton"
+			],
+			[
+				"previous",
+				"previous_runs"
+			],
+			[
+				"sel",
+				"select_previous_run_drpdwn"
+			],
+			[
+				"lo",
+				"load_compare_dpdwn"
+			],
+			[
+				"get",
+				"getElementById"
+			],
+			[
+				"run",
+				"runFullDecorated"
+			],
+			[
+				"testr",
+				"testrun"
+			],
+			[
+				"typ",
+				"type_filter"
+			],
+			[
+				"lan",
+				"language_filter"
+			],
+			[
+				"sc",
+				"scoreRow"
+			],
+			[
+				"progressC",
+				"getProgressCellClass"
+			],
+			[
+				"previou",
+				"previous_run"
+			],
+			[
+				"data",
+				"datascenario"
+			],
+			[
+				"cu",
+				"currentScore"
+			],
+			[
+				"pre",
+				"previousScore"
+			],
+			[
+				"sce",
+				"scenario"
+			],
+			[
+				"res",
+				"resultsTableContent"
+			],
+			[
+				"results",
+				"resultsTable"
+			],
+			[
+				"h",
+				"h1"
+			],
+			[
+				"score",
+				"score"
+			],
+			[
+				"Sc",
+				"score"
+			],
+			[
+				"com",
+				"compare_runs"
+			],
+			[
+				"prev",
+				"previous_scenario"
+			],
+			[
+				"previ",
+				"previousCase"
+			],
+			[
+				"curr",
+				"currentCase"
+			],
+			[
+				"result",
+				"resultRow"
+			],
+			[
+				"len",
+				"length"
+			],
+			[
+				"indic",
+				"indicator_Index"
+			],
+			[
+				"indi",
+				"indicator_Index"
+			],
+			[
+				"previous_",
+				"previous_publication_index"
+			],
+			[
+				"indica",
+				"indicator_Index"
+			],
+			[
+				"publi",
+				"publicationScore"
+			],
+			[
+				"public",
+				"publication_Index"
+			],
+			[
+				"ini",
+				"indicatorScore_Max"
+			],
+			[
+				"pu",
+				"publicationScore_Max"
+			],
+			[
+				"searc",
+				"search_volume"
+			],
+			[
+				"publo",
+				"PublicationScore"
+			],
+			[
+				"Com",
+				"compare_runs"
+			],
+			[
+				"fil",
+				"fileInput"
+			],
+			[
+				"in",
+				"fileInput"
+			],
+			[
+				"Sce",
+				"scenari"
+			],
+			[
+				"scne",
+				"scenario"
+			],
+			[
+				"length",
+				"length-1"
+			],
+			[
+				"globals",
+				"globalscore"
+			],
+			[
+				"scen",
+				"scenari"
+			],
+			[
+				"Se",
+				"ScenarioValidator"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "index.html",
+			"settings":
+			{
+				"buffer_size": 174,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/app.jsx",
+			"settings":
+			{
+				"buffer_size": 164,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/routes.jsx",
+			"settings":
+			{
+				"buffer_size": 403,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/components/main.jsx",
+			"settings":
+			{
+				"buffer_size": 373,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/components/search-box.jsx",
+			"settings":
+			{
+				"buffer_size": 1074,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/actions.jsx",
+			"settings":
+			{
+				"buffer_size": 100,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/stores/document-store.jsx",
+			"settings":
+			{
+				"buffer_size": 513,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/components/documents-list.jsx",
+			"settings":
+			{
+				"buffer_size": 1469,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/components/result.jsx",
+			"settings":
+			{
+				"buffer_size": 881,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 279.0,
+		"last_filter": "js",
+		"selected_items":
+		[
+			[
+				"js",
+				"Set Syntax: JSON"
+			],
+			[
+				"java",
+				"Set Syntax: JavaScript (Babel)"
+			],
+			[
+				"json",
+				"Set Syntax: JSON"
+			],
+			[
+				"xml",
+				"Set Syntax: XML"
+			],
+			[
+				"jso",
+				"Pretty JSON: Format (Pretty Print) JSON"
+			],
+			[
+				"save",
+				"File: Save All"
+			],
+			[
+				"sa",
+				"File: Save All"
+			],
+			[
+				"javasc",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"inde",
+				"Indent XML"
+			],
+			[
+				"in",
+				"Indent XML"
+			],
+			[
+				"indent",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"prett",
+				"Snippet: XML Processing Instruction"
+			],
+			[
+				"sava",
+				"File: Save All"
+			],
+			[
+				"html",
+				"Set Syntax: HTML"
+			],
+			[
+				"mark",
+				"SublimeLinter: Choose Mark Style"
+			],
+			[
+				"css",
+				"Set Syntax: CSS"
+			],
+			[
+				"form",
+				"Pretty JSON: Format (Pretty Print) JSON"
+			],
+			[
+				"sav",
+				"File: Save All"
+			],
+			[
+				"sa	",
+				"File: Save All"
+			],
+			[
+				"wr",
+				"Word Wrap: Toggle"
+			],
+			[
+				"word",
+				"Word Wrap: Toggle"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			],
+			[
+				"view",
+				"View: Toggle Side Bar"
+			],
+			[
+				"vie",
+				"View: Toggle Side Bar"
+			],
+			[
+				"open",
+				"View: Toggle Open Files in Side Bar"
+			],
+			[
+				"syntax",
+				"Set Syntax: Plain Text"
+			],
+			[
+				"lint",
+				"SublimeLinter: Toggle Linter"
+			],
+			[
+				"synt",
+				"Set Syntax: Python"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 363.0
+	},
+	"console":
+	{
+		"height": 247.0,
+		"history":
+		[
+			"print",
+			"hello",
+			"exit()",
+			"python",
+			"print \"hello\"",
+			"./exercices",
+			"exercices",
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/stephane/Playground/React/semantic-search-ui",
+		"/home/stephane/Playground/React/semantic-search-ui/sass",
+		"/home/stephane/Playground/React/semantic-search-ui/src",
+		"/home/stephane/Playground/React/semantic-search-ui/src/components",
+		"/home/stephane/Playground/React/semantic-search-ui/src/stores",
+		"/home/stephane/Playground/React/semantic-search-ui/src/utils"
+	],
+	"file_history":
+	[
+		"/home/stephane/Playground/React/semantic-search-ui/src/result.scss",
+		"/home/stephane/Playground/React/semantic-search-ui/src/components/default-message.jsx",
+		"/home/stephane/Playground/React/semantic-search-ui/gulpfile.js",
+		"/home/stephane/Playground/React/semantic-search-ui/package.json",
+		"/home/stephane/Playground/React/semantic-search-ui/src/utils/api.jsx",
+		"/home/stephane/Playground/React/semantic-search-ui/src/stores/hello-store.jsx",
+		"/home/stephane/Playground/React/semantic-search-ui/src/api.jsx",
+		"/home/stephane/Playground/React/semantic-search-ui/src/actions.jsx",
+		"/home/stephane/Playground/React/semantic-search-ui/src/hello-store.jsx",
+		"/home/stephane/Playground/React/semantic-search-ui/src/hello-message.jsx",
+		"/home/stephane/Playground/React/semantic-search-ui/src/app.jsx",
+		"/home/stephane/Playground/React/semantic-search-ui/src/components/hello-message.jsx",
+		"/home/stephane/Playground/React/semantic-search-ui/node_modules/bootstrap/dist/css/bootstrap.css.map",
+		"/home/stephane/Playground/React/react-tutorial/server.py",
+		"/home/stephane/Playground/React/imgur/sass/topic.scss",
+		"/home/stephane/Playground/React/imgur/sass/image-preview.scss",
+		"/home/stephane/Playground/React/imgur/sass/header.scss",
+		"/home/stephane/Playground/React/react-tutorial/public/scripts/example.js",
+		"/home/stephane/Playground/React/imgur/sass/style.scss",
+		"/home/stephane/Playground/React/imgur/gulpfile.js",
+		"/home/stephane/Playground/React/todos/gulpfile.js",
+		"/home/stephane/Playground/React/todos/sass/style.scss",
+		"/home/stephane/Playground/React/todos/index.html",
+		"/home/stephane/Playground/React/todos/src/app.jsx",
+		"/home/stephane/Playground/React/todos/src/header.jsx",
+		"/home/stephane/Playground/React/todos/src/list.jsx",
+		"/home/stephane/Playground/React/todos/src/list-item.jsx",
+		"/home/stephane/Playground/React/todos/package.json",
+		"/home/stephane/Playground/React/todos/style.css",
+		"/home/stephane/Playground/React/Dropdown/src/button.jsx",
+		"/home/stephane/Playground/React/Dropdown/src/list-item.jsx",
+		"/home/stephane/Playground/React/Dropdown/src/dropdown.jsx",
+		"/home/stephane/Playground/React/Dropdown/src/app.jsx",
+		"/home/stephane/Playground/React/Dropdown/index.html",
+		"/home/stephane/Playground/React/Dropdown/gulpfile.js",
+		"/home/stephane/Playground/React/Thumbnails-Gulp/index.html",
+		"/home/stephane/Playground/React/Thumbnails-Gulp/src/thumbnail-list.jsx",
+		"/home/stephane/Playground/React/Thumbnails-Gulp/src/thumbnail.jsx",
+		"/home/stephane/Playground/React/Thumbnails-Gulp/src/badge.jsx",
+		"/home/stephane/Playground/React/Thumbnails-Gulp/gulpfile.js",
+		"/home/stephane/Playground/React/Thumbnails-Gulp/src/app.jsx",
+		"/home/stephane/Playground/React/Thumbnails-Gulp/main.js",
+		"/home/stephane/Playground/React/Thumbnails-Gulp/package.json",
+		"/home/stephane/Playground/React/Thumbnails-Gulp/application.js",
+		"/home/stephane/Playground/React/Thumbnails-List/index.html",
+		"/home/stephane/Playground/React/Thumbnails/index.html",
+		"/home/stephane/Playground/React/Badge/index.html",
+		"/home/stephane/Playground/React/HelloWorld/index.html",
+		"/home/stephane/Playground/React/index.html",
+		"/home/stephane/Downloads/coverage-4.0.3/README.rst",
+		"/home/stephane/Playground/PycharmProjects/SandBox/Marklogic_Export.log",
+		"/home/stephane/Playground/PycharmProjects/TextMining/output/corpus_analyzer.log",
+		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT01.xml",
+		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testDuplicates/JT00104374-Duplicate",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2001/03/15/JT00104374.xml",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2002/06/13/JT00104374.xml",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2004/10/21/JT00172207.xml",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2007/03/16/JT00104445.xml",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2002/06/13/JT00104445.xml",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2001/03/16/JT00104445.xml",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2007/04/13/JT03225452.xml",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2007/04/12/JT03225452.xml",
+		"/home/stephane/Playground/PycharmProjects/TextMining/docs/Makefile",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2014/09/19/JT03362185.xml",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2013/03/20/JT03336714.xml",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2012/12/19/JT03332865.xml",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2012/12/18/JT03332796.xml",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2015/08/17/JT03380848.xml",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2015/07/17/JT03380258.xml",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2015/07/17/JT03380255.xml",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2007/09/18/JT03232165.xml",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2015/07/17/JT03380236.xml",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2006/09/13/JT03213500.xml",
+		"/home/stephane/Playground/OECD/epms-ems/epms-ems-common/src/main/resources/event.schema.json",
+		"/home/stephane/Playground/OECD/epms-ems/epms-ems-common/src/main/resources/contact.schema.json",
+		"/home/stephane/Playground/OECD/epms-ems/epms-ems-common/src/main/resources/status.schema.json",
+		"/home/stephane/Playground/OECD/epms-ems/epms-ems-common/src/main/resources/country.schema.json",
+		"/home/stephane/Playground/OECD/epms-ems/epms-ems-common/src/main/resources/contact-create-in.schema.json",
+		"/home/stephane/Playground/OECD/epms-ems/epms-ems-common/src/main/resources/contact-create-out.schema.json",
+		"/home/stephane/Playground/OECD/epms-ems/epms-ems-common/src/main/resources/contact-delete-out.schema.json",
+		"/home/stephane/Playground/OECD/epms-ems/epms-ems-common/src/main/resources/event-create-out.schema.json",
+		"/home/stephane/Playground/OECD/epms-ems/epms-ems-common/src/main/resources/event-update-out.schema.json",
+		"/home/stephane/Playground/OECD/epms-ems/epms-ems-common/src/main/resources/event-delete-out.schema.json",
+		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT09.xml",
+		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT10.xml",
+		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT03.xml",
+		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT04.xml",
+		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT05.xml",
+		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT06.xml",
+		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT07.xml",
+		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT08.xml",
+		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT02.xml",
+		"/home/stephane/Playground/PycharmProjects/TextMining/analysis/corpus_analyzer.log",
+		"/media/Data/Ubuntu One/Python/InventoryManager/UnitTests/ApplianceTests/InventoryTest.py",
+		"/home/stephane/Playground/PycharmProjects/TextMining/output/Topics_Index",
+		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCooccurrence/JT03.xml",
+		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCooccurrence/JT02.xml",
+		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCooccurrence/JT01.xml",
+		"/home/stephane/Playground/PycharmProjects/TextMining/.gitignore",
+		"/home/stephane/Playground/PycharmProjects/TextMining/tests/test_analysis/corpus_analyzer.log",
+		"/media/Data/OECD/Official Documents Enrichment/2015/06/18/JT03379016.xml",
+		"/media/Data/OECD/Official Documents Enrichment/2015/03/19/JT03372638.xml",
+		"/home/stephane/Playground/PycharmProjects/TextMining/tests/test_analysis/2015_Files_Index",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2000/06/06/JT00020995.xml",
+		"/home/stephane/Playground/OECD/Exalead/regexp_transform",
+		"/media/Data/OECD/Official Documents Enrichment/2015/09/01/JT03381094.xml",
+		"/media/Data/OECD/Official Documents Enrichment/2015/06/19/JT03379146.xml",
+		"/home/stephane/Playground/Python/Classif-Validation/validator/temisxmlparser.py",
+		"/home/stephane/tmp/corpusvectors.txt",
+		"/home/stephane/Playground/OECD/Exalead/cviobenchresults_exaldead-dev2.csv",
+		"/home/stephane/Playground/OECD/Exalead/cviobenchresults_exalead-4.csv",
+		"/home/stephane/Playground/OECD/Exalead/cviobenchresults_exalead-5.csv",
+		"/home/stephane/Playground/OECD/Exalead/cviobenchresults_exalead-6.csv",
+		"/home/stephane/Playground/Java/epms/.gitignore",
+		"/home/stephane/Playground/Java/semantic/kwt-mapper-cmdline/Target-Mapping.txt",
+		"/home/stephane/Playground/Java/semantic/kwt-mapper-cmdline/src/main/resources/MappingTarget.vec",
+		"/sys/kernel/mm/transparent_hugepage/enabled",
+		"/sys/kernel/mm/transparent_hugepage/defrag",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/Topics-Frequency.csv",
+		"/media/Data/OECD/Official Documents Enrichment/InvalidJobTickets.csv",
+		"/media/Data/OECD/Official Documents Enrichment/OlisFilesHash.txt",
+		"/media/Data/OECD/Official Documents Enrichment/Topics-Frequency.csv",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/InvalidJobTickets.csv",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2001/07/31/00088594.xml",
+		"/media/Data/OECD/Official Documents Enrichment/Mappings.log",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2000/06/06/JT00021437.xml",
+		"/media/Data/OECD/Official Documents Enrichment/Documents/2015/10/05/JT03383134.xml",
+		"/media/Data/OECD/KWT63-JTFiles.txt"
+	],
+	"find":
+	{
+		"height": 22.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus",
+			"/home/stephane/Playground/OECD/search/test-ui/assets/js/dev",
+			"<open folders>",
+			"<current file>",
+			"/home/stephane/Playground/OECD/search/test-ui/assets/js/dev",
+			"<current file>",
+			"/home/stephane/Playground/OECD/search/test-ui/assets/js/dev"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"Found",
+			"JT00104374.xml",
+			"('JT00104374.xml', 'N')",
+			"JT00104374.",
+			"JT00104374.xml",
+			"JT00172207",
+			"JT03222491",
+			"JT00104445",
+			"_en_1",
+			"Processing topic",
+			"8-9-21-41-48",
+			"8-9-21-41",
+			"8-9-21-36-41",
+			"Topics#T",
+			"2051-2819",
+			"4027",
+			"6453",
+			"uri",
+			"1.0",
+			"Fri ",
+			"Mon ",
+			"Sun ",
+			"Sat ",
+			"Fri  ",
+			"Thu ",
+			"kB",
+			"MB",
+			"/2015 ",
+			"/s\\)",
+			"io/s \\(",
+			" io/s",
+			"write: ",
+			"write ",
+			"read: ",
+			"\\nRandom",
+			"\\nSequential",
+			"Results:\nPhysical memory: 8.589GB\nNumber of processors: 4\n",
+			"Mon ",
+			"Sun ",
+			"Sat ",
+			"Fri ",
+			"Thu ",
+			"kB",
+			"MB",
+			"/2015 ",
+			"/s\\)",
+			"io/s \\(",
+			" io/s",
+			"write: ",
+			"write ",
+			"read: ",
+			"\\nRandom",
+			"\\nSequential",
+			"Results:\nPhysical memory: 8.589GB\nNumber of processors: 4\n",
+			"Mon ",
+			"Sun ",
+			"Sat ",
+			"Fri ",
+			"Thu ",
+			"kB",
+			"MB",
+			"/2015 ",
+			"/s\\)",
+			"io/s \\(",
+			" io/s",
+			"write: ",
+			"write ",
+			"read: ",
+			"\\nRandom",
+			"\\nSequential",
+			"Results:\nPhysical memory: 12.884GB\nNumber of processors: 4\n",
+			"kB",
+			"MB",
+			"/2015 ",
+			"Mon ",
+			"Sun ",
+			"Sat ",
+			"Fri ",
+			"Thu ",
+			"/s\\)",
+			"io/s \\(",
+			"io/s (",
+			" io/s",
+			"write: ",
+			"write ",
+			"read: ",
+			"\\nRandom",
+			"\nSequential",
+			"Results:\nPhysical memory: 8.589GB\nNumber of processors: 2\\n",
+			"\n",
+			"Results:\nPhysical memory: 8.589GB\nNumber of processors: 2\n",
+			"\\nSequential",
+			"Results:\nPhysical memory: 8.589GB\nNumber of processors: 2",
+			",",
+			"KWT-3-6",
+			"KWT-3-2",
+			"JT03227116",
+			"KWT-3-6",
+			"KWT-3",
+			"'",
+			"http://kim.oecd.org/Taxonomy/Topics#",
+			" || ",
+			"]",
+			"[",
+			"http://kim.oecd.org/Taxonomy/Topics#",
+			" || ",
+			"]",
+			"[",
+			"http://kim.oecd.org/Taxonomy/Topics#",
+			" || ",
+			"http://kim.oecd.org/Taxonomy/Topics#",
+			" || ",
+			"[",
+			"http://kim.oecd.org/Taxonomy/Topics#",
+			"/+",
+			"+",
+			" || ",
+			"]",
+			"[",
+			"http://kim.oecd.org/Taxonomy/Topics#",
+			"\"",
+			" || ",
+			"]",
+			"[",
+			"http://kim.oecd.org/Taxonomy/Topics#",
+			" || ",
+			"]",
+			"["
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+			"Fri\\t",
+			"Mon\\t",
+			"Sun\\t",
+			"Sat\\t",
+			"Fri\\t",
+			"Thu\\t",
+			"\\tkB",
+			"\\tMB",
+			"/2015\\t",
+			"\\t/s\\)",
+			"io/s \\(\\t",
+			"\\tio/s",
+			"write\\t",
+			"read:\\t",
+			"\\tRandom",
+			"\\tSequential",
+			"",
+			"Mon\\t",
+			"Sun\\t",
+			"Sat\\t",
+			"Fri\\t",
+			"Thu\\t",
+			"\\tkB",
+			"\\tMB",
+			"/2015\\t",
+			"\\t/s\\)",
+			"io/s \\(\\t",
+			"\\tio/s",
+			"write:\\t",
+			"write\\t",
+			"read:\\t",
+			"\\tRandom",
+			"\\tSequential",
+			"",
+			"Mon\\t",
+			"Sun\\t",
+			"Sat\\t",
+			"Fri\\t",
+			"Thu\\t",
+			"\\tkB",
+			"\\tMB",
+			"/2015\\t",
+			"\\t/s\\)",
+			"io/s \\(\\t",
+			"\\tio/s",
+			"write\\t",
+			"read:\\t",
+			"\\tRandom",
+			"\\tSequential",
+			"",
+			"\\tkB",
+			"\\tMB",
+			"/2015\\t",
+			"Mon\\t",
+			"Sun\\t",
+			"Sat\\t",
+			"Fri\\t",
+			"Thu\\t",
+			"\\t/s\\)",
+			"io/s \\(\\t",
+			"\\tio/s",
+			"write:\\t",
+			"read:\\t",
+			"\\tRandom",
+			"\\tSequential",
+			"",
+			"\\t",
+			"",
+			"\\tSequential",
+			"",
+			"\",\"",
+			"",
+			"','",
+			"'",
+			"",
+			"','",
+			"'",
+			"",
+			"','",
+			"",
+			"','",
+			"'",
+			"",
+			"\\n",
+			"','",
+			"'",
+			"",
+			"'",
+			"\",\"",
+			"\")",
+			"(\"",
+			"",
+			"\",\"",
+			"\")",
+			"(\"",
+			"",
+			"\",\"",
+			"",
+			"\"",
+			"\",\"",
+			"",
+			"\",\"",
+			")",
+			"(",
+			"",
+			"\"",
+			"runs_storage",
+			"test_data_SPI",
+			"test_data_BL",
+			"BL_csvTest",
+			"runReset",
+			"getSPIScoreColor",
+			"getScoreColor"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 8,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "index.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 174,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								99,
+								99
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/app.jsx",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 164,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								101,
+								101
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Babel/JavaScript (Babel).tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/routes.jsx",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 403,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								330,
+								330
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Babel/JavaScript (Babel).tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/components/main.jsx",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 373,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								207,
+								207
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Babel/JavaScript (Babel).tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "src/components/search-box.jsx",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1074,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								878,
+								878
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Babel/JavaScript (Babel).tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "src/actions.jsx",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 100,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								74,
+								74
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Babel/JavaScript (Babel).tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "src/stores/document-store.jsx",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 513,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								380,
+								380
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Babel/JavaScript (Babel).tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "src/components/documents-list.jsx",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1469,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								19,
+								19
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Babel/JavaScript (Babel).tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "src/components/result.jsx",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 881,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								376,
+								376
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Babel/JavaScript (Babel).tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 22.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 112.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "search-ui.sublime-project",
+	"replace":
+	{
+		"height": 40.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 214.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
