@@ -1,13 +1,16 @@
 var React = require('react');
 var Router = require('react-router');
 var Link = Router.Link;
+var TypeaheadSearch = require('./typeahead-search');
 
 module.exports = React.createClass({
+
 	getInitialState: function(){
 		return {
-			search_query: ''
-		}
+			search_query: '',
+		};
 	},
+
 
 	render: function(){
 		return <nav className="navbar navbar-default header">
@@ -18,22 +21,7 @@ module.exports = React.createClass({
 	    			</Link>
 
 			  		<div className="col-lg-10 navbar-form">
-					    <div className="input-group">
-						  <input 
-							value={this.state.search_query}
-							onChange={this.handleInputChange} 
-						  	type="text" 
-						  	className="form-control" 
-						  	placeholder="Enter a topic to search" />
-						  <span className="input-group-btn">
-							<Link
-								className="btn btn-default" 
-								type="button" 
-								to={'searchbytopics/['+this.state.search_query+']'}>
-								Search
-							</Link>
-					      </span>
-					    </div>
+			  			<TypeaheadSearch />
 					</div>
 
 	  			</div>

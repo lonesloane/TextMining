@@ -21,14 +21,14 @@ module.exports = React.createClass({
 				return <li><Link 
 							className="btn btn-success btn-xs" 
 							type="button"
-							to={'searchbytopics/['+topic.id+']'}>
+							to={'searchbytopics/['+topic.label.en+']'}>
 					<b>{topic.label.en}</b>
 				</Link></li>
 			}else{
 				return <li><Link 
 							className="btn btn-default btn-xs" 
 							type="button"
-							to={'searchbytopics/['+topic.id+']'}>
+							to={'searchbytopics/['+topic.label.en+']'}>
 					{topic.label.en}
 				</Link></li>
 

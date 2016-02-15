@@ -49,7 +49,7 @@ proximity_finder = proximity.ProximityFinder(topics_index=topics_index,
                                              topics_occurrences_index=topics_occurrences_index,
                                              files_index=files_index)
 
-app = Flask(__name__, static_url_path='', static_folder='/home/stephane/Playground/React/semantic-search-ui')
+app = Flask(__name__, static_url_path='', static_folder=config.get('INDEX', 'static_folder'))
 
 
 @app.route('/')
@@ -57,9 +57,9 @@ def root():
     return app.send_static_file('index.html')
 
 
-@app.route('/semantic-search/api/1.0/hello', methods=['GET'])
-def say_hi():
-    return jsonify({'result': 'Hello World!'})
+@app.route('/topics')
+def get_full_list_topics():
+    return app.send_static_file('topics.json')
 
 
 # noinspection PyBroadException
@@ -92,6 +92,28 @@ def get_documents(topic_id_list):
             abort(404)
     else:
         logging.error("Invalid topics list: " + topic_id_list)
+        abort(404)
+
+
+@app.route('/semantic-search/api/1.0/documents/topic/label/<topic_label>', methods=['GET'])
+def get_documents_for_topic_label(topic_label):
+    logging.info('Looking for documents matching topic: %s', topic_label)
+    if '[' in topic_label and ']' in topic_label:
+        topic_label = topic_label[1:-1]  # discard '[' and ']' if present
+    topic_id = topics_labels_index.get_topic_id_for_label(target_topic=topic_label)
+    if topic_id is not None:
+        try:
+            return jsonify({'search_results': query_processor.search_documents_by_topics([topic_id],
+                                                                                         order_by_relevance=True,
+                                                                                         hf=20)})
+        except TypeError as e:
+            logging.error("query_processor.execute failed: %s", e.message)
+            abort(404)
+        except:
+            logging.error("query_processor.execute failed: %s", sys.exc_info()[0])
+            abort(404)
+    else:
+        logging.error("Invalid topics list: " + topic_label)
         abort(404)
 
 

@@ -50,11 +50,14 @@ module.exports = React.createClass({
 		if (!this.state.document_details.undefined){
 			return this.state.document_details.proximity_results.map(function(result){
 				return <li className="list-group-item">
-					<div className="label label-warning" href="#">
-						<Link to={'documentdetails/'+result.filename}>
-					        {result.filename}
-						</Link>
-					</div>
+					<h4>
+						<span className="label">
+							<Link to={'documentdetails/'+result.filename}>
+						        {result.filename}
+							</Link>
+						</span>
+						<span className="label label-default">{result.proximity}%</span>
+					</h4>
 					<ul className="list-group">{this.renderProximityDetaisl(result)}</ul>
 				</li>
 			}.bind(this));
