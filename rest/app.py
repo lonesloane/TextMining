@@ -54,17 +54,30 @@ app = Flask(__name__, static_url_path='', static_folder=config.get('INDEX', 'sta
 
 @app.route('/')
 def root():
+    """
+    Serve root HTML file for single page application
+    :return:
+    """
     return app.send_static_file('index.html')
 
 
 @app.route('/topics')
 def get_full_list_topics():
+    """
+    Serve the 'index' file with all topics labels used to build the typeahead index
+    :return:
+    """
     return app.send_static_file('topics.json')
 
 
 # noinspection PyBroadException
 @app.route('/semantic-search/api/1.0/topic/<topic_label>', methods=['GET'])
 def get_list_topics(topic_label):
+    """
+
+    :param topic_label:
+    :return:
+    """
     logging.info('Looking for topic %s', topic_label)
     try:
         topic = topics_labels_index.index[topic_label]
@@ -76,6 +89,11 @@ def get_list_topics(topic_label):
 # noinspection PyBroadException
 @app.route('/semantic-search/api/1.0/documents/<topic_id_list>', methods=['GET'])
 def get_documents(topic_id_list):
+    """
+
+    :param topic_id_list:
+    :return:
+    """
     logging.info('Looking for documents matching topic: %s', topic_id_list)
     if '[' in topic_id_list and ']' in topic_id_list:
         try:
@@ -97,6 +115,11 @@ def get_documents(topic_id_list):
 
 @app.route('/semantic-search/api/1.0/documents/topic/label/<topic_label>', methods=['GET'])
 def get_documents_for_topic_label(topic_label):
+    """
+
+    :param topic_label:
+    :return:
+    """
     logging.info('Looking for documents matching topic: %s', topic_label)
     if '[' in topic_label and ']' in topic_label:
         topic_label = topic_label[1:-1]  # discard '[' and ']' if present
@@ -119,6 +142,10 @@ def get_documents_for_topic_label(topic_label):
 
 @app.route('/semantic-search/api/1.0/document-details', methods=['POST'])
 def get_document_details():
+    """
+
+    :return:
+    """
     if not request.json or 'documentId' not in request.json:
         abort(400)
     logging.info('get_document_details for: ' + request.json['documentId'])
