@@ -343,7 +343,8 @@ topics_labels_index = index.loader.TopicsLabelsIndex(os.path.join(index_folder, 
 # Initialize the main business components
 processor = semantic.QueryProcessor(files_index=files_index,
                                     topics_occurrences_index=topics_occurrences_index,
-                                    topics_labels_index=topics_labels_index)
+                                    topics_labels_index=topics_labels_index,
+                                    topics_index=topics_index)
 finder = proximity.ProximityFinder(topics_index=topics_index,
                                    topics_occurrences_index=topics_occurrences_index,
                                    files_index=files_index)

@@ -90,6 +90,19 @@ class ProximityFinder:
         if hf is not None:
             self._paginate(hf, b)
 
+        if sort_criteria is not None:  # TODO: fix this!!!
+            self._insert_global_proximity_score(semantic_signature)
+
+        return self
+
+    def _insert_global_proximity_score(self, semantic_signature):
+        scored_results = list()
+        for result in self.proximity_results:
+            f = result[0]
+            scored_topics = result[1]
+            global_score = get_total_proximity_score(scored_topics, semantic_signature)
+            scored_results.append((f, scored_topics, global_score))
+        self.proximity_results = scored_results
         return self
 
     def _paginate(self, hf, b=0):
@@ -242,8 +255,13 @@ class ProximityFinder:
 
 
 def get_total_proximity_score(scored_topics, semantic_signature=None):
+    scores = [score for _, _, _, score in scored_topics]
+    return get_proximity_score(scores, semantic_signature)
+
+
+def get_proximity_score(scores, semantic_signature=None):
     result = 0
-    for _, _, _, score in scored_topics:
+    for score in scores:
         result += score
     if semantic_signature is None:
         return result
@@ -268,9 +286,11 @@ def jsonify(proximity_results):
         f = elem[0]
         details = elem[1]
         details = [dict(zip(['topic', 'lbl_en', 'lbl_fr', 'score'], tup)) for tup in details]
+        proximity = elem[2]
         result = dict()
         result['filename'] = f
         result['semantic_signature'] = details
+        result['proximity'] = proximity
         jsonified_results.append(result)
 
     return jsonified_results

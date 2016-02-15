@@ -196,7 +196,7 @@ class ProximityFinderTestCase(unittest.TestCase):
                                                              sort_criteria=finder.SortBy.PROXIMITY_SCORE).proximity_results
         expected = ('JT02.xml', [('30', 'lbl_en_30', 'lbl_fr_30', 100), ('9', 'lbl_en_9', 'lbl_fr_9', 100),
                                  ('20', 'lbl_en_20', 'lbl_fr_20', 10000), ('25', 'lbl_en_25', 'lbl_fr_25', 1),
-                                 ('27', 'lbl_en_27', 'lbl_fr_27', 100)])
+                                 ('27', 'lbl_en_27', 'lbl_fr_27', 100)], 48)
         actual = sorted_results[0]
         self.assertEqual(expected, actual)
 
@@ -209,7 +209,7 @@ class ProximityFinderTestCase(unittest.TestCase):
         expected = ('JT07.xml', [('44', 'lbl_en_44', 'lbl_fr_44', 1), ('11', 'lbl_en_11', 'lbl_fr_11', 100),
                                  ('18', 'lbl_en_18', 'lbl_fr_18', 100), ('10', 'lbl_en_10', 'lbl_fr_10', 100),
                                  ('9', 'lbl_en_9', 'lbl_fr_9', 100), ('16', 'lbl_en_16', 'lbl_fr_16', 100),
-                                 ('40', 'lbl_en_40', 'lbl_fr_40', 100)])
+                                 ('40', 'lbl_en_40', 'lbl_fr_40', 100)], 2)
         actual = sorted_results[0]
         self.assertEqual(expected, actual)
 
@@ -221,7 +221,7 @@ class ProximityFinderTestCase(unittest.TestCase):
                                                              sort_criteria=finder.SortBy.NB_HIGH_MATCHES).proximity_results
         expected = ('JT10.xml', [('44', 'lbl_en_44', 'lbl_fr_44', 100), ('39', 'lbl_en_39', 'lbl_fr_39', 10000),
                                  ('7', 'lbl_en_7', 'lbl_fr_7', 100), ('47', 'lbl_en_47', 'lbl_fr_47', 10000),
-                                 ('25', 'lbl_en_25', 'lbl_fr_25', 1), ('27', 'lbl_en_27', 'lbl_fr_27', 100)])
+                                 ('25', 'lbl_en_25', 'lbl_fr_25', 1), ('27', 'lbl_en_27', 'lbl_fr_27', 100)], 49)
         actual = sorted_results[0]
         self.assertEqual(expected, actual)
 
@@ -264,7 +264,7 @@ class ProximityFinderTestCase(unittest.TestCase):
         signature = [('44', 'N'), ('39', 'N'), ('11', 'H'), ('7', 'N'), ('47', 'N'), ('30', 'N'), ('18', 'N'),
                      ('43', 'N'), ('10', 'N'), ('9', 'N'), ('20', 'H'), ('16', 'N'), ('40', 'N'), ('25', 'H'),
                      ('27', 'N')]
-        scored_topics = [('44', 'lbl_44', 'lbl_44', 100),('39', 'lbl_44', 'lbl_44', 100),
+        scored_topics = [('44', 'lbl_44', 'lbl_44', 100), ('39', 'lbl_44', 'lbl_44', 100),
                          ('11', 'lbl_44', 'lbl_44', 10000), ('7', 'lbl_44', 'lbl_44', 1),
                          ('47', 'lbl_44', 'lbl_44', 100), ('30', 'lbl_44', 'lbl_44', 100),
                          ('18', 'lbl_44', 'lbl_44', 1), ('43', 'lbl_44', 'lbl_44', 100),
@@ -275,6 +275,19 @@ class ProximityFinderTestCase(unittest.TestCase):
 
         expected = 65
         actual = finder.get_total_proximity_score(scored_topics, signature)
+        self.assertEqual(expected, actual)
+
+    def test_get_proximity_score(self):
+        signature = [('44', 'N'), ('39', 'N'), ('11', 'H'), ('7', 'N'), ('47', 'N'), ('30', 'N'), ('18', 'N'),
+                     ('43', 'N'), ('10', 'N'), ('9', 'N'), ('20', 'H'), ('16', 'N'), ('40', 'N'), ('25', 'H'),
+                     ('27', 'N')]
+        scores = [100, 100, 10000, 1, 100, 100, 1, 100, 10000]
+        expected = 20502
+        actual = finder.get_proximity_score(scores)
+        self.assertEqual(expected, actual)
+
+        expected = 65
+        actual = finder.get_proximity_score(scores, signature)
         self.assertEqual(expected, actual)
 
     def test_get_max_score(self):
@@ -290,33 +303,82 @@ class ProximityFinderTestCase(unittest.TestCase):
         proximity_results.append(('JT01.xml', [('47', 'lbl_en_47', 'lbl_fr_47', 100),
                                                ('18', 'lbl_en_18', 'lbl_fr_18', 100),
                                                ('43', 'lbl_en_43', 'lbl_fr_43', 100),
-                                               ('27', 'lbl_en_27', 'lbl_fr_27', 100)]))
+                                               ('27', 'lbl_en_27', 'lbl_fr_27', 100)], 0))
         proximity_results.append(('JT02.xml', [('44', 'lbl_en_44', 'lbl_fr_44', 100),
                                                ('39', 'lbl_en_39', 'lbl_fr_39', 100),
                                                ('47', 'lbl_en_47', 'lbl_fr_47', 1),
-                                               ('20', 'lbl_en_20', 'lbl_fr_20', 1)]))
+                                               ('20', 'lbl_en_20', 'lbl_fr_20', 1)], 100))
         proximity_results.append(('JT03.xml', [('30', 'lbl_en_30', 'lbl_fr_30', 100),
                                                ('9', 'lbl_en_9', 'lbl_fr_9', 100),
                                                ('20', 'lbl_en_20', 'lbl_fr_20', 10000),
                                                ('25', 'lbl_en_25', 'lbl_fr_25', 1),
-                                               ('27', 'lbl_en_27', 'lbl_fr_27', 100)]))
-        expected = {'JT01.xml': [{'topic': '47', 'score': 100, 'lbl_en': 'lbl_en_47', 'lbl_fr': 'lbl_fr_47'},
-                                 {'topic': '18', 'score': 100, 'lbl_en': 'lbl_en_18', 'lbl_fr': 'lbl_fr_18'},
-                                 {'topic': '43', 'score': 100, 'lbl_en': 'lbl_en_43', 'lbl_fr': 'lbl_fr_43'},
-                                 {'topic': '27', 'score': 100, 'lbl_en': 'lbl_en_27', 'lbl_fr': 'lbl_fr_27'}],
-                    'JT03.xml': [{'topic': '30', 'score': 100, 'lbl_en': 'lbl_en_30', 'lbl_fr': 'lbl_fr_30'},
-                                 {'topic': '9', 'score': 100, 'lbl_en': 'lbl_en_9', 'lbl_fr': 'lbl_fr_9'},
-                                 {'topic': '20', 'score': 10000, 'lbl_en': 'lbl_en_20', 'lbl_fr': 'lbl_fr_20'},
-                                 {'topic': '25', 'score': 1, 'lbl_en': 'lbl_en_25', 'lbl_fr': 'lbl_fr_25'},
-                                 {'topic': '27', 'score': 100, 'lbl_en': 'lbl_en_27', 'lbl_fr': 'lbl_fr_27'}],
-                    'JT02.xml': [{'topic': '44', 'score': 100, 'lbl_en': 'lbl_en_44', 'lbl_fr': 'lbl_fr_44'},
-                                 {'topic': '39', 'score': 100, 'lbl_en': 'lbl_en_39', 'lbl_fr': 'lbl_fr_39'},
-                                 {'topic': '47', 'score': 1, 'lbl_en': 'lbl_en_47', 'lbl_fr': 'lbl_fr_47'},
-                                 {'topic': '20', 'score': 1, 'lbl_en': 'lbl_en_20', 'lbl_fr': 'lbl_fr_20'}]}
+                                               ('27', 'lbl_en_27', 'lbl_fr_27', 100)], 50))
+        expected = [
+            {'semantic_signature': [
+                {'topic': '47', 'score': 100, 'lbl_en': 'lbl_en_47', 'lbl_fr': 'lbl_fr_47'},
+                {'topic': '18', 'score': 100, 'lbl_en': 'lbl_en_18', 'lbl_fr': 'lbl_fr_18'},
+                {'topic': '43', 'score': 100, 'lbl_en': 'lbl_en_43', 'lbl_fr': 'lbl_fr_43'},
+                {'topic': '27', 'score': 100, 'lbl_en': 'lbl_en_27', 'lbl_fr': 'lbl_fr_27'}],
+                'proximity': 0,
+                'filename': 'JT01.xml'},
+            {'semantic_signature': [
+                {'topic': '44', 'score': 100, 'lbl_en': 'lbl_en_44', 'lbl_fr': 'lbl_fr_44'},
+                {'topic': '39', 'score': 100, 'lbl_en': 'lbl_en_39', 'lbl_fr': 'lbl_fr_39'},
+                {'topic': '47', 'score': 1, 'lbl_en': 'lbl_en_47', 'lbl_fr': 'lbl_fr_47'},
+                {'topic': '20', 'score': 1, 'lbl_en': 'lbl_en_20', 'lbl_fr': 'lbl_fr_20'}],
+                'proximity': 100,
+                'filename': 'JT02.xml'},
+            {'semantic_signature': [
+                {'topic': '30', 'score': 100, 'lbl_en': 'lbl_en_30', 'lbl_fr': 'lbl_fr_30'},
+                {'topic': '9', 'score': 100, 'lbl_en': 'lbl_en_9', 'lbl_fr': 'lbl_fr_9'},
+                {'topic': '20', 'score': 10000, 'lbl_en': 'lbl_en_20', 'lbl_fr': 'lbl_fr_20'},
+                {'topic': '25', 'score': 1, 'lbl_en': 'lbl_en_25', 'lbl_fr': 'lbl_fr_25'},
+                {'topic': '27', 'score': 100, 'lbl_en': 'lbl_en_27', 'lbl_fr': 'lbl_fr_27'}],
+                'proximity': 50,
+                'filename': 'JT03.xml'}]
 
         actual = finder.jsonify(proximity_results)
         print actual
 
+        self.assertEqual(expected, actual)
+
+    def test_insert_global_proximity_score(self):
+        signature = [('44', 'N'), ('39', 'N'), ('11', 'N'), ('7', 'N'), ('47', 'N'), ('30', 'N'), ('18', 'N'),
+                     ('43', 'N'), ('10', 'N'), ('9', 'N'), ('20', 'H'), ('16', 'N'), ('40', 'N'), ('25', 'H'),
+                     ('27', 'N')]
+        self.finder.proximity_results = list()
+        self.finder.proximity_results.append(('JT01.xml', [('47', 'lbl_en_47', 'lbl_fr_47', 100),
+                                                           ('18', 'lbl_en_18', 'lbl_fr_18', 100),
+                                                           ('43', 'lbl_en_43', 'lbl_fr_43', 100),
+                                                           ('27', 'lbl_en_27', 'lbl_fr_27', 100)]))
+        self.finder.proximity_results.append(('JT02.xml', [('44', 'lbl_en_44', 'lbl_fr_44', 100),
+                                                           ('39', 'lbl_en_39', 'lbl_fr_39', 100),
+                                                           ('47', 'lbl_en_47', 'lbl_fr_47', 1),
+                                                           ('20', 'lbl_en_20', 'lbl_fr_20', 1)]))
+        self.finder.proximity_results.append(('JT03.xml', [('30', 'lbl_en_30', 'lbl_fr_30', 100),
+                                                           ('9', 'lbl_en_9', 'lbl_fr_9', 100),
+                                                           ('20', 'lbl_en_20', 'lbl_fr_20', 10000),
+                                                           ('25', 'lbl_en_25', 'lbl_fr_25', 1),
+                                                           ('27', 'lbl_en_27', 'lbl_fr_27', 100)]))
+        expected = ('JT01.xml', [('47', 'lbl_en_47', 'lbl_fr_47', 100),
+                                 ('18', 'lbl_en_18', 'lbl_fr_18', 100),
+                                 ('43', 'lbl_en_43', 'lbl_fr_43', 100),
+                                 ('27', 'lbl_en_27', 'lbl_fr_27', 100)], 1)
+        actual = self.finder._insert_global_proximity_score(signature).proximity_results[0]
+        self.assertEqual(expected, actual)
+        expected = ('JT02.xml', [('44', 'lbl_en_44', 'lbl_fr_44', 100),
+                                 ('39', 'lbl_en_39', 'lbl_fr_39', 100),
+                                 ('47', 'lbl_en_47', 'lbl_fr_47', 1),
+                                 ('20', 'lbl_en_20', 'lbl_fr_20', 1)], 0)
+        actual = self.finder._insert_global_proximity_score(signature).proximity_results[1]
+        self.assertEqual(expected, actual)
+        expected = ('JT03.xml', [('30', 'lbl_en_30', 'lbl_fr_30', 100),
+                                 ('9', 'lbl_en_9', 'lbl_fr_9', 100),
+                                 ('20', 'lbl_en_20', 'lbl_fr_20', 10000),
+                                 ('25', 'lbl_en_25', 'lbl_fr_25', 1),
+                                 ('27', 'lbl_en_27', 'lbl_fr_27', 100)], 48)
+        actual = self.finder._insert_global_proximity_score(signature).proximity_results[2]
+        print actual
         self.assertEqual(expected, actual)
 
 if __name__ == '__main__':
