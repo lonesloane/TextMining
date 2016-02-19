@@ -56,6 +56,11 @@ class QueryProcessor:
             return None
 
     def get_topic_labels_from_id(self, topic_id):
+        """
+
+        :param topic_id:
+        :return:
+        """
         try:
             return self._topics_index.get_labels_for_topic_id(topic_id)
         except:
@@ -88,6 +93,12 @@ class QueryProcessor:
         return result_files, result_topics
 
     def sort_result_files(self, result_files, topics):
+        """
+
+        :param result_files:
+        :param topics:
+        :return:
+        """
         self.logger.debug('Sorting files: %s on topics: %s', result_files, topics)
         scored_files = []
         for f in result_files:
@@ -128,14 +139,25 @@ class QueryProcessor:
             documents.append(document)
 
         result = dict()
+        result['search_terms'] = self._get_topics_from_topic_ids(topics)
         result['documents'] = documents
         result['topics'] = result_topics
         return result
 
     def get_enrichment_for_files(self, target_file):
+        """
+
+        :param target_file:
+        :return:
+        """
         return self._files_index.get_enrichment_for_files(target_file=target_file)
 
     def build_semantic_signature(self, enrichment_result):
+        """
+
+        :param enrichment_result:
+        :return:
+        """
         semantic_signature = list()
         for item in enrichment_result:
             signature_item = dict()
@@ -147,6 +169,15 @@ class QueryProcessor:
             signature_item['relevance'] = relevance
             semantic_signature.append(signature_item)
         return semantic_signature
+
+    def _get_topics_from_topic_ids(self, topic_ids):
+        topics = list()
+        try:
+            for topic_id in topic_ids:
+                topics.append(self._topics_index.get_topic_for_topic_id(topic_id))
+            return topics
+        except:
+            return None
 
 
 def main():

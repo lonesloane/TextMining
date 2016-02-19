@@ -17,22 +17,29 @@ module.exports = React.createClass({
 
 	renderSemanticSignature: function(){
 		return this.props.result.semantic_signature.map(function(topic){
-			if (topic.relevance==='H'){
-				return <li><Link 
-							className="btn btn-success btn-xs" 
-							type="button"
-							to={'searchbytopics/['+topic.label.en+']'}>
-					<b>{topic.label.en}</b>
-				</Link></li>
-			}else{
-				return <li><Link 
-							className="btn btn-default btn-xs" 
-							type="button"
-							to={'searchbytopics/['+topic.label.en+']'}>
-					{topic.label.en}
-				</Link></li>
+			return <li><Link 
+						className={this.btnClassByRelevance(topic.relevance)}
+						type="button"
+						to={'searchbytopics/['+this.buildListSelectedTopics(topic.label.en)+']'}>
+				{topic.label.en}
+			</Link></li>
+		}.bind(this));
+	},
 
-			}
+	buildListSelectedTopics: function(signatureTopic){
+		var topicsList = signatureTopic;
+		this.props.topics.forEach(function(topic){
+			topicsList += ","+topic.label.en;
 		});
+		return topicsList;
+	},
+
+	btnClassByRelevance: function(relevance){
+		if (relevance === 'H') {
+			return "btn btn-success btn-xs";
+		}else {
+			return "btn btn-default btn-xs";
+		}
 	}
+
 });

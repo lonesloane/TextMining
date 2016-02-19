@@ -3,7 +3,7 @@ import os
 import unittest
 
 from analysis.typeahead import IndexBuilder
-from index.loader import TopicsIndex
+from indexfiles.loader import TopicsIndex
 
 
 class IndexBuilderTestCase(unittest.TestCase):

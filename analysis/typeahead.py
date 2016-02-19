@@ -1,7 +1,7 @@
 import logging
 import shelve
 
-from index.loader import TopicsIndex
+from indexfiles.loader import TopicsIndex
 
 
 class IndexBuilder:
@@ -26,8 +26,8 @@ class IndexBuilder:
         self._typeahead_index = dict()
 
     def build(self, topics_index=None, ignored_topics_ids=None):
-        """
-        Processes all english topic labels found in the index.
+        """Processes all english topic labels found in the index.
+
         Splits compound terms. Parses all individual letters and builds the index
         of all N-grams associated with the topic label
 
@@ -122,8 +122,7 @@ class IndexBuilder:
         return typeahead_index
 
     def shelve_index(self, output_index_filename):
-        """
-        Save the index on the file system.
+        """Save the index on the file system.
 
         :param output_index_filename:
         :return:
@@ -135,6 +134,10 @@ class IndexBuilder:
 
 
 def main():
+    """
+
+    :return:
+    """
     logging.basicConfig(filename="../output/typeahead_index_builder.log", filemode="w",
                         level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 #    topics_index_filename = '../output/Topics_Index_H'

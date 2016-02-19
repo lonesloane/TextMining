@@ -2,7 +2,7 @@ import logging
 import unittest
 import datetime
 
-import index.loader as loader
+import indexfiles.loader as loader
 
 
 class IndexTestCase(unittest.TestCase):
@@ -65,6 +65,12 @@ class TopicsIndexTestCase(unittest.TestCase):
         topic_id = '1'
         expected = ('lbl_en_1', 'lbl_fr_1')
         actual = loader.TopicsIndex(TopicsIndexTestCase.index_filename).get_labels_for_topic_id(topic_id)
+        self.assertEqual(expected, actual)
+
+    def test_get_topic_for_topic_id(self):
+        topic_id = '1'
+        expected = {'id': '1', 'label': {'en': 'lbl_en_1', 'fr': 'lbl_fr_1'}}
+        actual = loader.TopicsIndex(TopicsIndexTestCase.index_filename).get_topic_for_topic_id(topic_id)
         self.assertEqual(expected, actual)
 
 

@@ -9,6 +9,7 @@ LOG_LEVEL = logging.INFO
 
 class CoOccurrenceExtractor:
     """Use this class to extract all co-occurrences of topics in the corpus, using the index of occurrences.
+
     Updates the index of topics and creates the co-occurrence index.
 
     :param topics_occurrences_index_filename: name of the file containing the index of files per topic
@@ -42,6 +43,10 @@ class CoOccurrenceExtractor:
         self._recursive_depth = 0
 
     def extract(self):
+        """
+
+        :return:
+        """
         nb_files = len(self._files_table.keys())
         nb_file = 0
         for map_file in self._files_table.keys():
@@ -81,7 +86,12 @@ class CoOccurrenceExtractor:
         self._save_cooccurrences_table()
 
     def extract_cooccurrences(self, root_topic, map_file):
+        """
 
+        :param root_topic:
+        :param map_file:
+        :return:
+        """
         if root_topic in self._topics_occurrences_table.keys() \
                 and map_file in self._topics_occurrences_table[root_topic]\
                 and root_topic in self._topics_cooccurrences_table.keys():
@@ -110,6 +120,12 @@ class CoOccurrenceExtractor:
                 self.extract_cooccurrences(next_topic, map_file)
 
     def _extract_topic_cooccurrences(self, target_topic, target_file):
+        """
+
+        :param target_topic:
+        :param target_file:
+        :return:
+        """
         co_occurrences = []
         co_topics = self._extract_topics_for_file(target_file, target_topic)
 
@@ -178,6 +194,13 @@ class CoOccurrenceExtractor:
         d.close()
 
     def _fill_topic_occurrences(self, topic, co_topic, map_file):
+        """
+
+        :param topic:
+        :param co_topic:
+        :param map_file:
+        :return:
+        """
         root_topic = CoOccurrenceExtractor.build_composite_key(topic, co_topic)
         if root_topic in self._topics_occurrences_table:
             if (map_file, -1) not in self._topics_occurrences_table[root_topic]:
@@ -188,6 +211,12 @@ class CoOccurrenceExtractor:
             self._topics_occurrences_table[root_topic] = [(map_file, -1)]
 
     def _fill_topic_cooccurrences(self, topic, co_topic):
+        """
+
+        :param topic:
+        :param co_topic:
+        :return:
+        """
         if topic in self._topics_cooccurrences_table:
             self.logger.info("Add co_topic %s to topic %s", co_topic, topic)
             self._topics_cooccurrences_table[topic].append(co_topic)
@@ -216,6 +245,12 @@ class CoOccurrenceExtractor:
 
     @staticmethod
     def is_used_topic(target_topic, topic):
+        """
+
+        :param target_topic:
+        :param topic:
+        :return:
+        """
         used_topics = target_topic.split("-")
         if topic in used_topics:
             return True
@@ -224,15 +259,29 @@ class CoOccurrenceExtractor:
 
     @staticmethod
     def _percent(idx, total):
+        """
+
+        :param idx:
+        :param total:
+        :return:
+        """
         return (idx * 100) / total
 
     def _save_cooccurrences_table(self):
+        """
+
+        :return:
+        """
         index_filename = "Full_Cooccurrences_Index"
         d = shelve.open(index_filename, flag='n')
         d["Corpus"] = self._topics_cooccurrences_table
         d.close()
 
     def _save_occurrences_table(self):
+        """
+
+        :return:
+        """
         if len(self._topics_occurrences_table) == 0:
             return
         index_filename = "Full_Occurrences_Index"
@@ -242,10 +291,19 @@ class CoOccurrenceExtractor:
 
     @staticmethod
     def _max_topic_from_root(root_topic):
+        """
+
+        :param root_topic:
+        :return:
+        """
         return max([int(topic) for topic in root_topic.split('-')])
 
 
 def main():
+    """
+
+    :return:
+    """
     # logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     # target_topic = "2432"
     # extractor = CoOccurrenceExtractor(topics_occurrences_index_filename="../output/2015_Topics_Occurrences_Index",
@@ -258,15 +316,6 @@ def main():
                                       "../tests/testOutput/Test_SingleFile_Files_Index", depth=15)
     print "hash table loaded with %d topics available" % len(extractor.topics_occurrences_table)
     extractor.extract()
-    """
-    co_occurrences = extractor.find_cooccurrences(target_topic)
-    topics_list = []
-    for topic, nb_occurrences in co_occurrences.iteritems():
-        topics_list.append((topic, nb_occurrences))
-    topics_list = sorted(topics_list, key=itemgetter(1), reverse=True)
-    print "Topic %s most frequently asociated with : " % target_topic
-    print topics_list
-    """
 
 if __name__ == "__main__":
     main()

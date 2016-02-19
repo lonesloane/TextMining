@@ -1,6 +1,6 @@
 import logging
 
-import index.loader as loader
+import indexfiles.loader as loader
 
 
 def validate_topics_occurrences_index(topics_occurrences_index):
@@ -54,18 +54,33 @@ def validate_files_index(files_index):
 
 
 def validate_files_dates_index(files_dates_index):
+    """
+
+    :param files_dates_index:
+    :return:
+    """
     logging.getLogger(__name__).info('%s files found in index', len(files_dates_index))
     file_date = files_dates_index.values()[0]
     logging.getLogger(__name__).info('sample date: %s', file_date)
 
 
 def validate_topics_index(topics_index):
+    """
+
+    :param topics_index:
+    :return:
+    """
     logging.getLogger(__name__).info('%s topics found in index', len(topics_index))
     lbl_en, lbl_fr = topics_index['19']
     logging.getLogger(__name__).info((lbl_en, lbl_fr))
 
 
 def validate_topics_index_highly(topics_index):
+    """
+
+    :param topics_index:
+    :return:
+    """
     logging.getLogger(__name__).info('%s topics found in index', len(topics_index))
     for topic, details in topics_index.iteritems():
         logging.getLogger(__name__).info(topic, details)
@@ -94,6 +109,10 @@ def validate_typeahead_index_highly(typeahead_index):
 
 
 def main():
+    """
+
+    :return:
+    """
     choice = 'files_dates'
     logging.getLogger(__name__).info('Validation scenario: %s', choice)
 

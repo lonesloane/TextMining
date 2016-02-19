@@ -1,7 +1,7 @@
 import logging
 import unittest
 import search.proximity_finder as finder
-from index.loader import TopicsOccurrencesIndex, TopicsIndex, FilesIndex
+from indexfiles.loader import TopicsOccurrencesIndex, TopicsIndex, FilesIndex
 
 
 class ProximityFinderTestCase(unittest.TestCase):

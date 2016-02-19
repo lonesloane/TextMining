@@ -1,6 +1,6 @@
 import logging
 import unittest
-import index.validator as validator
+import indexfiles.validator as validator
 
 
 class IndexValidatorTestCase(unittest.TestCase):

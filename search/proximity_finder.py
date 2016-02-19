@@ -32,6 +32,13 @@ class ProximityFinder:
     """
 
     def __init__(self, topics_index, topics_occurrences_index, files_index=None):
+        """
+
+        :param topics_index:
+        :param topics_occurrences_index:
+        :param files_index:
+        :return:
+        """
         logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
         self.logger = logging.getLogger(__name__)
 
@@ -96,6 +103,11 @@ class ProximityFinder:
         return self
 
     def _insert_global_proximity_score(self, semantic_signature):
+        """
+
+        :param semantic_signature:
+        :return:
+        """
         scored_results = list()
         for result in self.proximity_results:
             f = result[0]
@@ -106,9 +118,21 @@ class ProximityFinder:
         return self
 
     def _paginate(self, hf, b=0):
+        """
+
+        :param hf:
+        :param b:
+        :return:
+        """
         self.proximity_results = self.proximity_results[b:b+hf]
 
     def _trim_matching_files(self, relevant_files, required_topics):
+        """
+
+        :param relevant_files:
+        :param required_topics:
+        :return:
+        """
         trimmed_files = []
         for relevant_file in relevant_files:
             ok = True
@@ -121,6 +145,12 @@ class ProximityFinder:
         return trimmed_files
 
     def _contains_topic(self, relevant_file, topic):
+        """
+
+        :param relevant_file:
+        :param topic:
+        :return:
+        """
         assert self.files_index is not None
         self.logger.debug('Looking for topic:%s in file:%s', topic, relevant_file)
         self.logger.debug('self.files_index.index[f]:%s', self.files_index.index[relevant_file[0]])
@@ -128,8 +158,7 @@ class ProximityFinder:
         return topic in [t for t, _ in self.files_index.index[relevant_file[0]]]
 
     def _trim_results(self, ignored_files, minimum_hrt_match_number):
-        """
-        Removes unwanted files from proximity_results.
+        """Removes unwanted files from proximity_results.
 
         :param ignored_files: list of files to ignore (i.e. files for which the proximity is computed)
         :param minimum_hrt_match_number: minimum number of highly relevant terms match required
@@ -255,11 +284,23 @@ class ProximityFinder:
 
 
 def get_total_proximity_score(scored_topics, semantic_signature=None):
+    """
+
+    :param scored_topics:
+    :param semantic_signature:
+    :return:
+    """
     scores = [score for _, _, _, score in scored_topics]
     return get_proximity_score(scores, semantic_signature)
 
 
 def get_proximity_score(scores, semantic_signature=None):
+    """
+
+    :param scores:
+    :param semantic_signature:
+    :return:
+    """
     result = 0
     for score in scores:
         result += score
@@ -271,6 +312,11 @@ def get_proximity_score(scores, semantic_signature=None):
 
 
 def get_max_score(semantic_signature):
+    """
+
+    :param semantic_signature:
+    :return:
+    """
     total = 0
     for topic, relevance in semantic_signature:
         if relevance == 'N':
@@ -281,6 +327,11 @@ def get_max_score(semantic_signature):
 
 
 def jsonify(proximity_results):
+    """
+
+    :param proximity_results:
+    :return:
+    """
     jsonified_results = list()
     for elem in proximity_results:
         f = elem[0]

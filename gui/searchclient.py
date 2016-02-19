@@ -6,13 +6,21 @@ import ConfigParser
 
 import analysis.typeahead as typeahead
 import search.semantic_query as semantic
-import index.loader
+import indexfiles.loader
 import search.proximity_finder as proximity
 
 
 class AutoCompleteEntry(ttk.Entry):
+    """
 
+    """
     def __init__(self, *args, **kwargs):
+        """
+
+        :param args:
+        :param kwargs:
+        :return:
+        """
         logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
         self.logger = logging.getLogger(__name__)
 
@@ -49,6 +57,13 @@ class AutoCompleteEntry(ttk.Entry):
 
     # noinspection PyUnusedLocal
     def changed(self, name, index, mode):
+        """
+
+        :param name:
+        :param index:
+        :param mode:
+        :return:
+        """
         if self.var.get() == '':
             if self.listboxUp:
                 self.logger.debug('empty search, hide the list !!!')
@@ -89,12 +104,21 @@ class AutoCompleteEntry(ttk.Entry):
                     self.listboxUp = False
 
     def get_matching_topics(self):
+        """
+
+        :return:
+        """
         self.logger.debug('looking up matching labels for: %s', self.var.get())
         self.logger.debug('nb matches found: %s', len(typeahead_index[self.var.get()]))
         return typeahead_index[self.var.get()]
 
     # noinspection PyUnusedLocal
     def selection(self, event):
+        """
+
+        :param event:
+        :return:
+        """
         if self.listboxUp:
             selected_index = self.topics_typeahead_list.selection()
             selected_item = self.topics_typeahead_list.item(selected_index)
@@ -114,6 +138,11 @@ class AutoCompleteEntry(ttk.Entry):
 
     # noinspection PyUnusedLocal
     def move_up(self, event):
+        """
+
+        :param event:
+        :return:
+        """
         if self.listboxUp:
             focused = self.topics_typeahead_list.focus()
 
@@ -132,6 +161,11 @@ class AutoCompleteEntry(ttk.Entry):
 
     # noinspection PyUnusedLocal
     def move_down(self, event):
+        """
+
+        :param event:
+        :return:
+        """
         if self.listboxUp:
             focused = self.topics_typeahead_list.focus()
 
@@ -150,6 +184,10 @@ class AutoCompleteEntry(ttk.Entry):
 
 
 def search_documents_by_topics():
+    """
+
+    :return:
+    """
     topics_ids = [str(topics_list.item(topic_id)['values'][0]) for topic_id in topics_list.get_children()]
     logging.getLogger(__name__).info('Searching documents for topics: %s', topics_ids)
 
@@ -171,6 +209,12 @@ def search_documents_by_topics():
 
 
 def get_search_results_details(nb_documents, nb_topics):
+    """
+
+    :param nb_documents:
+    :param nb_topics:
+    :return:
+    """
     result = 'Details:'
     result += '\n- Nb documents found: {nb_doc}'.format(nb_doc=nb_documents)
     result += '\n- Nb relevant topics found: {nb_topics}'.format(nb_topics=nb_topics)
@@ -178,6 +222,11 @@ def get_search_results_details(nb_documents, nb_topics):
 
 
 def build_topics_index(matching_topics):
+    """
+
+    :param matching_topics:
+    :return:
+    """
     result = dict()
     logging.getLogger(__name__).debug('Begin build_topics_index')
     for uri in matching_topics:
@@ -191,6 +240,11 @@ def build_topics_index(matching_topics):
 
 # noinspection PyUnusedLocal
 def topic_selected(event):
+    """
+
+    :param event:
+    :return:
+    """
     logging.getLogger(__name__).debug('Fire event: topic selected')
     selected_index = topics_list.selection()
     selected_item = topics_list.item(selected_index)
@@ -206,6 +260,11 @@ def topic_selected(event):
 
 # noinspection PyUnusedLocal
 def result_selected(event):
+    """
+
+    :param event:
+    :return:
+    """
     logging.getLogger(__name__).debug('Fire event: result selected')
     selected_index = results_list.selection()
     selected_item = results_list.item(selected_index)
@@ -227,17 +286,17 @@ def result_selected(event):
 
 
 def get_list_selected_topics():
-    """
-    Retrieve the list of topics currently selected by the user
+    """Retrieve the list of topics currently selected by the user.
+
     :return:
     """
     return [str(topics_list.item(topic_id)['values'][0]) for topic_id in topics_list.get_children()]
 
 
 def update_proximity_results(results, semantic_signature, target_file):
-    """
-    Change text area 'Proximmity Result' according to the files in results
-    and the semantic signature of the target file
+    """Change text area 'Proximmity Result' according to the files in results
+    and the semantic signature of the target file.
+
     :param results:
     :param semantic_signature:
     :param target_file:
@@ -266,6 +325,11 @@ def update_proximity_results(results, semantic_signature, target_file):
 
 
 def update_semantic_signature_text(semantic_signature):
+    """
+
+    :param semantic_signature:
+    :return:
+    """
     global semantic_signature_text
     semantic_signature_text.tag_configure('highlight_result', font='"Deja Vu Sans Mono" 12 bold')
     semantic_signature_text.delete('1.0', END)
@@ -282,6 +346,11 @@ def update_semantic_signature_text(semantic_signature):
 
 
 def get_topic_label(topic_id):
+    """
+
+    :param topic_id:
+    :return:
+    """
     return topics_index.get_labels_for_topic_id(topic_id)[0]
 
 
@@ -331,14 +400,14 @@ topics_occurrences_index_filename = config.get('INDEX', 'topics_occurrences_inde
 topics_labels_index_filename = config.get('INDEX', 'topics_labels_index_filename')
 typeahead_index_filename = config.get('INDEX', 'typeahead_index_filename')
 
-files_index = index.loader.FilesIndex(os.path.join(index_folder, files_index_filename))
-#    files_dates_index = index.loader.FilesDatesIndex(os.path.join(index_folder, files_dates_index_filename))
-topics_index = index.loader.TopicsIndex(os.path.join(index_folder, topics_index_filename))
-typeahead_index = index.loader.TopicsTypeAheadIndex(os.path.join(index_folder, typeahead_index_filename)).index
+files_index = indexfiles.loader.FilesIndex(os.path.join(index_folder, files_index_filename))
+#    files_dates_index = indexfiles.loader.FilesDatesIndex(os.path.join(index_folder, files_dates_index_filename))
+topics_index = indexfiles.loader.TopicsIndex(os.path.join(index_folder, topics_index_filename))
+typeahead_index = indexfiles.loader.TopicsTypeAheadIndex(os.path.join(index_folder, typeahead_index_filename)).index
 typeahead_index_full = typeahead_index  # keep this version since the typeahead index is dynamically re-calculated
-topics_occurrences_index = index.loader.TopicsOccurrencesIndex(os.path.join(index_folder,
+topics_occurrences_index = indexfiles.loader.TopicsOccurrencesIndex(os.path.join(index_folder,
                                                                             topics_occurrences_index_filename))
-topics_labels_index = index.loader.TopicsLabelsIndex(os.path.join(index_folder, topics_labels_index_filename))
+topics_labels_index = indexfiles.loader.TopicsLabelsIndex(os.path.join(index_folder, topics_labels_index_filename))
 
 # Initialize the main business components
 processor = semantic.QueryProcessor(files_index=files_index,

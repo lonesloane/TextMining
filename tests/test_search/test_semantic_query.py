@@ -2,7 +2,7 @@ import logging
 import unittest
 
 import search.semantic_query as search
-from index.loader import FilesIndex, TopicsOccurrencesIndex, TopicsLabelsIndex, TopicsIndex
+from indexfiles.loader import FilesIndex, TopicsOccurrencesIndex, TopicsLabelsIndex, TopicsIndex
 
 
 class QueryProcessorTestCase(unittest.TestCase):
@@ -13,6 +13,7 @@ class QueryProcessorTestCase(unittest.TestCase):
     _topics_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Index"
 
     def setUp(self):
+        logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
         self._files_index = FilesIndex(self._files_index_filename)
         self._topics_occurrences_index = TopicsOccurrencesIndex(self._topics_occurrences_index_filename)
         self._topics_labels_index = TopicsLabelsIndex(self._topics_labels_index_filename)
@@ -186,11 +187,22 @@ class QueryProcessorTestCase(unittest.TestCase):
 
         self.assertEqual(expected_result, actual_result)
 
+    def test_get_topics_from_topic_ids(self):
+        topic_ids = ['1', '2', '3']
+        expected = [
+            {'id': '1', 'label': {'fr': 'lbl_fr_1', 'en': 'lbl_en_1'}},
+            {'id': '2', 'label': {'fr': 'lbl_fr_2', 'en': 'lbl_en_2'}},
+            {'id': '3', 'label': {'fr': 'lbl_fr_3', 'en': 'lbl_en_3'}}]
+        actual = self.processor._get_topics_from_topic_ids(topic_ids)
+
+        self.assertEqual(expected, actual)
+
     def test_search_documents_by_topics(self):
         topic_list = ['1']
-        expected_result = {'topics': [
-            2, 3, 5, 6, 8, 9, 10, 11, 14, 15, 16, 18, 20, 22, 24, 25, 26, 27, 28, 30, 31, 33,
-            35, 36, 37, 38, 40, 41, 42, 43, 44, 45, 46, 47, 48],
+        expected_result = {'search_terms': [{'id': '1', 'label': {'fr': 'lbl_fr_1', 'en': 'lbl_en_1'}}],
+                           'topics': [
+                               2, 3, 5, 6, 8, 9, 10, 11, 14, 15, 16, 18, 20, 22, 24, 25, 26, 27, 28, 30, 31, 33,35, 36,
+                               37, 38, 40, 41, 42, 43, 44, 45, 46, 47, 48],
                            'documents': [
                                {'semantic_signature': [
                                    {'relevance': 'H', 'id': '5', 'label': {'fr': 'lbl_fr_5', 'en': 'lbl_en_5'}},

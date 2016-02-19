@@ -2,6 +2,12 @@ import search.semantic_query as semantic
 
 
 def chose_topic(processor, topic_id):
+    """
+
+    :param processor:
+    :param topic_id:
+    :return:
+    """
     new_topic_chosen = False
     target_topic = ''
     while not new_topic_chosen:
@@ -23,6 +29,10 @@ def chose_topic(processor, topic_id):
 
 
 def main():
+    """
+
+    :return:
+    """
     processor = semantic.QueryProcessor()
 
     topics = []

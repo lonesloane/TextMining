@@ -1,10 +1,15 @@
 import logging
 
 import search.proximity_finder as proximity
-from index.loader import FilesIndex
+from indexfiles.loader import FilesIndex
 
 
 def proximity_score(scored_topics):
+    """
+
+    :param scored_topics:
+    :return:
+    """
     result = 0
     for _, _, _, score in scored_topics:
         result += score
@@ -12,6 +17,10 @@ def proximity_score(scored_topics):
 
 
 def main():
+    """
+
+    :return:
+    """
     finder = proximity.ProximityFinder()
     files_index = FilesIndex("../output/Files_Index")
 

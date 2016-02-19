@@ -15,7 +15,7 @@ module.exports = React.createClass({
 	render: function(){
 		return <nav className="navbar navbar-default header">
 
-	  			<div className="container-fluid">
+	  			<div className="container-fluid" onClick={this.handleHomeClick()}>
 	    			<Link to="/" className="navbar-brand">
 	    				Semantic Search 0.1
 	    			</Link>
@@ -32,4 +32,8 @@ module.exports = React.createClass({
 	handleInputChange: function(e){
 		this.setState({search_query: e.target.value});
 	},
+
+	handleHomeClick: function(e){
+		console.log('home link clicked!');
+	}
 });

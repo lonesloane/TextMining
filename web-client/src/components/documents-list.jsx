@@ -1,8 +1,10 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Actions = require('../actions');
 var Reflux = require('reflux');
 var DocumentStore = require('../stores/document-store');
 var Result = require('./result');
+var SelectedTopics = require('./selected-topics');
 
 module.exports = React.createClass({
 	mixins: [
@@ -32,7 +34,7 @@ module.exports = React.createClass({
 								<h3 className="panel-title">Search Results</h3>
 							</div>
 							<div className="panel-body">
-								<p>These documents match the given topics: {this.props.params.topicslist}</p>
+								<p>Selected topics: <SelectedTopics topics={this.state.search_results.search_terms}/></p>
 							</div>
 							<div className="list-group">
 								{this.renderResultItems()}
@@ -45,7 +47,7 @@ module.exports = React.createClass({
 
 	renderResultItems: function(){
 		return this.state.search_results.documents.map(function(result){
-			return <Result result={result} topics={this.props.params.topicslist} />
+			return <Result result={result} topics={this.state.search_results.search_terms} />
 		}.bind(this));
 	},
 

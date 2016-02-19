@@ -1,3 +1,4 @@
 /output
 /web-client/node_modules
 /web-client/main.js
+/documentation/build/doctrees

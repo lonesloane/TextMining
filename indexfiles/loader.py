@@ -5,8 +5,7 @@ LOG_LEVEL = logging.INFO
 
 
 class Index:
-    """
-    Base class for all index objects.
+    """Base class for all index objects.
 
     """
     def __init__(self, index_filename):
@@ -27,8 +26,7 @@ class Index:
         self._load_index()
 
     def _load_index(self):
-        """
-        Loads index from file system
+        """Loads index from file system.
 
         :return:
         """
@@ -56,6 +54,11 @@ class FilesIndex(Index):
     default_index_filename = "../output/Files_Index"
 
     def __init__(self, index_filename=None):
+        """
+
+        :param index_filename:
+        :return:
+        """
         if index_filename is None:
             index_filename = FilesIndex.default_index_filename
         Index.__init__(self, index_filename)
@@ -109,6 +112,8 @@ class TopicsIndex(Index):
     default_index_filename = "../output/Topics_Index"
 
     def __init__(self, index_filename=None):
+        logging.basicConfig(level=LOG_LEVEL, format='%(name)s - %(levelname)s - %(message)s')
+        self.logger = logging.getLogger(__name__)
         if index_filename is None:
             index_filename = TopicsIndex.default_index_filename
         Index.__init__(self, index_filename)
@@ -121,6 +126,16 @@ class TopicsIndex(Index):
         """
         return self._index[topic_id]
 
+    def get_topic_for_topic_id(self, topic_id):
+        topic_labels = self._index[topic_id]
+        topic = dict()
+        topic['id'] = topic_id
+        labels = dict()
+        labels['en'] = topic_labels[0]
+        labels['fr'] = topic_labels[1]
+        topic['label'] = labels
+        self.logger.debug('topic: %s', topic)
+        return topic
 
 class TopicsOccurrencesIndex(Index):
     """
@@ -180,3 +195,10 @@ class TopicsTypeAheadIndex(Index):
         :return:
         """
         return self._index[root]
+
+
+def main():
+    pass
+
+if __name__ == '__main__':
+    main()
