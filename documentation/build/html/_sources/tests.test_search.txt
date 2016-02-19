@@ -1,0 +1,30 @@
+tests.test_search package
+=========================
+
+Submodules
+----------
+
+tests.test_search.test_proximity_finder module
+----------------------------------------------
+
+.. automodule:: tests.test_search.test_proximity_finder
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tests.test_search.test_semantic_query module
+--------------------------------------------
+
+.. automodule:: tests.test_search.test_semantic_query
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: tests.test_search
+    :members:
+    :undoc-members:
+    :show-inheritance:

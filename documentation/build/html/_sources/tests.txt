@@ -1,0 +1,40 @@
+tests package
+=============
+
+Subpackages
+-----------
+
+.. toctree::
+
+    tests.test_analysis
+    tests.test_gui
+    tests.test_index
+    tests.test_search
+
+Submodules
+----------
+
+tests.random_corpus_generator module
+------------------------------------
+
+.. automodule:: tests.random_corpus_generator
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tests.tests_suite module
+------------------------
+
+.. automodule:: tests.tests_suite
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: tests
+    :members:
+    :undoc-members:
+    :show-inheritance:

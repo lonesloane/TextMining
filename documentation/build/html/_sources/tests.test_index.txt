@@ -1,0 +1,30 @@
+tests.test_index package
+========================
+
+Submodules
+----------
+
+tests.test_index.test_loader module
+-----------------------------------
+
+.. automodule:: tests.test_index.test_loader
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tests.test_index.test_validator module
+--------------------------------------
+
+.. automodule:: tests.test_index.test_validator
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: tests.test_index
+    :members:
+    :undoc-members:
+    :show-inheritance:

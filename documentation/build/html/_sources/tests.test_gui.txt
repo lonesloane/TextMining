@@ -1,0 +1,22 @@
+tests.test_gui package
+======================
+
+Submodules
+----------
+
+tests.test_gui.test_searchclient module
+---------------------------------------
+
+.. automodule:: tests.test_gui.test_searchclient
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: tests.test_gui
+    :members:
+    :undoc-members:
+    :show-inheritance:
