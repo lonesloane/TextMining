@@ -1,4 +1,9 @@
 /output
+tests/testOutput
 /web-client/node_modules
 /web-client/main.js
+/web-client/search-ui.sublime-project
+/web-client/search-ui.sublime-workspace
 /documentation/build/doctrees
+.idea
+*.pyc
