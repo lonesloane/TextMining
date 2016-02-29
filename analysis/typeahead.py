@@ -1,4 +1,5 @@
 import logging
+import os
 import shelve
 
 from indexfiles.loader import TopicsIndex
@@ -138,12 +139,14 @@ def main():
 
     :return:
     """
-    logging.basicConfig(filename="../output/typeahead_index_builder.log", filemode="w",
+    project_folder = os.path.abspath('/home/stephane/Playground/PycharmProjects/TextMining')
+    log_file = os.path.join(project_folder, 'output/typeahead_index_builder.log')
+    logging.basicConfig(filename=log_file, filemode="w",
                         level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-#    topics_index_filename = '../output/Topics_Index_H'
-#    topics_typeahead_index_filename = '../output/Topics_Typeahead_Index_H'
-    topics_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Index_H'
-    topics_typeahead_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Typeahead_Index_H'
+#    topics_index_filename = os.path.join(project_folder, 'output/Topics_Index_H')
+#    topics_typeahead_index_filename = os.path.join(project_folder, 'output/Topics_Typeahead_Index_H')
+    topics_index_filename = os.path.join(project_folder, 'tests/testOutput/Test_Topics_Index_H')
+    topics_typeahead_index_filename = os.path.join(project_folder, 'tests/testOutput/Test_Topics_Typeahead_Index_H')
     index_builder = IndexBuilder(input_index_filename=topics_index_filename,)
     index_builder.build()
     index_builder.shelve_index(topics_typeahead_index_filename)

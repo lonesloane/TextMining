@@ -1,16 +1,19 @@
 import logging
+import os
 import unittest
 
 import search.semantic_query as search
 from indexfiles.loader import FilesIndex, TopicsOccurrencesIndex, TopicsLabelsIndex, TopicsIndex
 
+project_folder = os.path.abspath('/home/stephane/Playground/PycharmProjects/TextMining')
+
 
 class QueryProcessorTestCase(unittest.TestCase):
 
-    _files_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Files_Index"
-    _topics_occurrences_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Occurrences_Index"
-    _topics_labels_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Labels_Index"
-    _topics_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Index"
+    _files_index_filename = os.path.join(project_folder, 'tests/testOutput/Test_Files_Index')
+    _topics_occurrences_index_filename = os.path.join(project_folder, 'tests/testOutput/Test_Topics_Occurrences_Index')
+    _topics_labels_index_filename = os.path.join(project_folder, 'tests/testOutput/Test_Topics_Labels_Index')
+    _topics_index_filename = os.path.join(project_folder, 'tests/testOutput/Test_Topics_Index')
 
     def setUp(self):
         logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')

@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 
 from indexfiles.loader import TopicsIndex
 
@@ -59,12 +60,14 @@ def main():
 
     :return:
     """
-    logging.basicConfig(filename="../output/typeahead_json_builder.log", filemode="w",
-                        level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    topics_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Index_H'
-    topics_typeahead_json_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Typeahead_Json_H'
-    # topics_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/output/Topics_Index_H'
-    # topics_typeahead_json_filename = '/home/stephane/Playground/PycharmProjects/TextMining/output/Topics_Typeahead_Json_H'
+    project_folder = os.path.abspath('/home/stephane/Playground/PycharmProjects/TextMining')
+    log_file = os.path.join(project_folder, 'output/typeahead_json_builder.log')
+    logging.basicConfig(filename=log_file, filemode="w",level=logging.DEBUG,
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    topics_index_filename = os.path.join(project_folder, 'tests/testOutput/Test_Topics_Index_H')
+    topics_typeahead_json_filename = os.path.join(project_folder, 'tests/testOutput/Test_Topics_Typeahead_Json_H')
+    # topics_index_filename = os.path.join(project_folder, 'output/Topics_Index_H')
+    # topics_typeahead_json_filename = os.path.join(project_folder, 'output/Topics_Typeahead_Json_H')
     index_builder = TopicsTypeaheadBuilder(input_index_filename=topics_index_filename,)
     index_builder.build()
     index_builder.save_index(topics_typeahead_json_filename)

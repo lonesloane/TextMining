@@ -1,13 +1,16 @@
 import logging
+import os
 import unittest
 import search.proximity_finder as finder
 from indexfiles.loader import TopicsOccurrencesIndex, TopicsIndex, FilesIndex
 
+project_folder = os.path.abspath('/home/stephane/Playground/PycharmProjects/TextMining')
+
 
 class ProximityFinderTestCase(unittest.TestCase):
-    _topics_occurrences_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Occurrences_Index"
-    _topics_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Index"
-    _files_index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Files_Index"
+    _topics_occurrences_index_filename = os.path.join(project_folder, 'tests/testOutput/Test_Topics_Occurrences_Index')
+    _topics_index_filename = os.path.join(project_folder, 'tests/testOutput/Test_Topics_Index')
+    _files_index_filename = os.path.join(project_folder, 'tests/testOutput/Test_Files_Index')
 
     def setUp(self):
         self._topics_index = TopicsIndex(self._topics_index_filename)

@@ -4,6 +4,22 @@
 		"selected_items":
 		[
 			[
+				"tras",
+				"translate"
+			],
+			[
+				"dr",
+				"draw_x_gridLine"
+			],
+			[
+				"y",
+				"yAxis"
+			],
+			[
+				"pa",
+				"parseDate"
+			],
+			[
 				"l",
 				"li"
 			],
@@ -432,67 +448,28 @@
 	"buffers":
 	[
 		{
-			"file": "index.html",
+			"file": "/home/stephane/Playground/D3js/D3TipsTricks/ElemAttrStyle/circle.html",
 			"settings":
 			{
-				"buffer_size": 500,
+				"buffer_size": 343,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/app.jsx",
+			"file": "/home/stephane/Playground/D3js/D3TipsTricks/webserver.py",
 			"settings":
 			{
-				"buffer_size": 164,
+				"buffer_size": 302,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/routes.jsx",
+			"contents": "{\"28\": [datetime.date(2015, 2, 5)], \"29\": [datetime.date(2014, 6, 21), datetime.date(2015, 6, 15)], \"23\": [datetime.date(2014, 6, 21)], \"24\": [datetime.date(2014, 6, 15), datetime.date(2014, 6, 21), datetime.date(2014, 11, 30), datetime.date(2015, 6, 22)], \"25\": [datetime.date(2014, 6, 15), datetime.date(2014, 11, 30), datetime.date(2015, 6, 22)], \"26\": [datetime.date(2014, 6, 21), datetime.date(2015, 2, 5), datetime.date(2015, 2, 5), datetime.date(2015, 6, 15)], \"27\": [datetime.date(2014, 6, 15), datetime.date(2015, 2, 5), datetime.date(2015, 6, 22)], \"20\": [datetime.date(2015, 6, 15), datetime.date(2015, 6, 22)], \"21\": [datetime.date(2014, 6, 21), datetime.date(2014, 6, 21), datetime.date(2015, 6, 15)], \"48\": [datetime.date(2014, 6, 21), datetime.date(2015, 2, 5)], \"49\": [datetime.date(2014, 6, 21), datetime.date(2014, 6, 21), datetime.date(2014, 11, 30)], \"46\": [datetime.date(2014, 6, 15), datetime.date(2014, 6, 21), datetime.date(2015, 2, 5), datetime.date(2015, 6, 15), datetime.date(2015, 6, 22)], \"47\": [datetime.date(2014, 6, 15), datetime.date(2015, 2, 5), datetime.date(2015, 6, 15)], \"44\": [datetime.date(2014, 6, 15), datetime.date(2014, 6, 21), datetime.date(2015, 2, 5), datetime.date(2015, 6, 15), datetime.date(2015, 6, 22)], \"45\": [datetime.date(2014, 6, 15), datetime.date(2014, 6, 15), datetime.date(2014, 11, 30), datetime.date(2015, 6, 22)], \"42\": [datetime.date(2014, 6, 15), datetime.date(2015, 6, 22), datetime.date(2015, 6, 22)], \"43\": [datetime.date(2014, 6, 21), datetime.date(2015, 2, 5), datetime.date(2015, 2, 5)], \"40\": [datetime.date(2015, 2, 5), datetime.date(2015, 6, 22)], \"41\": [datetime.date(2014, 6, 21), datetime.date(2014, 11, 30), datetime.date(2015, 6, 22)], \"1\": [datetime.date(2015, 2, 5), datetime.date(2015, 2, 5), datetime.date(2015, 6, 22), datetime.date(2015, 6, 22)], \"3\": [datetime.date(2014, 6, 15), datetime.date(2014, 11, 30), datetime.date(2015, 6, 22)], \"2\": [datetime.date(2015, 6, 22)], \"5\": [datetime.date(2014, 6, 15), datetime.date(2014, 6, 21), datetime.date(2015, 6, 15), datetime.date(2015, 6, 22)], \"7\": [datetime.date(2014, 6, 15), datetime.date(2014, 6, 15), datetime.date(2014, 6, 21)], \"6\": [datetime.date(2014, 6, 15), datetime.date(2014, 6, 15), datetime.date(2014, 6, 21), datetime.date(2015, 6, 22)], \"9\": [datetime.date(2014, 6, 15), datetime.date(2014, 6, 21), datetime.date(2014, 6, 21), datetime.date(2015, 6, 22), datetime.date(2015, 6, 22)], \"8\": [datetime.date(2014, 6, 21), datetime.date(2014, 6, 21), datetime.date(2015, 2, 5), datetime.date(2015, 2, 5), datetime.date(2015, 6, 15), datetime.date(2015, 6, 22)], \"39\": [datetime.date(2014, 6, 15), datetime.date(2014, 6, 21), datetime.date(2015, 6, 15)], \"12\": [datetime.date(2014, 6, 15), datetime.date(2014, 11, 30)], \"14\": [datetime.date(2014, 6, 15), datetime.date(2014, 6, 15), datetime.date(2015, 2, 5), datetime.date(2015, 6, 22)], \"11\": [datetime.date(2015, 6, 22)], \"10\": [datetime.date(2014, 6, 21), datetime.date(2014, 11, 30), datetime.date(2015, 2, 5), datetime.date(2015, 6, 22)], \"13\": [datetime.date(2014, 6, 15), datetime.date(2014, 6, 21), datetime.date(2014, 11, 30), datetime.date(2015, 6, 15)], \"38\": [datetime.date(2014, 6, 15), datetime.date(2014, 6, 15), datetime.date(2014, 6, 21), datetime.date(2015, 2, 5), datetime.date(2015, 6, 15)], \"15\": [datetime.date(2014, 6, 21), datetime.date(2014, 11, 30), datetime.date(2015, 2, 5)], \"22\": [datetime.date(2014, 11, 30), datetime.date(2015, 2, 5), datetime.date(2015, 6, 15), datetime.date(2015, 6, 22)], \"17\": [datetime.date(2014, 6, 15), datetime.date(2014, 11, 30)], \"16\": [datetime.date(2014, 6, 21), datetime.date(2014, 11, 30), datetime.date(2015, 6, 22)], \"33\": [datetime.date(2015, 2, 5)], \"32\": [datetime.date(2014, 11, 30)], \"31\": [datetime.date(2014, 6, 15), datetime.date(2015, 2, 5), datetime.date(2015, 2, 5), datetime.date(2015, 6, 15), datetime.date(2015, 6, 22)], \"30\": [datetime.date(2014, 6, 15), datetime.date(2014, 6, 21), datetime.date(2015, 6, 22)], \"37\": [datetime.date(2014, 6, 15), datetime.date(2015, 2, 5), datetime.date(2015, 2, 5), datetime.date(2015, 6, 22)], \"36\": [datetime.date(2014, 6, 15), datetime.date(2014, 6, 21), datetime.date(2015, 2, 5), datetime.date(2015, 2, 5)], \"35\": [datetime.date(2014, 6, 15), datetime.date(2014, 6, 21), datetime.date(2015, 2, 5), datetime.date(2015, 6, 22)], \"34\": [datetime.date(2014, 6, 21), datetime.date(2014, 11, 30), datetime.date(2015, 6, 15)], \"18\": [datetime.date(2014, 6, 15), datetime.date(2015, 2, 5), datetime.date(2015, 2, 5), datetime.date(2015, 6, 22)]}\n",
 			"settings":
 			{
-				"buffer_size": 544,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/components/search-box.jsx",
-			"settings":
-			{
-				"buffer_size": 779,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/components/typeahead-search.jsx",
-			"settings":
-			{
-				"buffer_size": 1650,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/components/documents-list.jsx",
-			"settings":
-			{
-				"buffer_size": 1540,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/components/selected-topics.jsx",
-			"settings":
-			{
-				"buffer_size": 1014,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/components/result.jsx",
-			"settings":
-			{
-				"buffer_size": 1155,
-				"line_ending": "Unix"
+				"buffer_size": 4554,
+				"line_ending": "Unix",
+				"name": "{\"28\": [datetime.date(2015, 2, 5)], \"29\": [datetim"
 			}
 		}
 	],
@@ -504,12 +481,28 @@
 	"command_palette":
 	{
 		"height": 294.0,
-		"last_filter": "js",
+		"last_filter": "",
 		"selected_items":
 		[
 			[
+				"",
+				"Set Syntax: Plain Text"
+			],
+			[
+				"word",
+				"Word Wrap: Toggle"
+			],
+			[
+				"py",
+				"Set Syntax: Python"
+			],
+			[
 				"js",
 				"Pretty JSON: Format (Pretty Print) JSON"
+			],
+			[
+				"mark",
+				"Set Syntax: MultiMarkdown"
 			],
 			[
 				"java",
@@ -564,10 +557,6 @@
 				"Set Syntax: HTML"
 			],
 			[
-				"mark",
-				"SublimeLinter: Choose Mark Style"
-			],
-			[
 				"css",
 				"Set Syntax: CSS"
 			],
@@ -585,10 +574,6 @@
 			],
 			[
 				"wr",
-				"Word Wrap: Toggle"
-			],
-			[
-				"word",
 				"Word Wrap: Toggle"
 			],
 			[
@@ -664,23 +649,40 @@
 	],
 	"file_history":
 	[
+		"/home/stephane/Playground/PycharmProjects/TextMining/output/corpus_analyzer.log",
+		"/home/stephane/Playground/D3js/D3TipsTricks/ElemAttrStyle/webserver.py",
+		"/home/stephane/Playground/D3js/D3TipsTricks/BasicGraph/dynamic-automatic.html",
+		"/home/stephane/Playground/D3js/D3TipsTricks/BasicGraph/dynamic.html",
+		"/home/stephane/Playground/D3js/D3TipsTricks/BasicGraph/attic.html",
+		"/home/stephane/Playground/D3js/D3TipsTricks/BasicGraph/webserver.py",
+		"/home/stephane/Playground/D3js/D3TipsTricks/BasicGraph/kitchen.html",
+		"/home/stephane/Playground/D3js/D3TipsTricks/BasicGraph/home.html",
+		"/home/stephane/Playground/D3js/D3TipsTricks/Basic graph/simple-graph.html",
+		"/home/stephane/Playground/D3js/D3TipsTricks/Basic graph/data.csv",
+		"/home/stephane/Playground/D3js/D3TipsTricks/Basic graph/home.html",
+		"/home/stephane/Documents/Documentation/D3JS/d3jscodesamples/13/simple-graph.html",
+		"/home/stephane/Documents/Documentation/D3JS/d3jscodesamples/13/force.html",
+		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/index.html",
+		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/app.jsx",
+		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/routes.jsx",
+		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/components/search-box.jsx",
+		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/components/typeahead-search.jsx",
+		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/components/documents-list.jsx",
+		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/components/selected-topics.jsx",
+		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/components/result.jsx",
+		"/home/stephane/Documents/Documentation/D3JS/Playing_With_React_And_D3JS.md",
 		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/stores/document-store.jsx",
 		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/components/main.jsx",
 		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/components/semantic-signature.jsx",
 		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/utils/api.jsx",
-		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/components/typeahead-search.jsx",
 		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/components/document-details.jsx",
 		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/actions.jsx",
-		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/app.jsx",
 		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/css/twitter.css",
 		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/test.html",
-		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/components/documents-list.jsx",
-		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/routes.jsx",
 		"/home/stephane/Playground/PycharmProjects/TextMining/rest/app.py",
 		"/home/stephane/Playground/PycharmProjects/TextMining/rest/rest_api.conf",
 		"/home/stephane/Playground/PycharmProjects/TextMining/rest/rest_api_test.conf",
 		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/topics.json",
-		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/components/result.jsx",
 		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/sass/typeahead.scss",
 		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/components/search-typeahead.jsx",
 		"/home/stephane/Playground/PycharmProjects/TextMining/web-client/src/utils/react-typeahead.jsx",
@@ -739,7 +741,6 @@
 		"/home/stephane/Playground/React/index.html",
 		"/home/stephane/Downloads/coverage-4.0.3/README.rst",
 		"/home/stephane/Playground/PycharmProjects/SandBox/Marklogic_Export.log",
-		"/home/stephane/Playground/PycharmProjects/TextMining/output/corpus_analyzer.log",
 		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT01.xml",
 		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testDuplicates/JT00104374-Duplicate",
 		"/media/Data/OECD/Official Documents Enrichment/Documents/2001/03/15/JT00104374.xml",
@@ -775,23 +776,7 @@
 		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT10.xml",
 		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT03.xml",
 		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT04.xml",
-		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT05.xml",
-		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT06.xml",
-		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT07.xml",
-		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT08.xml",
-		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT02.xml",
-		"/home/stephane/Playground/PycharmProjects/TextMining/analysis/corpus_analyzer.log",
-		"/media/Data/Ubuntu One/Python/InventoryManager/UnitTests/ApplianceTests/InventoryTest.py",
-		"/home/stephane/Playground/PycharmProjects/TextMining/output/Topics_Index",
-		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCooccurrence/JT03.xml",
-		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCooccurrence/JT02.xml",
-		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCooccurrence/JT01.xml",
-		"/home/stephane/Playground/PycharmProjects/TextMining/.gitignore",
-		"/home/stephane/Playground/PycharmProjects/TextMining/tests/test_analysis/corpus_analyzer.log",
-		"/media/Data/OECD/Official Documents Enrichment/2015/06/18/JT03379016.xml",
-		"/media/Data/OECD/Official Documents Enrichment/2015/03/19/JT03372638.xml",
-		"/home/stephane/Playground/PycharmProjects/TextMining/tests/test_analysis/2015_Files_Index",
-		"/media/Data/OECD/Official Documents Enrichment/Documents/2000/06/06/JT00020995.xml"
+		"/home/stephane/Playground/PycharmProjects/TextMining/tests/testCorpus/JT05.xml"
 	],
 	"find":
 	{
@@ -816,6 +801,7 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"'",
 			"typeahead",
 			"\"",
 			"\\$",
@@ -942,8 +928,7 @@
 			"http://kim.oecd.org/Taxonomy/Topics#",
 			"\"",
 			" || ",
-			"]",
-			"["
+			"]"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -951,6 +936,7 @@
 		"regex": true,
 		"replace_history":
 		[
+			"\"",
 			"'",
 			"Fri\\t",
 			"Mon\\t",
@@ -1075,85 +1061,29 @@
 	"groups":
 	[
 		{
-			"selected": 5,
+			"selected": 2,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "index.html",
+					"file": "/home/stephane/Playground/D3js/D3TipsTricks/ElemAttrStyle/circle.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 500,
+						"buffer_size": 343,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								460,
-								460
+								322,
+								322
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/HTML/HTML.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 7,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "src/app.jsx",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 164,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "src/routes.jsx",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 544,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax"
+							"syntax": "Packages/HTML/HTML.sublime-syntax"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -1163,148 +1093,60 @@
 					"type": "text"
 				},
 				{
-					"buffer": 3,
-					"file": "src/components/search-box.jsx",
+					"buffer": 1,
+					"file": "/home/stephane/Playground/D3js/D3TipsTricks/webserver.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 779,
+						"buffer_size": 302,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								67,
-								67
+								154,
+								154
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Babel/JavaScript (Babel).tmLanguage",
-							"translate_tabs_to_spaces": false
+							"syntax": "Packages/Python/Python.sublime-syntax"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "src/components/typeahead-search.jsx",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1650,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								651,
-								651
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 413.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
-					"file": "src/components/documents-list.jsx",
+					"buffer": 2,
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1540,
+						"buffer_size": 4554,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								576,
-								576
+								1112,
+								1112
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
-							"translate_tabs_to_spaces": false
+							"auto_name": "{\"28\": [datetime.date(2015, 2, 5)], \"29\": [datetim",
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"word_wrap": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "src/components/selected-topics.jsx",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1014,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								456,
-								456
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "src/components/result.jsx",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1155,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								92,
-								92
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
 					"type": "text"
 				}
 			]

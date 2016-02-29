@@ -1,12 +1,15 @@
 import logging
+import os
 import unittest
 import datetime
 
 import indexfiles.loader as loader
 
+project_folder = os.path.abspath('/home/stephane/Playground/PycharmProjects/TextMining')
+
 
 class IndexTestCase(unittest.TestCase):
-    index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Index"
+    index_filename = os.path.join(project_folder, 'tests/testOutput/Test_Topics_Index')
 
     def test_create(self):
         self.assertRaises(Exception, loader.Index, "")
@@ -15,7 +18,7 @@ class IndexTestCase(unittest.TestCase):
 
 
 class FilesIndexTestCase(unittest.TestCase):
-    index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Files_Index"
+    index_filename = os.path.join(project_folder, 'tests/testOutput/Test_Files_Index')
 
     def test_create(self):
         values = loader.FilesIndex(FilesIndexTestCase.index_filename).index
@@ -39,7 +42,7 @@ class FilesIndexTestCase(unittest.TestCase):
 
 
 class FilesDatesIndexTestCase(unittest.TestCase):
-    index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Files_Dates_Index"
+    index_filename = os.path.join(project_folder, 'tests/testOutput/Test_Files_Dates_Index')
 
     def test_create(self):
         values = loader.FilesDatesIndex(FilesDatesIndexTestCase.index_filename).index
@@ -54,7 +57,7 @@ class FilesDatesIndexTestCase(unittest.TestCase):
 
 
 class TopicsIndexTestCase(unittest.TestCase):
-    index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Index"
+    index_filename = os.path.join(project_folder, 'tests/testOutput/Test_Topics_Index')
 
     def test_create(self):
         values = loader.TopicsIndex(TopicsIndexTestCase.index_filename).index
@@ -90,7 +93,7 @@ class TopicsOccurrencesTestCase(unittest.TestCase):
 
 
 class TopicsLabelsIndexTestCase(unittest.TestCase):
-    index_filename = "/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Labels_Index"
+    index_filename = os.path.join(project_folder, 'tests/testOutput/Test_Topics_Labels_Index')
 
     def test_create(self):
         values = loader.TopicsLabelsIndex(TopicsLabelsIndexTestCase.index_filename).index
@@ -104,7 +107,7 @@ class TopicsLabelsIndexTestCase(unittest.TestCase):
 
 
 class TopicsTypeAheadIndexTestCase(unittest.TestCase):
-    index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Topics_Typeahead_Index'
+    index_filename = os.path.join(project_folder, 'tests/testOutput/Topics_Typeahead_Index')
 
     def test_create(self):
         self.assertIsNotNone(loader.TopicsTypeAheadIndex(TopicsTypeAheadIndexTestCase.index_filename).index)

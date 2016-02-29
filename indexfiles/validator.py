@@ -1,4 +1,5 @@
 import logging
+import random
 
 import indexfiles.loader as loader
 
@@ -60,8 +61,10 @@ def validate_files_dates_index(files_dates_index):
     :return:
     """
     logging.getLogger(__name__).info('%s files found in index', len(files_dates_index))
-    file_date = files_dates_index.values()[0]
-    logging.getLogger(__name__).info('sample date: %s', file_date)
+    for i in range(0, 10):
+        idx = random.choice(range(0, len(files_dates_index)))
+        file_name, file_date = files_dates_index.items()[idx]
+        logging.getLogger(__name__).info('sample file date: %s - %s', file_name, file_date)
 
 
 def validate_topics_index(topics_index):
@@ -123,8 +126,8 @@ def main():
         validate_files_index(index)
     if choice == 'files_dates':
         # load files index
-        # files_dates_index_filename = '../output/Files_Dates_Index'
-        files_dates_index_filename = '../tests/testOutput/Test_Files_Dates_Index'
+        files_dates_index_filename = '../output/Files_Dates_Index'
+        # files_dates_index_filename = '../tests/testOutput/Test_Files_Dates_Index'
         index = loader.FilesDatesIndex(files_dates_index_filename).index
         validate_files_dates_index(index)
     if choice == 'occurrences':

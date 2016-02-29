@@ -28,23 +28,6 @@ class Analyzer:
     """Use this class to analyze the topics repartition across the given corpus.
 
     Builds the various dictionaries for the files and their associated topics
-
-
-    .. note::
-        There are many other Info fields but they may be redundant:
-            * param, parameter, arg, argument, key, keyword: Description of a
-              parameter.
-            * type: Type of a parameter.
-            * raises, raise, except, exception: That (and when) a specific
-              exception is raised.
-            * var, ivar, cvar: Description of a variable.
-            * returns, return: Description of the return value.
-            * rtype: Return type.
-
-    .. note::
-        There are many other directives such as versionadded, versionchanged,
-        rubric, centered, ... See the sphinx documentation for more details.
-
     """
 
     # region --- default values ---
@@ -391,7 +374,7 @@ def extract_indexes():
     topics_occurrences_index = "Topics_Occurrences_Index"
     topics_index = "Topics_Index"
     files_index = "Files_Index"
-    # files_dates_index = "Files_Dates_Index"
+    files_dates_index = "Files_Dates_Index"
 
     # corpus_root = "../tests/testCorpus/"
     # topics_occurrences_index = "Test_Topics_Occurrences_Index"
@@ -401,9 +384,10 @@ def extract_indexes():
 
     analyzer = Analyzer(corpus_root_folder=corpus_root)
     logging.getLogger(__name__).info('Begin extract indexes')
-    analyzer.extract_indexes(files_index_filename=files_index,
-                             topics_occurrences_index_filename=topics_occurrences_index,
-                             topics_index_filename=topics_index)
+    analyzer.extract_indexes(files_dates_index_filename=files_dates_index)
+    # analyzer.extract_indexes(files_index_filename=files_index,
+    #                          topics_occurrences_index_filename=topics_occurrences_index,
+    #                          topics_index_filename=topics_index)
     logging.getLogger(__name__).info('End extract indexes')
 
 

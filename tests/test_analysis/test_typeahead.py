@@ -7,13 +7,17 @@ from indexfiles.loader import TopicsIndex
 
 
 class IndexBuilderTestCase(unittest.TestCase):
+    project_folder = os.path.abspath('/home/stephane/Playground/PycharmProjects/TextMining')
+
     def tearDown(self):
-        typeahead_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_TypeAhead_Index'
+        typeahead_index_filename = os.path.join(IndexBuilderTestCase.project_folder,
+                                                'tests/testOutput/Test_TypeAhead_Index')
         if os.path.exists(typeahead_index_filename):
             os.remove(typeahead_index_filename)
 
     def test_create(self):
-        input_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Index'
+        input_index_filename = os.path.join(IndexBuilderTestCase.project_folder,
+                                            'tests/testOutput/Test_Topics_Index')
         typeahead_index_builder = IndexBuilder(input_index_filename=input_index_filename)
         self.assertTrue(isinstance(typeahead_index_builder, IndexBuilder))
         self.assertIsNotNone(typeahead_index_builder._topics_index)
@@ -21,7 +25,8 @@ class IndexBuilderTestCase(unittest.TestCase):
         self.assertTrue(len(typeahead_index_builder._typeahead_index) == 0)
 
     def test_extract_n_grams(self):
-        labels = ['Montaigne', 'Balzac', 'Rousseau', 'Baudelaire', 'Hugo', 'Zola', 'Flaubert', 'Chateaubriand', 'Camus']
+        labels = ['Montaigne', 'Balzac', 'Rousseau', 'Baudelaire', 'Hugo',
+                  'Zola', 'Flaubert', 'Chateaubriand', 'Camus']
 
         typeahead_index = IndexBuilder.extract_n_grams(labels)
         self.assertTrue('c' in typeahead_index)
@@ -62,7 +67,8 @@ class IndexBuilderTestCase(unittest.TestCase):
         self.assertRaises(Exception, index_builder.build)
 
     def test_build_typeahead_index(self):
-        input_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Topics_Index'
+        input_index_filename = os.path.join(IndexBuilderTestCase.project_folder,
+                                            'tests/testOutput/Topics_Index')
         typeahead_index_builder = IndexBuilder(input_index_filename=input_index_filename)
 
         typeahead_index = typeahead_index_builder.build()
@@ -158,10 +164,12 @@ class IndexBuilderTestCase(unittest.TestCase):
                     ('6583', 'genetically modified organisms', u'organismes g\xe9n\xe9tiquement modifi\xe9s'),
                     ('5497', 'environmental modelling', u'mod\xe9lisation environnementale')]
         self.assertItemsEqual(expected, actual)
-        self.assertTrue(('6583', 'genetically modified organisms', u'organismes g\xe9n\xe9tiquement modifi\xe9s') in actual)
+        self.assertTrue(('6583', 'genetically modified organisms', u'organismes g\xe9n\xe9tiquement modifi\xe9s')
+                        in actual)
 
         actual = typeahead_index['org']
-        self.assertTrue(('6583', 'genetically modified organisms', u'organismes g\xe9n\xe9tiquement modifi\xe9s') in actual)
+        self.assertTrue(('6583', 'genetically modified organisms', u'organismes g\xe9n\xe9tiquement modifi\xe9s')
+                        in actual)
 
         actual = typeahead_index['anim']
         self.assertTrue(('3562', 'animal research', u'recherche animali\xe8re') in actual)
@@ -169,11 +177,13 @@ class IndexBuilderTestCase(unittest.TestCase):
         self.assertTrue(('3562', 'animal research', u'recherche animali\xe8re') in actual)
 
     def test_ignore_uris(self):
-        input_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Topics_Index'
+        input_index_filename = os.path.join(IndexBuilderTestCase.project_folder,
+                                            'tests/testOutput/Topics_Index')
         topics_index = TopicsIndex(input_index_filename).index
         typeahead_index_builder = IndexBuilder(input_index_filename=input_index_filename)
 
-        typeahead_index = typeahead_index_builder.build(topics_index=topics_index, ignored_topics_ids=['6583', '1632'])
+        typeahead_index = typeahead_index_builder.build(topics_index=topics_index,
+                                                        ignored_topics_ids=['6583', '1632'])
         self.assertFalse(len(typeahead_index_builder._typeahead_index) == 0)
 
         actual = typeahead_index['gen']
@@ -211,11 +221,12 @@ class IndexBuilderTestCase(unittest.TestCase):
                     ('4686', 'generations', u'g\xe9n\xe9rations'), ('4688', 'genocide', u'g\xe9nocide')]
         self.assertItemsEqual(expected, actual)
         self.assertFalse(('6583', 'genetically modified organisms', u'organismes g\xe9n\xe9tiquement modifi\xe9s')
-                        in actual)
+                         in actual)
         self.assertFalse(('1632', 'genetic improvement', u'am\xe9lioration g\xe9n\xe9tique') in actual)
 
     def test_compound_words(self):
-        input_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Topics_Index'
+        input_index_filename = os.path.join(IndexBuilderTestCase.project_folder,
+                                            'tests/testOutput/Topics_Index')
         typeahead_index_builder = IndexBuilder(input_index_filename=input_index_filename)
 
         typeahead_index = typeahead_index_builder.build()
@@ -236,11 +247,14 @@ class IndexBuilderTestCase(unittest.TestCase):
         self.assertTrue(expected in actual)
 
     def test_shelve_index(self):
-        self.assertFalse(os.path.isfile('/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_TypeAhead_Index'))
-        input_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_Topics_Index'
-        output_index_filename = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_TypeAhead_Index'
+        input_index_filename = os.path.join(IndexBuilderTestCase.project_folder,
+                                            'tests/testOutput/Test_Topics_Index')
+        output_index_filename = os.path.join(IndexBuilderTestCase.project_folder,
+                                             'tests/testOutput/Test_TypeAhead_Index')
+
+        self.assertFalse(os.path.isfile(output_index_filename))
         IndexBuilder(input_index_filename=input_index_filename).shelve_index(output_index_filename)
-        self.assertTrue(os.path.isfile('/home/stephane/Playground/PycharmProjects/TextMining/tests/testOutput/Test_TypeAhead_Index'))
+        self.assertTrue(os.path.isfile(output_index_filename))
 
 
 if __name__ == '__main__':

@@ -406,7 +406,7 @@ topics_index = indexfiles.loader.TopicsIndex(os.path.join(index_folder, topics_i
 typeahead_index = indexfiles.loader.TopicsTypeAheadIndex(os.path.join(index_folder, typeahead_index_filename)).index
 typeahead_index_full = typeahead_index  # keep this version since the typeahead index is dynamically re-calculated
 topics_occurrences_index = indexfiles.loader.TopicsOccurrencesIndex(os.path.join(index_folder,
-                                                                            topics_occurrences_index_filename))
+                                                                                 topics_occurrences_index_filename))
 topics_labels_index = indexfiles.loader.TopicsLabelsIndex(os.path.join(index_folder, topics_labels_index_filename))
 
 # Initialize the main business components
