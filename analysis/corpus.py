@@ -365,23 +365,11 @@ class Analyzer:
         return duplicates
 
 
-def extract_indexes():
+def extract_indexes(corpus_root, topics_occurrences_index, topics_index, files_index, files_dates_index):
     """
 
     :return:
     """
-    corpus_root = "/media/Data/OECD/Official Documents Enrichment/Documents"
-    topics_occurrences_index = "Topics_Occurrences_Index"
-    topics_index = "Topics_Index"
-    files_index = "Files_Index"
-    files_dates_index = "Files_Dates_Index"
-
-    # corpus_root = "../tests/testCorpus/"
-    # topics_occurrences_index = "Test_Topics_Occurrences_Index"
-    # topics_index = "Test_Topics_Index"
-    # files_index = "Test_Files_Index"
-    # files_dates_index = "Test_Files_Dates_Index"
-
     analyzer = Analyzer(corpus_root_folder=corpus_root)
     logging.getLogger(__name__).info('Begin extract indexes')
     analyzer.extract_indexes(files_dates_index_filename=files_dates_index)
@@ -391,16 +379,12 @@ def extract_indexes():
     logging.getLogger(__name__).info('End extract indexes')
 
 
-def extract_topics_labels_index():
+def extract_topics_labels_index(topics_index, topics_labels_index):
     """
 
     :return:
     """
     print "Begin extract topics_labels index"
-    # topics_index = "Topics_Index"
-    topics_index = "Test_Topics_Index"
-    topics_labels_index = "Test_Topics_Labels_Index"
-    # topics_labels_index = "Topics_Labels_Index"
     Analyzer.extract_topics_labels_index(topics_index_filename=topics_index,
                                          topics_labels_index_filename=topics_labels_index)
     print "End extract topics_labels index"
@@ -412,17 +396,19 @@ def main():
     :return:
     """
     # Get configuration parameters
+    basedir = os.path.abspath(os.path.dirname(__file__))
     config = ConfigParser.SafeConfigParser()
-    config.read('corpus.conf')
+    # config.read(os.path.join(basedir, 'corpus.conf'))
+    config.read(os.path.join(basedir, 'corpus_test.conf'))
+
     # Set appropriate logging level
     numeric_level = getattr(logging, config.get('LOGGING', 'level').upper(), None)
     if not isinstance(numeric_level, int):
         raise ValueError('Invalid log level: %s' % config.get('LOGGING', 'level'))
-
     logger = logging.getLogger(__name__)
     logger.setLevel(numeric_level)
     # create file handler which logs even debug messages
-    fh = logging.FileHandler('../output/corpus_analyzer.log', mode='w')
+    fh = logging.FileHandler(config.get('LOGGING', 'log_file'), mode='w')
     fh.setLevel(logging.DEBUG)
     # create console handler with a higher log level
     ch = logging.StreamHandler()
@@ -435,9 +421,17 @@ def main():
     logger.addHandler(fh)
     logger.addHandler(ch)
 
-    extract_indexes()
+    corpus_root = config.get('MAIN', 'corpus_root')
+    output_dir = config.get('MAIN', 'output_dir')
+    topics_occurrences_index = os.path.join(output_dir, config.get('MAIN', 'topics_occurrences_index_filename'))
+    topics_index = os.path.join(output_dir, config.get('MAIN', 'topics_index_filename'))
+    files_index = os.path.join(output_dir, config.get('MAIN', 'files_index_filename'))
+    files_dates_index = os.path.join(output_dir, config.get('MAIN', 'files_dates_index_filename'))
+    topics_labels_index = os.path.join(output_dir, config.get('MAIN', 'topics_labels_index_filename'))
 
-    # extract_topics_labels_index()
+    extract_indexes(corpus_root=corpus_root, topics_occurrences_index=topics_occurrences_index,
+                    topics_index=topics_index, files_index=files_index, files_dates_index=files_dates_index)
+    # extract_topics_labels_index(topics_index=topics_index, topics_labels_index=topics_labels_index)
 
 
 if __name__ == '__main__':

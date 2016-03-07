@@ -74,8 +74,9 @@ def validate_topics_index(topics_index):
     :return:
     """
     logging.getLogger(__name__).info('%s topics found in index', len(topics_index))
-    lbl_en, lbl_fr = topics_index['19']
-    logging.getLogger(__name__).info((lbl_en, lbl_fr))
+    for topic in topics_index:
+        lbl_en, lbl_fr = topics_index[topic]
+        logging.getLogger(__name__).info('topic: %s: lbl_en: %s', topic, lbl_en)
 
 
 def validate_topics_index_highly(topics_index):
@@ -111,12 +112,17 @@ def validate_typeahead_index_highly(typeahead_index):
     logging.getLogger(__name__).info('look up for %s:\n%s', root, typeahead_index[root])
 
 
+def validate_topics_labels_index(index):
+    for label_en, label_fr in index:
+        logging.getLogger(__name__).info('topic: %s', label_en)
+
+
 def main():
     """
 
     :return:
     """
-    choice = 'files_dates'
+    choice = 'occurrences'
     logging.getLogger(__name__).info('Validation scenario: %s', choice)
 
     if choice == 'files':
@@ -150,6 +156,10 @@ def main():
         topics_index_filename = '../output/Topics_Index_H'
         index = loader.TopicsIndex(topics_index_filename).index
         validate_topics_index_highly(index)
+    if choice == 'topics_labels':
+        topics_labels_index_filename = '../output/Topics_Labels_Index'
+        index = loader.TopicsLabelsIndex(topics_labels_index_filename).index
+        validate_topics_labels_index(index)
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
