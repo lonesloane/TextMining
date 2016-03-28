@@ -1,6 +1,7 @@
 /tests/corpus_analyzer.log
 /tests/.coverage
 /output
+/pdfs
 tests/testOutput
 /web-client/node_modules
 /web-client/main.js

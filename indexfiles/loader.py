@@ -137,6 +137,7 @@ class TopicsIndex(Index):
         self.logger.debug('topic: %s', topic)
         return topic
 
+
 class TopicsOccurrencesIndex(Index):
     """
 
