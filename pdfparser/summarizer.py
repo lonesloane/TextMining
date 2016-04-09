@@ -1,13 +1,8 @@
 # -*- coding: utf8 -*-
+import ConfigParser
 import logging
 import os
-from cStringIO import StringIO
 
-from nltk import PunktSentenceTokenizer
-from pdfminer.converter import TextConverter
-from pdfminer.layout import LAParams
-from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
-from pdfminer.pdfpage import PDFPage
 from sumy.nlp.stemmers import Stemmer
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.parsers.plaintext import PlaintextParser
@@ -15,79 +10,41 @@ from sumy.summarizers.text_rank import TextRankSummarizer as Summarizer
 from sumy.utils import get_stop_words
 
 import indexfiles.loader as loader
-from pdfparser.pdf_page_filter import PDFPageFilter
+import text_extractor
 
-PROJECT_FOLDER = os.path.abspath('/home/stephane/Playground/PycharmProjects/TextMining')
+
+# Get configuration parameters
+basedir = os.path.abspath(os.path.dirname(__file__))
+config = ConfigParser.SafeConfigParser()
+config.read(os.path.join(basedir, 'pdfparser.conf'))
+
+PROJECT_FOLDER = config.get('MAIN', 'project_folder')
 PDF_ROOT_FOLDER = os.path.join(PROJECT_FOLDER, 'pdfs')
-
-LOG_LEVEL = logging.DEBUG
 LANGUAGE = "english"
 SENTENCES_COUNT = 10
+# Logging
+LOG_LEVEL = logging.DEBUG
+_log_level = 3  # verbosity of log. 1:normal - 2:verbose - 3:visual
 
 
-def convert_pdf_to_txt(path):
-    rsrcmgr = PDFResourceManager()
-    codec = 'utf-8'
-    laparams = LAParams()
-    fp = file(path, 'rb')
-    password = ""
-    maxpages = 0
-    caching = True
-    pagenos = set()
-    pdf_txt = ''
-    page_no = 0
-    for page in PDFPage.get_pages(fp, pagenos, maxpages=maxpages, password=password,
-                                  caching=caching, check_extractable=True):
-        retstr = StringIO()
-        page_no += 1
+class PDFSummarizer:
 
-        device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
-        PDFPageInterpreter(rsrcmgr, device).process_page(page)
+    def __init__(self, semantic=False):
+        if semantic:
+            self.file_index, self.topic_index = load_indexes()
+        self.logger = logging_setup()
 
-        page_txt = retstr.getvalue()
-        device.close()
-        retstr.close()
+    def generate_summary(self, pdf_sentences):
+        pdf_string = '\n'.join([sentence.encode('utf-8') for sentence in pdf_sentences])
+        parser = PlaintextParser.from_string(pdf_string, Tokenizer(LANGUAGE))
+        stemmer = Stemmer(LANGUAGE)
 
-        validated_txt, _continue = validate(page_txt)
-        if not _continue:
-            break
+        summarizer = Summarizer(stemmer)
+        summarizer.stop_words = get_stop_words(LANGUAGE)
 
-        if len(validated_txt) > 0:
-            logger.info("-"*40)
-            logger.info("page {page_no} processed".format(page_no=page_no))
-            logger.debug("Page content: %s", validated_txt)
-            logger.info("-"*40)
-
-        pdf_txt += '\n'+validated_txt
-
-    fp.close()
-    return pdf_txt
-
-
-def validate(page_txt):
-    if PDFPageFilter.is_cover(page_txt):
-        logger.info('\n{Cover Page} found. Page ignored.')
-        return '', True
-    elif PDFPageFilter.is_toc(page_txt):
-        logger.info('\n{Table Of Contents} found. Page ignored.')
-        return '', True
-    elif PDFPageFilter.is_list_of_abbreviations(page_txt):
-        logger.info('\n{List of abbreviations} found. Page ignored.')
-        return '', True
-    elif PDFPageFilter.is_bibliography(page_txt):
-        logger.info('\n{Bibliography} found. Remaining pages ignored.')
-        return '', False
-    elif PDFPageFilter.is_participants_list(page_txt):
-        logger.info('\n{Participants List} found. Remaining pages ignored.')
-        return '', False
-    elif PDFPageFilter.is_annex(page_txt):
-        logger.info('\n{Annex} found. Remaining pages ignored.')
-        return '', False
-    elif PDFPageFilter.contains_table(page_txt):
-        logger.info('\n{Table} found. Page ignored.')
-        return '', True
-
-    return page_txt, True
+        for sentence in summarizer(parser.document, SENTENCES_COUNT):
+            self.logger.info(sentence._text.encode('utf-8'))
+        self.logger.info("*"*40+"\n")
 
 
 def extract_relevant_sentences(pdf_sentences, topics):
@@ -142,13 +99,6 @@ def load_indexes():
     return file_index, topic_index
 
 
-def extract_sentences(pdf_long_filename):
-    pdf_file = os.path.join(PDF_ROOT_FOLDER, pdf_long_filename)
-    pdf_string = convert_pdf_to_txt(pdf_file)
-    pdf_sentences = PunktSentenceTokenizer().tokenize(pdf_string.decode('utf-8'))
-    return pdf_sentences
-
-
 def get_score(relevance):
     if relevance == 'N':
         return 1
@@ -168,25 +118,6 @@ def report(relevant_sentences):
     for score, nb in _report.iteritems():
         logger.info("Score %s - Nb occurrences: %s", score, nb)
     logger.info("-"*40)
-
-
-def generate_summary(pdf_sentences):
-    # pdf_string = '\n'.join([sentence.encode('utf-8') for sentence in pdf_sentences])
-    parser = PlaintextParser.from_string(pdf_sentences, Tokenizer(LANGUAGE))
-    stemmer = Stemmer(LANGUAGE)
-
-    summarizer = Summarizer(stemmer)
-    # summarizer.bonus_words = frozenset([''])
-    # summarizer.stigma_words = frozenset([''])
-    # summarizer.null_words = frozenset([''])
-    # summarizer.bonus_words = frozenset([''])
-    # summarizer.stigma_words = frozenset([''])
-    # summarizer.null_words = frozenset([''])
-    summarizer.stop_words = get_stop_words(LANGUAGE)
-
-    for sentence in summarizer(parser.document, SENTENCES_COUNT):
-        logger.info(sentence._text.encode('utf-8'))
-    logger.info("*"*40+"\n")
 
 
 def logging_setup():
@@ -211,24 +142,29 @@ def logging_setup():
 
 def main():
 
-    # Get semantic enrichment indexes
-    file_index, topic_index = load_indexes()
-
     while True:
         file_name = raw_input("File name: (press enter to exit)")
         if not file_name or len(file_name) == 0:
             break
-        # retrieve semantic enrichment result for given file
-        enrichment_file = file_name+'.xml'
-        topics = get_topics_for_file(enrichment_file, file_index, topic_index)
 
         # Parse pdf content
-        logger.info("Parsing PDF content\n")
-        pdf_long_filename = '2014/11/07/'+file_name+'.pdf'
-        pdf_sentences = extract_sentences(pdf_long_filename)
+        extractor = text_extractor.PDFTextExtractor()
+        if _log_level > 2:
+            logger.info("Parsing PDF content\n")
+        # pdf_long_filename = '2014/11/07/'+file_name+'.pdf'
+        pdf_long_filename = '2014/11/07/JT03365818.pdf'
+        pdf_file_path = os.path.join(PDF_ROOT_FOLDER, pdf_long_filename)
+        pdf_sentences = extractor.extract_sentences(pdf_file_path)
+
+        logger.debug("\n"+"*"*40+"\n")
+        logger.debug("EXTRACTED PDF TEXT:\n")
         logger.debug("*"*40+"\n")
+        isentence = 0
         for sentence in pdf_sentences:
-            logger.debug(sentence)
+            isentence += 1
+            sentence = sentence.strip()
+            logger.debug("\n[sentence {isentence}]:\n{sentence}".format(isentence=isentence,
+                                                                      sentence=sentence.encode('utf-8')))
         logger.debug("*"*40+"\n")
 
         # Extract 'default' summary
@@ -236,10 +172,18 @@ def main():
         logger.info("Raw summary:")
         logger.debug("*"*40+"\n")
         generate_summary(pdf_sentences)
-        # continue  # <== Comment out to exit early
+
+        # INTERRUPT EXECUTION FOR DEBUG PURPOSES
+        continue  # <== Un-comment to exit early
+        # INTERRUPT EXECUTION FOR DEBUG PURPOSES
+
+        # retrieve semantic enrichment result for given file
+        enrichment_file = file_name+'.xml'
+        # topics = get_topics_for_file(enrichment_file, file_index, topic_index)
         # Identify 'most relevant sentences'
         relevant_sentences = extract_relevant_sentences(pdf_sentences, topics)
         report(relevant_sentences)
+
         # Extract 'semantically oriented' summary
         logger.debug("*"*40+"\n")
         logger.info("Semantic based summary:\n")
@@ -247,7 +191,6 @@ def main():
         # TODO: add logic to figure out optimal score threshold
         pdf_string = "\n".join([s for _, s, score in relevant_sentences if score > 0])
         generate_summary(pdf_string)
-
 
 if __name__ == '__main__':
     logger = logging_setup()

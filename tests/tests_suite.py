@@ -9,6 +9,7 @@ import test_search.test_semantic_query as semantic_query
 import test_index.test_validator as validator
 import test_analysis.test_typeahead as typeahead
 import test_gui as gui
+import test_pdfparser as pdf_parser
 
 suite_extractor = unittest.TestLoader().loadTestsFromModule(extractor)
 suite_analyzer = unittest.TestLoader().loadTestsFromModule(analyzer)
@@ -19,9 +20,10 @@ suite_semantic = unittest.TestLoader().loadTestsFromModule(semantic_query)
 suite_validator = unittest.TestLoader().loadTestsFromModule(validator)
 suite_typeahead = unittest.TestLoader().loadTestsFromModule(typeahead)
 suite_gui = unittest.TestLoader().loadTestsFromModule(gui)
+suite_pdf_parser = unittest.TestLoader().loadTestsFromModule(pdf_parser)
 
 all_tests = unittest.TestSuite([suite_extractor, suite_analyzer, suite_temporal, suite_loader, suite_proximity,
-                                suite_semantic, suite_validator, suite_typeahead, suite_gui])
+                                suite_semantic, suite_validator, suite_typeahead, suite_gui, suite_pdf_parser])
 
 if __name__ == '__main__':
     '''

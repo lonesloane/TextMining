@@ -11,7 +11,8 @@ from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import PDFPageAggregator
 from pdfminer.layout import LAParams, LTTextBox, LTTextLine, LTFigure, LTImage, LTChar, LTRect
 
-logger = logging.getLogger('pdf_layout')
+# logger = logging.getLogger('pdf_layout')
+logger = logging.getLogger('summarizer')
 
 
 def with_pdf(pdf_doc, fn, *args):
@@ -82,7 +83,7 @@ def update_page_text_hash(h, lt_obj, pct=0.2):
     key_found = False
     for k, v in h.items():
         key_found = True
-        logger.debug('+++String extracted: {s}'.format(s=to_bytestring(lt_obj.get_text())))
+        logger.debug('[String extracted]: {s}'.format(s=to_bytestring(lt_obj.get_text())))
         v.append(to_bytestring(lt_obj.get_text()))
         h[k] = v
         # hash_x0 = k[0]
@@ -97,7 +98,7 @@ def update_page_text_hash(h, lt_obj, pct=0.2):
     if not key_found:
         # the text, based on width, is a new series,
         # so it gets its own series (entry in the hash)
-        logger.debug('---String extracted: {s}'.format(s=to_bytestring(lt_obj.get_text())))
+        logger.debug('[String extracted]: {s}'.format(s=to_bytestring(lt_obj.get_text())))
         h[(x0, x1)] = [to_bytestring(lt_obj.get_text())]
 
     return h
@@ -110,17 +111,19 @@ def parse_lt_objs(lt_objs, page_number, text=[]):
     page_text = {}  # k=(x0, x1) of the bbox, v=list of text strings within that bbox width (physical column)
     for lt_obj in lt_objs:
         if isinstance(lt_obj, LTTextBox) or isinstance(lt_obj, LTTextLine):
-            logger.debug('LTTextBox or LTTextLine')
+            # logger.debug('LTTextBox or LTTextLine')
             # text, so arrange is logically based on its column width
             page_text = update_page_text_hash(page_text, lt_obj)
         elif isinstance(lt_obj, LTFigure):
-            logger.debug('LTFigure -- ignoring')
             # LTFigure objects are containers for other LT* objects, so recurse through the children
             # text_content.append(parse_lt_objs(lt_obj, page_number, text_content))
-            # WE IGNORE FIGURES
+            # IGNORE FIGURES
+            logger.debug('LTFigure -- ignoring')
             continue
         elif isinstance(lt_obj, LTRect):
-            logger.debug('LTRect')
+            # IGNORE LTRect
+            # logger.debug('LTRect')
+            continue
         else:
             # Could this be yet another type of Layout object?
             logger.debug('Unknown object type: ' + str(type(lt_obj)))

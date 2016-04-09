@@ -11,7 +11,7 @@ def main():
     logger.debug('Table Of Content:')
     logger.debug('*'*40)
     for elem in toc:
-        logger.debug(elem)
+        logger.debug(elem[1].encode('utf-8'))
 
     pages = layout_scanner.get_pages(pdf_doc)
 
