@@ -1,0 +1,30 @@
+59.54399871|767.175357559|62.3039987|777.210717522|  
+411.57998657|767.175357559|532.91997313|777.210717522|ENV/EPOC/WPEI(2014)8  
+59.54399871|692.395389309|535.783838672|740.350732172|28.  Calculation  of  the  above  indicators  requires  different  data  sources  to  be  mobilised:  while  measures of average levels of exposure (X1) can be calculated using both remotely sensed and monitoring  measurements,  exceedance  measures  (X2)  can  be  calculated  only  using  monitoring  data.  The  choice  of  data used will have implications for the nature of the indicator:  
+70.8239975|667.795352679|80.6131186989|678.217112641|i)  
+95.54399871|604.525333149|535.752631358|677.830712642|Remotely  sensed  data  on  air  pollutant  concentrations:  the  key  advantage  is their  global coverage  and  standardised  measurement  which  allows  the  indicator  to  be  (i)  commensurable  across  all  countries,  and  (ii)  generated  for  all  OECD  and  partner  countries  (potentially  any  country  worldwide); However, the range of pollutants for which such measurements are available is more  limited  (incl.  PM2.5,  PM10,  NO2)  and  the  measurements  represent  an  average  over  some  time  period.   
+67.8239975|522.565372209|535.716651859|596.227122411|ii)  Measurements by ground monitoring stations (e.g. EU Airbase, US AQS): the key advantage is a  higher  level  of  detail  both  in  terms  of  spatial  resolution,  periodicity  (hourly  measurements)  and  accuracy; however, the data can be heterogeneous – in terms of both geographical coverage (and  its  representativeness  which  varies  within  and  across  countries)  as  well  as  measurement  methodology  –  giving  a  false  impression  of  comparability.  Moreover,  they  can  be  sensitive  to  variations in meteorological conditions.  
+64.70400238|478.645358779|535.769907733|514.387126071|iii)  While  remotely  sensed  data  can  only  be  used  to  construct  measures  of  average  exposure  (X1),  monitoring data can be used to calculate any of the measures presented above (X1, X2, X3).  See  Annex I for a more detailed overview of the various data sources.  
+108.13999938|448.998633894|145.070001837|457.89291392|Table 4.  
+150.61999511|448.998633894|486.910013427|457.89291392| Advantages and disadvantage of the two main sources of data on air pollution  
+97.8239975|432.08000122|99.8759975|440.52200122|  
+69.7440033|421.1599878|113.67200274|429.6019878|Advantages  
+69.7440033|356.24000488|123.8719997|364.68200488|Disadvantages  
+190.13000488|432.08000122|272.94201464|440.52200122|Ground-based stations  
+406.26998901|432.08000122|453.83199877|440.52200122|Satellite data  
+172.69999694|420.5600122|213.302|429.0020122|Real values  
+154.69999694|398.66598535|317.6019878|429.0020122|    More observations in different points in time    More pollutants are monitored  
+172.69999694|333.80000244|323.72201342|364.08199877|Low coverage in developing countries  Uneven coverage within and across countries  PM2.5 concentration are still rarely monitored  
+154.69999694|322.82598901|310.43599694|364.08199877|        Measurements and reporting are different  
+172.69999694|312.5600122|269.1019878|321.0020122|across regions and countries  
+353.23001098|409.58599877|429.11199755|429.0020122|  Global coverage     
+371.23001098|367.1599878|509.45201098|418.08199877|Unique method to compute air pollution in  cities, regions and countries   Fast improvements in the techniques to  gather global data  Consistent time-series data  
+371.23001098|302.84001098|508.59701098|353.16198535|Satellite observations are less precise for  bright surfaces (snow or desert)  Need to present the data on a multi-year  average, reducing the capacity to monitor  impact of interventions   
+353.23001098|388.34600854|359.81199755|396.84200854|  
+353.23001098|323.42599511|359.81199755|331.92199511|  
+353.23001098|344.66598535|419.63198657|375.6019878|    Modelled data    
+59.54399871|293.201614648|457.135113889|300.743134611|Source: Document GOV/TDPC/TI(2014)7 “Breathing the same air? Measuring air pollution in cities and regions”  
+59.54399871|192.755359389|535.767042274|278.750726072|29.  Indicators  of  exposure  based  on  average  concentration  levels  provide  an  indication  of  the  background trend and as such are policy relevant. If  calculated using remotely sensed  data, the indicator  will be based on standardised measurement and have a broad geographic coverage. Such indicators could  therefore  be  suitable  choice  for  the  sets  of  OECD  green  growth  and  environmental  indicators.  However,  indicators of exposure based on average concentration levels can be complex to communicate to decision- makers  and  the  public.  Options  should  be  examined  how  such  potential  communication  hurdles  can  be  overcome.  
+59.54399871|130.215366109|535.782392603|178.190713252|30.  Indicators of exposure based on exceedances (using monitoring data) allow for a more accurate  assessment of exposure, and likely to be more suitable for linking with potential health impacts and their  economic  costs.  Such  indicators  could  therefore  complement  the  sets  of  OECD  green  growth  and  environmental indicators for a subset of OECD countries (and regions within countries).  
+59.54399871|62.5353581686|62.3039987|72.5707181323|  
+290.80999755|62.5353581686|304.6299951|72.5707181323|13  

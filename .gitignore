@@ -13,3 +13,6 @@ tests/testOutput
 /pdfparser/text_def.log
 /pdfparser/rec_def.log
 /pdfparser/summarizer.log
+/tests/testPDF/summarizer.log
+/tests/testPDF/JT03365805.pdf
+/tests/testPDF/JT03365818.pdf

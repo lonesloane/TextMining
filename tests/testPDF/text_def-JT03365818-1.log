@@ -1,0 +1,19 @@
+59.54399871|767.175357559|142.93999266|777.210717522|CONFIDENTIAL  
+417.7000122|767.175357559|532.91997313|777.210717522|TAD/PG(2014)10/PROV  
+59.54399871|730.075381979|163.2200067|739.934101943|Arrears/Commitments  
+59.54399871|674.868659524|535.710404535|715.750695552|For the score calculation of the Arrears/Commitments indicators, calculated for ST commitments  15.  (ARREARSST),  MLT  commitments  (ARREARSMLT)  and,  in  the  case  of  a  rescheduling  country,  also  for  post-cut-off date MLT commitments (ARREARSMLTPCOD), the following function is used:  
+413.73999023|516.3580122|416.73999023|527.2660122|  
+59.54399871|505.5579939|62.54399871|516.4659939|  
+59.54399871|431.938636324|62.0339987175|440.992276351|  
+135.86000061|444.298652194|250.219995727|501.93292246|INDICATOR (%)   0 < ARRTOCOMM < 5   5 < ARRTOCOMM < 20  20 < ARRTOCOMM < 50  50 < ARRTOCOMM < 100  
+263.4500122|444.298652194|387.759989018|501.93292246|ARREARS (SCORE) (%)  10 x ARRTOCOMM  5/3 x ARRTOCOMM + 125/3  5/6 x ARRTOCOMM + 350/6  100  
+102.01999664|409.018653414|386.680002447|440.992276351|  with:   ARRTOCOMM = ratio of arrears to commitments (0 - 100%)    
+136.1000061|409.018653414|399.880014647|418.072293441|ARREARS = score on arrears/commitments indicator (0 - 100%)  
+59.54399871|364.978644874|535.8139945|406.1660061|  If  there  are  no  post-cut-off  date  commitments  on  a  rescheduling  country,  the  score  ARREARSMLTPCOD is put at 100%.  
+59.54399871|340.145358779|220.84999632|350.004078743|Unrecovered Claims/Commitments  
+59.54399871|272.195346579|535.698387462|325.700707772|16.  For  the  calculation  of  the  Unrecovered  Claims/Commitments  indicators,  calculated  for  ST  commitments (CLAIMSST), MLT commitments (CLAIMSMLT) and, in the case of a rescheduling country,  also for post-cut-off date MLT commitments (CLAIMSMLTPCOD), the score increases more quickly as the  arrears have been indemnified. The function is as follows:  
+59.54399871|99.408|62.54399871|110.316|  
+59.54399871|62.5353581686|62.3039987|72.5707181323|  
+203.57000732|99.408|206.57000732|110.316|  
+293.57000732|62.5353581686|301.86998534|72.5707181323|7  
+414.82000732|110.20800305|417.82000732|121.11600305|  
