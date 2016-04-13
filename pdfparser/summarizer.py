@@ -141,6 +141,7 @@ def logging_setup():
 
 
 def main():
+    logger = logging_setup()
 
     while True:
         file_name = raw_input("File name: (press enter to exit)")
@@ -193,5 +194,4 @@ def main():
         generate_summary(pdf_string)
 
 if __name__ == '__main__':
-    logger = logging_setup()
     main()

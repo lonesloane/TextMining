@@ -1,19 +1,19 @@
 import logging
 
-import layout_scanner
+import pdfparser.layout_scanner
 
 
 def main():
     pdf_doc = '/home/stephane/Playground/PycharmProjects/TextMining/pdfs/2014/11/07/JT03365754.pdf'
 
-    toc = layout_scanner.get_toc(pdf_doc)
+    toc = pdfparser.layout_scanner.get_toc(pdf_doc)
     logger.debug('*'*40)
     logger.debug('Table Of Content:')
     logger.debug('*'*40)
     for elem in toc:
         logger.debug(elem[1].encode('utf-8'))
 
-    pages = layout_scanner.get_pages(pdf_doc)
+    pages = pdfparser.layout_scanner.get_pages(pdf_doc)
 
     logger.debug('*'*40)
     logger.debug('Text')
