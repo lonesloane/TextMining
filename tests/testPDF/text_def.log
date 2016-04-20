@@ -1,29 +1,20 @@
-59.54399871|767.175357559|142.93999266|777.210717522|CONFIDENTIAL  
-417.7000122|767.175357559|532.91997313|777.210717522|TAD/PG(2014)10/PROV  
-59.54399871|730.075381979|73.58399749|739.934101943|II.  
-103.58000183|730.075381979|236.81000304|739.934101943|PAYMENT EXPERIENCE  
-59.54399871|705.475345359|129.49999785|715.334065323|INDICATORS  
-59.54399871|681.115360009|70.58399749|691.150719972|9.  
-102.01999664|681.115360009|488.49999022|691.150719972|Two indicator groups are taken into account to calculate the payment experience score:  
-102.01999664|655.675357559|535.400476042|666.097117521|  The payment experience of all Export Credit Agencies (ECAs) of the OECD Participants to  
-119.05999755|642.955386859|248.09000182|652.990746822|the Arrangement as a whole.  
-102.01999664|617.635379539|464.25999999|628.057139501|  Payment arrears towards the International Monetary Fund or the World Bank.  
-59.54399871|580.165347809|216.89000487|602.920739502|10.  from several types of observations:  
-102.01999664|592.885379539|535.31791507|602.920739502|With regard to the payment experience of all the Participants’ ECAs as a whole, the score results  
-102.01999664|529.525333149|535.79997801|565.267100431|  Quarterly  reported  payment  experience  on  medium-  and  long-term  (MLT)  contracts,  i.e.  contracts  with  repayment  terms  longer  than  one  year  and  contracts  for  capital  goods  or  projects even if payable on cash or short-term credit.  
-102.01999664|504.085361229|535.713282144|514.507121191|  Quarterly reported payment experience on short-term transactions (ST), i.e. repayment terms  
-119.05999755|491.365360009|187.25000549|501.400719972|up to one year.  
-102.01999664|415.385349019|535.79997801|476.467112641|  Quarterly reported payment experience on rescheduling or refinancing countries after they  had  their  debt  consolidated.  This  experience  is  considered  regarding  post-cut-off  date  (PCOD)  contracts  and  maturities  due  under  rescheduling  or  refinancing  agreements  for  those countries that are still negotiating rescheduling agreements or are still owing maturities  under past rescheduling or refinancing agreements.  
-59.54399871|352.745364889|535.746386414|400.700707772|11.  Although  the  country  classification  applies  to  business  with  a  repayment  period  of  at  least  two  years, payment experience on ST transactions is considered to be an important factor to assess the risk, as  it is acknowledged that  a country  that  defaults  on short-term  business (which  mostly  consists  of  sales  of  consumer goods) is in a very bad position to seek medium- and long-term credits.  
-59.54399871|315.425357559|192.76999449|338.060723632|12.  values have been determined:  
-102.01999664|328.025363669|535.33999507|338.060723632|The common payment experience is measured by three different ratios, for each of which critical  
-102.01999664|289.835361229|225.40999389|300.257121191|  Arrears/Commitments.  
-102.01999664|264.395358779|280.73000121|274.817118741|  Unrecovered claims/Commitments.  
-102.01999664|238.955356339|465.33998656|249.377116301|  Amounts paid/Amounts due under rescheduling or refinancing agreements.  
-59.54399871|201.755359389|361.39000487|224.510720582|13.  case of rescheduling countries, for MLT contracts after cut-off date.  
-102.01999664|214.475360619|535.29583507|224.510720582|The first two ratios are calculated separately for MLT contracts, for ST transactions and, in the  
-59.54399871|176.915363059|159.14000487|186.774083023|CRITICAL VALUES  
-59.54399871|139.835361229|385.15001463|162.470727292|14.  critical values that have been defined according to the ECAs’ experience.  
-102.01999664|152.435367329|535.42831507|162.470727292|For each indicator, a score is calculated by comparing the value of the indicator with the levels of  
+59.54399871|767.175357559|62.3039987|777.210717522|  
+420.7000122|767.175357559|532.91997313|777.210717522|EDU/CERI/CD(2014)17  
+59.54399871|730.315372209|472.71687473|740.361772172|Tschannen-Moran, M. (2001), “Collaboration and the need for trust”, Journal of Educational  
+87.86399841|717.715335589|228.40999389|727.761735552|Administration 39(4): 308-331.  
+59.54399871|693.115360009|504.018076264|703.150719972|Van Damme, D. (2012), “Trust in educational governance and pedagogy”, Presentation prepared for  
+87.86399841|680.395389309|241.84999632|690.430749272|conference in Jerusalem, 24 May.   
+59.54399871|655.795352679|531.094245872|665.841752642|Van Houtte, M. (2007), “Exploring teacher trust in technical/vocational secondary schools”, Teaching and  
+87.86399841|643.075381979|233.68999266|653.121781942|Teacher Education 23: 826-839.  
+59.54399871|618.475345359|502.430305858|628.521745322|Van Maele, D., Forsyth, P. and Van Houtte, M. (2014), Trust and School Life: The Role of Trust for  
+87.86399841|605.755374649|379.39000487|615.801774612|Learning, Teaching, Leading and Bridging, Dordrecht: Springer.   
+59.54399871|581.125369769|515.608470144|591.171769732|Van Twist, M. et al. (2013), Coping with Very Weak Primary Schools: Towards Smart Interventions in  
+87.86399841|568.525333149|354.30998779|578.571733112|Dutch Education Policy, Education Working Paper, No. 98.  
+59.54399871|543.805362449|526.997835428|553.851762412|Wilkoszewski, H. and Sundby, E. (forthcoming), Steering from the Centre: New Modes of Governance in  
+87.86399841|531.205386859|349.99001097|541.251786822|Multi-Level Education Systems, Education Working Paper.  
+59.54399871|506.485355119|487.927598462|516.531755082|Winner, E., Goldstein, T. and Vincent-Lancrin, S. (2013), Art for Art’s Sake? The Impact of Arts  
+87.86399841|493.885349019|251.45000243|503.931748982|Education, OECD Publishing, Paris.  
+59.54399871|469.285373429|62.3039987|479.320733392|  
+81.62400054|444.545352679|84.38400053|454.580712642|  
 59.54399871|62.5353581686|62.3039987|72.5707181323|  
-293.57000732|62.5353581686|301.86998534|72.5707181323|6  
+290.80999755|62.5353581686|304.6299951|72.5707181323|43  

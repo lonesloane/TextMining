@@ -93,28 +93,7 @@ def plot_cells(rec_list, color, fill=False):
         add_rect(x0=_rec.x0, y0=_rec.y0, x1=_rec.x1, y1=_rec.y1, color=color, fill=fill)
 
 
-def logging_setup():
-    logging.basicConfig(level=logging.DEBUG, format='%(message)s')
-    _logger = logging.getLogger('table_extractor')
-    # create file handler which logs even debug messages
-    fh = logging.FileHandler('table_extractor.log', mode='w')
-    fh.setLevel(logging.DEBUG)
-    # create console handler with a higher log level
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.INFO)
-    # create formatter and add it to the handlers
-    formatter = logging.Formatter('%(message)s')
-    fh.setFormatter(formatter)
-    ch.setFormatter(formatter)
-    # add the handlers to the logger
-    _logger.addHandler(fh)
-    _logger.addHandler(ch)
-
-    return _logger
-
-
 if __name__ == '__main__':
-    logger = logging_setup()
     # rec_def_file = 'rec_def-JT03365818-1.log'
     # text_def_file = 'text_def-JT03365818-1.log'
     rec_def_file = 'rec_def.log'
@@ -137,7 +116,7 @@ if __name__ == '__main__':
     for cell in outer_edges:
         print 'Collapsed cell built from {nrows} inner rows and {ncolumns} inner columns'.format(nrows=cell.rows,
                                                                                                  ncolumns=cell.columns)
-    plot_cells(outer_edges, 'red')
+    # plot_cells(outer_edges, 'red')
 
     plt.show()
 
