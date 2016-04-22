@@ -24,7 +24,7 @@ text_def = None
 class PDFTextExtractor:
 
     def __init__(self):
-        self.xml_root = ET.Element('pdfContent')
+        # self.xml_root = ET.Element('pdfContent')
         self.contents = dict()
 
     def extract_text(self, pdf_file_path):
@@ -32,7 +32,8 @@ class PDFTextExtractor:
         pdf_text = self.convert_pdf_layout_to_text(pdf_file_path)
         return pdf_text
 
-    def extract_sentences(self, pdf_text):
+    @staticmethod
+    def extract_sentences(pdf_text):
         pdf_sentences = PunktSentenceTokenizer().tokenize(pdf_text.decode('utf-8'))
         return pdf_sentences
 
@@ -90,7 +91,7 @@ class PDFTextExtractor:
                 logger.info("="*20)
                 logger.info("Parsing PDF content\n")
                 logger.info("="*20)
-                pages = self._parse_pages(doc)
+                pages = self.parse_pages(doc)
 
                 page_nb = 0
                 fragment_type = FragmentType.UNKNOWN
@@ -99,8 +100,10 @@ class PDFTextExtractor:
                     logger.info('Validating page {page_nb}'.format(page_nb=page_nb))
                     logger.info('='*20)
                     fragment_type = self.validate(page_text, page_cells, fragment_type)
-
                     page_nb += 1
+                    # TODO: See if possible to keep processing documents beyond annexes
+                    if fragment_type is FragmentType.ANNEX:
+                        break
 
                 #pdf_txt = ET.tostring(self.xml_root)
                 pdf_txt = JSONEncoder().encode(self.contents)
@@ -114,7 +117,7 @@ class PDFTextExtractor:
 
         return pdf_txt
 
-    def _parse_pages(self, doc):
+    def parse_pages(self, doc):
         """With an open PDFDocument object, get the pages and parse each one
         """
         rsrcmgr = PDFResourceManager()
@@ -123,8 +126,8 @@ class PDFTextExtractor:
         interpreter = PDFPageInterpreter(rsrcmgr, device)
         pages = []
         for i, page in enumerate(PDFPage.create_pages(doc)):
-            if i < 34 or i > 50:
-                continue
+            #if i < 14 or i > 16:
+            #    continue
             if _log_level > 2:
                 logger.debug('\n'+'-'*50)
                 logger.debug('Processing page {i}'.format(i=i))
@@ -170,8 +173,10 @@ class PDFTextExtractor:
             elif isinstance(lt_obj, LTFigure):
                 # TODO: Some documents are entirely made up of LTFigures. Not possible to simply ignore them !!!
                 # At least, check if no text was extracted at all, in which case fallback to other extraction strategy.
-                '2014/11/07/JT03365773.pdf'
-                '2014/11/07/JT03365809'
+                # eg:
+                # '2014/11/03/JT03365454.pdf'
+                # '2014/11/07/JT03365773.pdf'
+                # '2014/11/07/JT03365809.pdf'
                 if _log_level > 1:
                     logger.debug('LTFigure -- ignoring')
                 # LTFigure objects are containers for other LT* objects, so recurse through the children
@@ -204,74 +209,101 @@ class PDFTextExtractor:
         return h
 
     def validate(self, page_txt, page_cells, previous_fragment_type):
-        """
-        Examines the content of page_txt and filters out "non-relevant" content
-        :param page_txt: dictionary of text fragments with their coordinates,
-         i.e. {(x0, y0, x1, y1):'text of fragment', (x0, y0, x1, y1):'text of fragment', ...}
-        :param page_cells: list of LRect coordinates found on the page (potential table cells)
-        :param previous_fragment_type:
-        :return: text considered relevant and boolean to indicate whether document analysis should stop here
-        """
         logger.debug('Enter page validation')
 
-        if PDFPageFilter.is_cover(page_txt):
-            logger.info('\nMATCH - {Cover Page} found.')
-            current_fragment_type = FragmentType.COVER_PAGE
+        coord = None
+        while True:
+            is_cover = PDFPageFilter.is_cover(page_txt)
+            if is_cover:
+                logger.info('\nMATCH - {Cover Page} found.')
+                current_fragment_type = FragmentType.COVER_PAGE
+                break
 
-        elif PDFPageFilter.is_toc(page_txt, previous_fragment_type):
-            logger.info('\nMATCH - {Table Of Contents} found.')
-            current_fragment_type = FragmentType.TABLE_OF_CONTENTS
+            is_toc = PDFPageFilter.is_toc(page_txt, previous_fragment_type)
+            if is_toc:
+                logger.info('\nMATCH - {Table Of Contents} found.')
+                current_fragment_type = FragmentType.TABLE_OF_CONTENTS
+                break
 
-        elif PDFPageFilter.is_glossary(page_txt, previous_fragment_type):
-            logger.info('\nMATCH - {Glossary} found.')
-            current_fragment_type = FragmentType.GLOSSARY
+            is_summary = PDFPageFilter.is_summary(page_txt, previous_fragment_type)
+            if is_summary:
+                logger.info('\nMATCH - {Summary} found.')
+                current_fragment_type = FragmentType.SUMMARY
+                break
 
-        elif PDFPageFilter.is_bibliography(page_txt, previous_fragment_type):
-            logger.info('\nMATCH - {Bibliography} found.')
-            current_fragment_type = FragmentType.BIBLIOGRAPHY
+            is_glossary = PDFPageFilter.is_glossary(page_txt, previous_fragment_type)
+            if is_glossary:
+                logger.info('\nMATCH - {Glossary} found.')
+                current_fragment_type = FragmentType.GLOSSARY
+                break
 
-        elif PDFPageFilter.is_participants_list(page_txt, previous_fragment_type):
-            logger.info('\nMATCH - {Participants List} found.')
-            current_fragment_type = FragmentType.PARTICIPANTS_LIST
+            is_bibliography, coord = PDFPageFilter.is_bibliography(page_txt, previous_fragment_type)
+            if is_bibliography:
+                logger.info('\nMATCH - {Bibliography} found.')
+                current_fragment_type = FragmentType.BIBLIOGRAPHY
+                break
 
-        elif PDFPageFilter.is_annex(page_txt, previous_fragment_type):
-            logger.info('\nMATCH - {Annex} found.')
-            current_fragment_type = FragmentType.ANNEX
+            is_participants_list = PDFPageFilter.is_participants_list(page_txt, previous_fragment_type)
+            if is_participants_list:
+                logger.info('\nMATCH - {Participants List} found.')
+                current_fragment_type = FragmentType.PARTICIPANTS_LIST
+                break
 
-        elif PDFPageFilter.is_summary(page_txt, previous_fragment_type):
-            logger.info('\nMATCH - {Summary} found.')
-            current_fragment_type = FragmentType.SUMMARY
+            is_annex = PDFPageFilter.is_annex(page_txt, previous_fragment_type)
+            if is_annex:
+                logger.info('\nMATCH - {Annex} found.')
+                current_fragment_type = FragmentType.ANNEX
+                break
 
-        else:
             PDFPageFilter.process_text(page_txt, page_cells)
             current_fragment_type = FragmentType.TEXT
+            break
 
         logger.debug('Exit page validation')
 
-        page_txt = re_order_text(page_txt)
-        self.add_xml_fragment(page_txt, fragment_type=current_fragment_type)
+        if coord:  # TODO: remove condition, should always be true...
+            # TODO: split page_txt before and after coord
+            # then call add_fragment with previous and current fragment_type
+            previous_fragment_txt = get_previous_fragment_text(page_txt, coord)
+            next_fragment_txt = get_next_fragment_text(page_txt, coord)
+            self.add_fragment(previous_fragment_txt, fragment_type=previous_fragment_type)
+            self.add_fragment(next_fragment_txt, fragment_type=current_fragment_type)
+        else:
+            fragment_txt = get_fragment_text(page_txt)
+            self.add_fragment(fragment_txt, fragment_type=current_fragment_type)
+
         return current_fragment_type
 
-    def add_xml_fragment(self, page_txt, fragment_type):
+    def add_fragment(self, page_txt, fragment_type):
         content_list = list()
-        xml_fragment = ET.SubElement(self.xml_root, fragment_type)
         for p in page_txt:
-            xml_p = ET.SubElement(xml_fragment, 'p')
             content_list.append(p)
-            # logger.debug('xml text:{p}'.format(p=p))
-            xml_p.text = p.decode('utf-8')
         if fragment_type not in self.contents:
             self.contents[fragment_type] = content_list
         else:
             self.contents[fragment_type].extend(content_list)
 
 
-def re_order_text(page_txt):
+def get_fragment_text(page_txt):
     txt = [(-coord[1], -coord[0], str_array) for coord, str_array in page_txt.items()]
+    return re_order_text(txt)
+
+
+def get_previous_fragment_text(page_txt, split_coord):
+    txt = [(-coord[1], -coord[0], str_array) for coord, str_array in page_txt.items() if coord[1] > split_coord[1]]
+    return re_order_text(txt)
+
+
+def get_next_fragment_text(page_txt, split_coord):
+    txt = [(-coord[1], -coord[0], str_array) for coord, str_array in page_txt.items() if coord[1] <= split_coord[1]]
+    return re_order_text(txt)
+
+
+def re_order_text(txt):
     txt = sorted(txt)
-    logger.debug('-'*20)
+    logger.debug('-' * 20)
     logger.debug('Sorted page text:')
-    logger.debug('-'*20)
+    logger.debug('-' * 20)
     for elem in txt:
         logger.debug('{elem}'.format(elem=elem))
     return [str_array for _, _, str_array in txt]

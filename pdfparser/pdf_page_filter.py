@@ -17,15 +17,6 @@ class PDFPageFilter:
         pass
 
     @staticmethod
-    def is_summary(page_txt, current_fragment_type):
-        for coord, fragment in page_txt.items():
-            fragment = fragment.strip()
-            if (fragment.lower().find('SUMMARY'.lower()) >= 0 or
-                fragment.lower().find('EXECUTIVE SUMMARY'.lower()) >= 0):
-                return True
-        return False
-
-    @staticmethod
     def is_cover(page_txt):
         for coord, fragment in page_txt.items():
             fragment = fragment.strip().lower()
@@ -41,12 +32,34 @@ class PDFPageFilter:
         return False
 
     @staticmethod
+    def is_summary(page_txt, current_fragment_type):
+        """
+
+        Sample documents:
+            - '2014/11/03/JT03365426.pdf'
+        :param page_txt:
+        :param current_fragment_type:
+        :return:
+        """
+        for coord, fragment in page_txt.items():
+            fragment = fragment.strip().lower()
+            if (fragment == 'SUMMARY'.lower() or
+                fragment == 'RÉSUMÉ'.lower() or
+                fragment == 'EXECUTIVE SUMMARY'.lower()):
+                return True
+        return False
+
+    @staticmethod
     def is_toc(page_txt, current_fragment_type):
         nb = 0
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
-            if fragment == 'TABLE OF CONTENTS' >= 0:  # Expected text in uppercase !
+            if fragment == 'TABLE OF CONTENTS' or \
+            fragment == 'TABLE DES MATIÈRES':  # Expected text in uppercase !
                 return True
+            # Avoid un-necessary parsing of the page
+            if not current_fragment_type == FragmentType.TABLE_OF_CONTENTS:
+                continue
             # if regexp matches and previous page was already 'Table of Content'
             # then assume this is the continuation of 'Table of Content'
             nb += len(re.findall('([\.]{10,}?\s[0-9]{1,4})', fragment))
@@ -69,10 +82,13 @@ class PDFPageFilter:
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
             # TODO: improve the following to avoid false positive
-            if (fragment.lower().find('BIBLIOGRAPHY'.lower()) >= 0 or
-                fragment.lower().find('Bibliographie'.lower()) >= 0 or
+            if (fragment.lower() == 'BIBLIOGRAPHY'.lower() or
+                fragment.lower() == 'Bibliographie'.lower() or
                 fragment == 'REFERENCES' or fragment == 'RÉFÉRENCES'):
-                return True
+                return True, coord
+            # Avoid un-necessary parsing of the page
+            if not current_fragment_type == FragmentType.BIBLIOGRAPHY:
+                continue
             # if regexp matches and previous page was already 'Bibliography'
             # then assume this is the continuation of 'Bibliography'.
             # Some examples of patterns usually found in bibliographies:
@@ -80,8 +96,8 @@ class PDFPageFilter:
             # "OECD (2010c), The OECD Innovation Strategy: Getting a Head Start on Tomorrow, Paris: OECD."
             nb += len(re.findall('((?:[A-Z].*[A-Z])?(?:OECD)?.*\([0-9]{4}.*\).*)', fragment))
             if nb > 2 and current_fragment_type == FragmentType.BIBLIOGRAPHY:
-                return True
-        return False
+                return True, None
+        return False, None
 
     @staticmethod
     def is_participants_list(page_txt, current_fragment_type):

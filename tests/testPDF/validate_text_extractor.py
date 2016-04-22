@@ -1,4 +1,3 @@
-import logging
 import os
 
 import pdfparser.text_extractor as pdfextractor
@@ -14,7 +13,7 @@ def main():
     # Parse pdf content
     extractor = pdfextractor.PDFTextExtractor()
     # pdf_long_filename = '2014/11/07/'+file_name+'.pdf'
-    pdf_long_filename = '2014/11/02/JT03365425.pdf'
+    pdf_long_filename = '2014/11/03/JT03365463.pdf'
     pdf_file_path = os.path.join(PDF_ROOT_FOLDER, pdf_long_filename)
     pdf_text = extractor.extract_text(pdf_file_path)
     logger.debug("\n"+"*"*40+"\n")
