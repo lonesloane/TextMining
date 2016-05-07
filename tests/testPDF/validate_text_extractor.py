@@ -1,39 +1,59 @@
+import csv
 import os
+import unittest
 
+import pdfparser.report
 import pdfparser.text_extractor as pdfextractor
-from pdfparser import logger
 
 PDF_ROOT_FOLDER = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testPDF/pdfs'
 
 
-def main():
+class TextExtractorTestCase(unittest.TestCase):
 
-    # file_name = raw_input("File name: (press enter to exit)")
+    def test_corpus_extraction(self):
+        expected_results = load_expected_results()
+        for root, dirs, files_list in os.walk(PDF_ROOT_FOLDER):
+            for pdf_file in files_list:
+                if os.path.isfile(os.path.join(root, pdf_file)):
+                    jt = pdf_file.split('.')[0]
+                    print 'jt: {jt}'.format(jt=jt)
+                    pdf_path = os.path.join(root, pdf_file)
+                    print 'path: {pdf_path}'.format(pdf_path=pdf_path)
+                    print 'processing: {root}/{pdf_file}'.format(root=root, pdf_file=pdf_file)
+                    report = pdfparser.report.Report()
+                    extractor = pdfextractor.PDFTextExtractor(report=report)
+                    pdf_text = extractor.extract_text(pdf_path)
+                    self.validate_pdf_structure(expected_results[jt], report)
 
-    # Parse pdf content
-    extractor = pdfextractor.PDFTextExtractor()
-    # pdf_long_filename = '2014/11/07/'+file_name+'.pdf'
-    pdf_long_filename = '2014/11/03/JT03365463.pdf'
-    pdf_file_path = os.path.join(PDF_ROOT_FOLDER, pdf_long_filename)
-    pdf_text = extractor.extract_text(pdf_file_path)
-    logger.debug("\n"+"*"*40+"\n")
-    logger.debug("EXTRACTED PDF TEXT:\n")
-    logger.debug("*"*40+"\n")
-    logger.debug(pdf_text)
-    logger.debug("*"*40+"\n")
-    return
-    pdf_sentences = extractor.extract_sentences(pdf_text)
-    logger.debug("\n"+"*"*40+"\n")
-    logger.debug("EXTRACTED PDF TEXT:\n")
-    logger.debug("*"*40+"\n")
-    isentence = 0
-    for sentence in pdf_sentences:
-        isentence += 1
-        sentence = sentence.strip()
-        logger.debug("\n[sentence {isentence}]:\n{sentence}".format(isentence=isentence,
-                                                                    sentence=sentence.encode('utf-8')))
-    logger.debug("*"*40+"\n")
+    def validate_pdf_structure(self, expected_structure, extract_report):
+        print '#'*30
+        print 'JT: {jt}'.format(jt=expected_structure['JT'])
+        print '#'*30
+        for key in expected_structure.iterkeys():
+            if key == 'JT' or key == 'validated':
+                continue
+            actual = extract_report.__dict__[key.lower()]
+            expected = int(expected_structure[key])
+            self.assertEqual(expected, actual, '{key}: Expected {expected} - Actual {actual} '.format(key=key,
+                                                                                          expected=expected,
+                                                                                          actual=actual))
+            match = True if expected == actual else False
+            print '-'*30
+            print '{key}: Expected {expected} - Actual {actual} - Result: {match}'.format(key=key,
+                                                                                          expected=expected,
+                                                                                          actual=actual,
+                                                                                          match=match)
+            print '-'*30
+
+
+def load_expected_results():
+    expected_results = dict()
+    with open('PDF_Results.csv', 'rb') as csv_results:
+        csvreader = csv.DictReader(csv_results, delimiter=',')
+        for row in csvreader:
+            expected_results[row['JT']] = row
+    return expected_results
 
 
 if __name__ == '__main__':
-    main()
+    unittest.main()

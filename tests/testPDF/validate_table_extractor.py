@@ -105,8 +105,8 @@ if __name__ == '__main__':
     min_x, max_x, min_y, max_y, cells = load_cells(rec_def_file)
     plot_cells(cells, 'blue')
 
-    min_x, max_x, min_y, max_y, text_blocks = load_text(text_def_file)
-    plot_cells(text_blocks, 'black')
+    # min_x, max_x, min_y, max_y, text_blocks = load_text(text_def_file)
+    # plot_cells(text_blocks, 'black')
 
     plt.xlim(min_x - 10.0, max_x + 10.0)
     plt.ylim(min_y - 10.0, max_y + 10.0)
@@ -116,7 +116,7 @@ if __name__ == '__main__':
     for cell in outer_edges:
         print 'Collapsed cell built from {nrows} inner rows and {ncolumns} inner columns'.format(nrows=cell.rows,
                                                                                                  ncolumns=cell.columns)
-    # plot_cells(outer_edges, 'red')
+    plot_cells(outer_edges, 'red')
 
     plt.show()
 

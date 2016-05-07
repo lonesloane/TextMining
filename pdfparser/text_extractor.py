@@ -1,6 +1,4 @@
-import logging
 from cStringIO import StringIO
-import xml.etree.ElementTree as ET
 from json import JSONEncoder
 
 from nltk import PunktSentenceTokenizer
@@ -11,7 +9,7 @@ from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.pdfpage import PDFPage
 from pdfminer.pdfparser import PDFParser
 
-from pdfparser import logger, LOG_LEVEL, _log_level
+from pdfparser import logger, _log_level
 from pdfparser.pdf_fragment_type import FragmentType
 from pdfparser.pdf_page_filter import PDFPageFilter
 from pdfparser.table_edges_extractor import Cell
@@ -23,19 +21,15 @@ text_def = None
 
 class PDFTextExtractor:
 
-    def __init__(self):
+    def __init__(self, report=None):
         # self.xml_root = ET.Element('pdfContent')
         self.contents = dict()
+        self.report = report
 
     def extract_text(self, pdf_file_path):
         # pdf_text = self.convert_pdf_to_txt(pdf_file)
         pdf_text = self.convert_pdf_layout_to_text(pdf_file_path)
         return pdf_text
-
-    @staticmethod
-    def extract_sentences(pdf_text):
-        pdf_sentences = PunktSentenceTokenizer().tokenize(pdf_text.decode('utf-8'))
-        return pdf_sentences
 
     def convert_pdf_to_txt(self, path):
         rsrcmgr = PDFResourceManager()
@@ -126,7 +120,7 @@ class PDFTextExtractor:
         interpreter = PDFPageInterpreter(rsrcmgr, device)
         pages = []
         for i, page in enumerate(PDFPage.create_pages(doc)):
-            #if i < 14 or i > 16:
+            #if i < 1 or i > 1:
             #    continue
             if _log_level > 2:
                 logger.debug('\n'+'-'*50)
@@ -210,52 +204,53 @@ class PDFTextExtractor:
 
     def validate(self, page_txt, page_cells, previous_fragment_type):
         logger.debug('Enter page validation')
+        pdf_filter = PDFPageFilter(report=self.report)
 
         coord = None
         while True:
-            is_cover = PDFPageFilter.is_cover(page_txt)
+            is_cover = pdf_filter.is_cover(page_txt)
             if is_cover:
                 logger.info('\nMATCH - {Cover Page} found.')
                 current_fragment_type = FragmentType.COVER_PAGE
                 break
 
-            is_toc = PDFPageFilter.is_toc(page_txt, previous_fragment_type)
+            is_toc = pdf_filter.is_toc(page_txt, previous_fragment_type)
             if is_toc:
                 logger.info('\nMATCH - {Table Of Contents} found.')
                 current_fragment_type = FragmentType.TABLE_OF_CONTENTS
                 break
 
-            is_summary = PDFPageFilter.is_summary(page_txt, previous_fragment_type)
+            is_summary = pdf_filter.is_summary(page_txt, previous_fragment_type)
             if is_summary:
                 logger.info('\nMATCH - {Summary} found.')
                 current_fragment_type = FragmentType.SUMMARY
                 break
 
-            is_glossary = PDFPageFilter.is_glossary(page_txt, previous_fragment_type)
+            is_glossary = pdf_filter.is_glossary(page_txt, previous_fragment_type)
             if is_glossary:
                 logger.info('\nMATCH - {Glossary} found.')
                 current_fragment_type = FragmentType.GLOSSARY
                 break
 
-            is_bibliography, coord = PDFPageFilter.is_bibliography(page_txt, previous_fragment_type)
+            is_bibliography, coord = pdf_filter.is_bibliography(page_txt, previous_fragment_type)
             if is_bibliography:
                 logger.info('\nMATCH - {Bibliography} found.')
                 current_fragment_type = FragmentType.BIBLIOGRAPHY
                 break
 
-            is_participants_list = PDFPageFilter.is_participants_list(page_txt, previous_fragment_type)
+            is_participants_list = pdf_filter.is_participants_list(page_txt, previous_fragment_type)
             if is_participants_list:
                 logger.info('\nMATCH - {Participants List} found.')
                 current_fragment_type = FragmentType.PARTICIPANTS_LIST
                 break
 
-            is_annex = PDFPageFilter.is_annex(page_txt, previous_fragment_type)
+            is_annex = pdf_filter.is_annex(page_txt, previous_fragment_type)
             if is_annex:
                 logger.info('\nMATCH - {Annex} found.')
                 current_fragment_type = FragmentType.ANNEX
                 break
 
-            PDFPageFilter.process_text(page_txt, page_cells)
+            pdf_filter.process_text(page_txt, page_cells)
             current_fragment_type = FragmentType.TEXT
             break
 
@@ -282,6 +277,11 @@ class PDFTextExtractor:
             self.contents[fragment_type] = content_list
         else:
             self.contents[fragment_type].extend(content_list)
+
+
+def extract_sentences(pdf_text):
+        pdf_sentences = PunktSentenceTokenizer().tokenize(pdf_text.decode('utf-8'))
+        return pdf_sentences
 
 
 def get_fragment_text(page_txt):
