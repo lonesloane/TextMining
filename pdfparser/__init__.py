@@ -1,6 +1,6 @@
 import logging
 
-logging.basicConfig(level=logging.INFO, format='%(message)s')
+logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 logger = logging.getLogger('pdfparser')
 # create file handler which logs even debug messages
 fh = logging.FileHandler('summarizer.log', mode='w')
@@ -13,8 +13,8 @@ formatter = logging.Formatter('%(message)s')
 fh.setFormatter(formatter)
 # ch.setFormatter(formatter)
 # add the handlers to the logger
-#logger.addHandler(fh)
+logger.addHandler(fh)
 #logger.addHandler(ch)
 
 # LOG_LEVEL = logging.INFO
-_log_level = 1  # verbosity of log. 1:normal - 2:verbose - 3:visual
+_log_level = 3  # verbosity of log. 1:normal - 2:verbose - 3:visual

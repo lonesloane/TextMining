@@ -17,6 +17,8 @@ class Cell:
         self.y1 = y1
         self.rows = rows if abs(self.y0 - self.y1) > Cell.MIN_HEIGHT else 0
         self.columns = columns if abs(self.x0 - self.x1) > Cell.MIN_WIDTH else 0
+        log('Nb rows: {nb_row}'.format(nb_row=self.rows))
+        log('Nb columns: {nb_col}'.format(nb_col=self.columns))
 
     def __repr__(self):
         return '[' + 'x0: ' + str(self.x0) + ', y0: ' + str(self.y0) \

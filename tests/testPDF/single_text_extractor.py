@@ -33,11 +33,11 @@ def main():
 def extract_text(extractor, pdf_long_filename):
     pdf_file_path = os.path.join(PDF_ROOT_FOLDER, pdf_long_filename)
     pdf_text = extractor.extract_text(pdf_file_path)
-    logger.debug("\n" + "*" * 40 + "\n")
-    logger.debug("EXTRACTED PDF TEXT")
-    logger.debug("*" * 40 + "\n")
-    logger.debug(pdf_text)
-    logger.debug("*" * 40 + "\n")
+    print("\n" + "*" * 40 + "\n")
+    print("EXTRACTED PDF TEXT")
+    print("*" * 40 + "\n")
+    print(pdf_text)
+    print("*" * 40 + "\n")
     return pdf_text
 
 

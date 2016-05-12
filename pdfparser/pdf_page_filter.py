@@ -70,10 +70,18 @@ class PDFPageFilter:
         return False
 
     def is_glossary(self, page_txt, current_fragment_type):
+        nb = 0
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
             if (fragment.find('LIST OF ABBREVIATIONS') >= 0 or
                 fragment.find('GLOSSARY') >= 0):   # Expected text in uppercase !
+                self.report.glossary = 1
+                return True
+            # Some examples of patterns usually found in glossaries:
+            # "ATM – Agriculture Trade and Markets division of TAD"
+            # "COAG – Committee for Agriculture of the OECD"
+            nb += len(re.findall('(?:[A-Z]{3,10}\s+?–\s+?[A-Z])', fragment))
+            if nb > 5:
                 self.report.glossary = 1
                 return True
         return False
@@ -103,10 +111,26 @@ class PDFPageFilter:
         return False, None
 
     def is_participants_list(self, page_txt, current_fragment_type):
+        nb = 0
         for coord, fragment in page_txt.items():
-            fragment = fragment.strip().lower()
-            if (fragment.find('Participants list'.lower()) >= 0 or
-                fragment.find('Liste des participants'.lower()) >= 0):
+            fragment = fragment.strip()
+            if (fragment.lower().find('Participants list'.lower()) >= 0 or
+                fragment.lower().find('LIST OF PARTICIPANTS'.lower()) >= 0 or
+                fragment.lower().find('Liste des participants'.lower()) >= 0):
+                self.report.participants_list = 1
+                return True
+            # Avoid un-necessary parsing of the page
+            if not current_fragment_type == FragmentType.PARTICIPANTS_LIST:
+                continue
+            # if regexp matches and previous page was already 'Participants List'
+            # then assume this is the continuation of 'Participants List'.
+            # Some examples of patterns usually found in bibliographies:
+            # "Mr. Christian HEDERER, Counsellor for Energy, Trade, Industry and Science"
+            # "Ms. Maria-Antoinetta SIMONS, Permanent Delegation of Belgium to the OECD"
+            # nb += len(re.findall('(?:Mr\.|Ms\.)(?: [A-Z][a-z ]*?.*? [A-Z ].*?,)', fragment)) // TODO: check equivalence
+            nb += len(re.findall('(?:M[r]?\.|Mme\.?|M[i|r]?s[s]?\.?|Dr\.?)(?: [A-Za-z\s]*?.*? [A-Z ]*[,|\s]?)', fragment))
+            logger.debug('participants found. nb: {nb}'.format(nb=nb))
+            if nb > 2 and current_fragment_type == FragmentType.PARTICIPANTS_LIST:
                 self.report.participants_list = 1
                 return True
         return False
@@ -131,7 +155,7 @@ class PDFPageFilter:
 
         if len(outer_edges) > 0:
             # TODO: Find a way to keep the content of tables, surrounded by explicit "table" elements
-            self.report.tables += 1
+            self.report.tables += len(outer_edges)
             logger.info('\nMATCH - {Table} found.')
             logger.debug('Found {ntables} tables on page'.format(ntables=len(outer_edges)))
             for cell in outer_edges:
@@ -146,8 +170,8 @@ class PDFPageFilter:
                     del page_txt[coord]
             logger.debug('After table filtering, length of page text:{len}'.format(len=len(page_txt)))
 
-    def process_text(self, page_txt, page_cells):
-        self.filter_tables(page_txt, page_cells)
+    @staticmethod
+    def process_text(page_txt, page_cells):
         for coord, substring in page_txt.items():
             # remove paragraph numbers, e.g. "23."
             # sometimes wrongly inserted within the text from incorrect layout analysis

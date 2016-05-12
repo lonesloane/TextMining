@@ -120,8 +120,8 @@ class PDFTextExtractor:
         interpreter = PDFPageInterpreter(rsrcmgr, device)
         pages = []
         for i, page in enumerate(PDFPage.create_pages(doc)):
-            #if i < 1 or i > 1:
-            #    continue
+            if i < 1 or i > 1:
+                continue
             if _log_level > 2:
                 logger.debug('\n'+'-'*50)
                 logger.debug('Processing page {i}'.format(i=i))
@@ -171,6 +171,7 @@ class PDFTextExtractor:
                 # '2014/11/03/JT03365454.pdf'
                 # '2014/11/07/JT03365773.pdf'
                 # '2014/11/07/JT03365809.pdf'
+                # '2014/11/27/JT03367264.pdf'
                 if _log_level > 1:
                     logger.debug('LTFigure -- ignoring')
                 # LTFigure objects are containers for other LT* objects, so recurse through the children
@@ -206,6 +207,7 @@ class PDFTextExtractor:
         logger.debug('Enter page validation')
         pdf_filter = PDFPageFilter(report=self.report)
 
+        pdf_filter.filter_tables(page_txt, page_cells)
         coord = None
         while True:
             is_cover = pdf_filter.is_cover(page_txt)
@@ -250,7 +252,7 @@ class PDFTextExtractor:
                 current_fragment_type = FragmentType.ANNEX
                 break
 
-            pdf_filter.process_text(page_txt, page_cells)
+            PDFPageFilter.process_text(page_txt, page_cells)
             current_fragment_type = FragmentType.TEXT
             break
 
