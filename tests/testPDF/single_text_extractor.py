@@ -1,9 +1,7 @@
-import csv
 import os
 
 import pdfparser.report
 import pdfparser.text_extractor as pdfextractor
-from pdfparser import logger
 
 PDF_ROOT_FOLDER = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testPDF/pdfs'
 
@@ -11,8 +9,10 @@ PDF_ROOT_FOLDER = '/home/stephane/Playground/PycharmProjects/TextMining/tests/te
 def main():
 
     report = pdfparser.report.Report()
-    extractor = pdfextractor.PDFTextExtractor(report)
-    file_name = raw_input("File name: (press enter to exit)")
+    file_name = raw_input('File name: (press enter to exit)')
+    page_number = raw_input('Single page number: (press enter to ignore)')
+
+    extractor = pdfextractor.PDFTextExtractor(report, page_number)
     for root, dirs, files_list in os.walk(PDF_ROOT_FOLDER):
         for pdf_file in files_list:
             if os.path.isfile(os.path.join(root, pdf_file)):
@@ -33,10 +33,10 @@ def main():
 def extract_text(extractor, pdf_long_filename):
     pdf_file_path = os.path.join(PDF_ROOT_FOLDER, pdf_long_filename)
     pdf_text = extractor.extract_text(pdf_file_path)
-    print("\n" + "*" * 40 + "\n")
-    print("EXTRACTED PDF TEXT")
-    print("*" * 40 + "\n")
-    print(pdf_text)
+    with open('pdf_text.json', 'wb') as json_file:
+        json_file.write(pdf_text)
+    print("\n" + "*" * 40)
+    print("PDF TEXT EXTRACTED SUCCESSFULLY")
     print("*" * 40 + "\n")
     return pdf_text
 
@@ -45,14 +45,14 @@ def extract_sentences(pdf_text):
     # TODO: take only text section from json!!!
     pdf_sentences = pdfextractor.extract_sentences(pdf_text)
     print("\n" + "*" * 40 + "\n")
-    print("EXTRACTED PDF TEXT:\n")
+    print("EXTRACTED SENTENCES:\n")
     print("*" * 40 + "\n")
     isentence = 0
     for sentence in pdf_sentences:
         isentence += 1
         sentence = sentence.strip()
         print("\n[sentence {isentence}]:\n{sentence}".format(isentence=isentence,
-                                                                    sentence=sentence.encode('utf-8')))
+                                                             sentence=sentence.encode('utf-8')))
     print("*" * 40 + "\n")
 
 

@@ -13,5 +13,6 @@ class FragmentType:
     GLOSSARY = 'Glossary'
     TABLE_OF_CONTENTS = 'ToC'
     COVER_PAGE = 'CoverPage'
+    NOTES = 'Notes'
 
 

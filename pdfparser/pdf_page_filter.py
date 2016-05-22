@@ -93,7 +93,8 @@ class PDFPageFilter:
             # TODO: improve the following to avoid false positive
             if (fragment.lower() == 'BIBLIOGRAPHY'.lower() or
                 fragment.lower() == 'Bibliographie'.lower() or
-                fragment == 'REFERENCES' or fragment == 'RÉFÉRENCES'):
+                fragment.lower() == 'REFERENCES'.lower() or
+                fragment.lower() == 'RÉFÉRENCES'.lower()):
                 self.report.bibliography = 1
                 return True, coord
             # Avoid un-necessary parsing of the page
@@ -140,33 +141,63 @@ class PDFPageFilter:
         # TODO: add logic to check that text is first on page
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
-            if fragment.rfind('ANNEX') == 0:  # Expected text in uppercase !
+            if fragment.rfind('ANNEX') == 0 or \
+               fragment.rfind('APPENDIX') == 0 or \
+               fragment == 'TECHNICAL ANNEX' or \
+               fragment == 'FIGURE AND TABLE ANNEX':  # Expected text in uppercase !
                 self.report.annex = 1
                 return True
         return False
 
+    def is_notes(self, page_txt, current_fragment_type):
+        # TODO: Finalize implementation of regexp
+        # test on JT03367009
+        nb = 0
+        # Expect to find word 'NOTES' (in upper case) as first word of sentence, top of the page
+        # TODO: add logic to check that text is first on page
+        for coord, fragment in page_txt.items():
+            fragment = fragment.strip()
+            if fragment.rfind('NOTES') == 0:  # Expected text in uppercase !
+                self.report.notes = 1
+                return True
+            # Avoid un-necessary parsing of the page
+            if not current_fragment_type == FragmentType.NOTES:
+                continue
+            # if regexp matches and previous page was already 'Notes'
+            # then assume this is the continuation of 'Notes'.
+            # Some examples of patterns usually found in notes:
+            # "13 See also Dumbill (2012), for which “big data” is “data that exceeds the processing capacity of "
+            # "3 Drew Harwell, Whirlpool’s “Internet of Things” problem: No one really wants a “smart”"
+            nb += len(re.findall('(?:M[r]?\.|Mme\.?|M[i|r]?s[s]?\.?|Dr\.?)(?: [A-Za-z\s]*?.*? [A-Z ]*[,|\s]?)', fragment))
+            logger.debug('participants found. nb: {nb}'.format(nb=nb))
+            if nb > 2 and current_fragment_type == FragmentType.NOTES:
+                self.report.notes = 1
+                return True
+        return False
+
     def filter_tables(self, page_txt, page_cells):
+        logger.debug('nb cells: {nb}'.format(nb=len(page_cells)))
         outer_edges = table_extractor.find_outer_edges(page_cells) if len(page_cells) > 1 else []
+        logger.debug('nb candidate tables found: {nb}'.format(nb=len(outer_edges)))
 
         if len(outer_edges) > 0:
             # Consider only tables with at least MIN_NUMBER_ROWS and MIN_NUMBER_COLS
-            outer_edges = [cell for cell in outer_edges if cell.rows > PDFPageFilter.MIN_NUMBER_ROWS
-                           and cell.columns > PDFPageFilter.MIN_NUMBER_COLS]
+            outer_edges = [table for table in outer_edges if table.rows > PDFPageFilter.MIN_NUMBER_ROWS
+                           and table.columns > PDFPageFilter.MIN_NUMBER_COLS]
 
         if len(outer_edges) > 0:
             # TODO: Find a way to keep the content of tables, surrounded by explicit "table" elements
             self.report.tables += len(outer_edges)
             logger.info('\nMATCH - {Table} found.')
-            logger.debug('Found {ntables} tables on page'.format(ntables=len(outer_edges)))
-            for cell in outer_edges:
-                logger.debug(cell)
-                logger.debug('{nrows} inner rows and {ncolumns} inner columns'.format(nrows=cell.rows,
-                                                                                      ncolumns=cell.columns))
+            logger.debug('Found {ntables} actual tables on page'.format(ntables=len(outer_edges)))
+            for table in outer_edges:
+                logger.debug(table)
+                logger.debug('{nrows} inner rows and {ncolumns} inner columns'.format(nrows=table.rows,
+                                                                                      ncolumns=table.columns))
             logger.debug('Before table filtering, length of page text:{len}'.format(len=len(page_txt)))
             for coord, _ in page_txt.items():
-                if within_table(coord, outer_edges):
-                    if _log_level > 2:
-                        logger.debug('Inner text ignored.')
+                if text_is_a_cell(coord, outer_edges):
+                    logger.debug('\nignored text: {txt}'.format(txt=page_txt[coord]))
                     del page_txt[coord]
             logger.debug('After table filtering, length of page text:{len}'.format(len=len(page_txt)))
 
@@ -175,19 +206,42 @@ class PDFPageFilter:
         for coord, substring in page_txt.items():
             # remove paragraph numbers, e.g. "23."
             # sometimes wrongly inserted within the text from incorrect layout analysis
-            result = re.sub('(\s?[0-9]{1,4}\.\s?)', ' ', substring)
+            result = re.sub('(^\s?[0-9]{1,4}\.\s?)', ' ', substring)
             if _log_level > 2:
                 logger.debug('regexp on [{substring}]'.format(substring=substring))
                 logger.debug('result: [{result}]'.format(result=result))
             page_txt[coord] = result
 
 
-def within_table(text_cell, outer_edges):
-    for cell in outer_edges:
-        if cell.x0 <= text_cell[X0] and cell.y0 <= text_cell[Y0] \
-                and text_cell[X1] <= cell.x1 and text_cell[Y1] <= cell.y1:
+def text_is_a_cell(coord, outer_edges):
+    for table in outer_edges:
+        if text_within_table(coord, table) and text_is_a_fraction(coord, table):
             if _log_level > 2:
-                logger.debug('Match found: {text_cell} and {cell}'.format(cell=cell, text_cell=text_cell))
+                logger.debug('Match found: {text_cell} and {cell}'.format(cell=table, text_cell=coord))
+                logger.debug('Inner text ignored.')
             return True
     return False
 
+
+def text_within_table(coord, table):
+    if table.x0 <= coord[X0] and table.y0 <= coord[Y0] \
+            and table.x1 >= coord[X1] and table.y1 >= coord[Y1]:
+        return True
+    return False
+
+
+def text_is_a_fraction(coord, table):
+    cell_width = abs(table.x0 - table.x1)
+    text_width = abs(coord[X0] - coord[X1])
+    fraction = text_width / cell_width
+
+    if _log_level > 2:
+        logger.debug('table x0: {x0} - table x1: {x1}'.format(x0=table.x0, x1=table.x1))
+        logger.debug('table width: {cw}'.format(cw=cell_width))
+        logger.debug('text x0: {x0} - text x1: {x1}'.format(x0=coord[X0], x1=coord[X1]))
+        logger.debug('text width: {tw}'.format(tw=text_width))
+        logger.debug('Fraction: {fraction}'.format(fraction=fraction))
+
+    if fraction < .50:  # TODO: extract limit to config file
+        return True
+    return False

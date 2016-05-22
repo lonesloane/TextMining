@@ -21,10 +21,11 @@ text_def = None
 
 class PDFTextExtractor:
 
-    def __init__(self, report=None):
+    def __init__(self, report=None, single_page=None):
         # self.xml_root = ET.Element('pdfContent')
         self.contents = dict()
         self.report = report
+        self.single_page = int(single_page) if single_page else None
 
     def extract_text(self, pdf_file_path):
         # pdf_text = self.convert_pdf_to_txt(pdf_file)
@@ -120,7 +121,7 @@ class PDFTextExtractor:
         interpreter = PDFPageInterpreter(rsrcmgr, device)
         pages = []
         for i, page in enumerate(PDFPage.create_pages(doc)):
-            if i < 1 or i > 1:
+            if self.single_page and (i < self.single_page or i > self.single_page):
                 continue
             if _log_level > 2:
                 logger.debug('\n'+'-'*50)
@@ -159,7 +160,9 @@ class PDFTextExtractor:
                 y0 = lt_obj.bbox[1]
                 x1 = lt_obj.bbox[2]
                 y1 = lt_obj.bbox[3]
-                page_cells.append(Cell(x0, y0, x1, y1))
+                cell = Cell(x0, y0, x1, y1)
+                if cell.rows > 0 or cell.columns > 0:  # ignore 'lines' (i.e. cell without content within)
+                    page_cells.append(cell)
                 if _log_level > 1:
                     logger.debug('LTRect: [x0={x0}, y0={y0}, x1={x1}, y1={y1}]'.format(x0=x0, y0=y0, x1=x1, y1=y1))
                     if _log_level > 2:
@@ -245,6 +248,8 @@ class PDFTextExtractor:
                 logger.info('\nMATCH - {Participants List} found.')
                 current_fragment_type = FragmentType.PARTICIPANTS_LIST
                 break
+
+            # TODO: implement call to pdf_filter.is_notes(page_txt, previous_fragment_type)
 
             is_annex = pdf_filter.is_annex(page_txt, previous_fragment_type)
             if is_annex:

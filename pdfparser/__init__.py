@@ -17,4 +17,6 @@ logger.addHandler(fh)
 #logger.addHandler(ch)
 
 # LOG_LEVEL = logging.INFO
-_log_level = 3  # verbosity of log. 1:normal - 2:verbose - 3:visual
+_log_level = 1  # verbosity of log. 1:normal - 2:verbose - 3:visual
+
+logger.debug('Logging object initialized with log level {level}'.format(level=_log_level))

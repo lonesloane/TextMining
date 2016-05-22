@@ -15,10 +15,12 @@ class Cell:
         self.y0 = y0
         self.x1 = x1
         self.y1 = y1
-        self.rows = rows if abs(self.y0 - self.y1) > Cell.MIN_HEIGHT else 0
-        self.columns = columns if abs(self.x0 - self.x1) > Cell.MIN_WIDTH else 0
-        log('Nb rows: {nb_row}'.format(nb_row=self.rows))
-        log('Nb columns: {nb_col}'.format(nb_col=self.columns))
+        height = abs(self.y0 - self.y1)
+        self.rows = rows if height > Cell.MIN_HEIGHT else 0
+        width = abs(self.x0 - self.x1)
+        self.columns = columns if width > Cell.MIN_WIDTH else 0
+        log('Width: {width} - Nb columns: {nb_col}'.format(width=width, nb_col=self.columns))
+        log('Height: {height} - Nb rows: {nb_row}'.format(height=height, nb_row=self.rows))
 
     def __repr__(self):
         return '[' + 'x0: ' + str(self.x0) + ', y0: ' + str(self.y0) \
@@ -169,6 +171,8 @@ def find_outer_edges(cells, nth_recursion=0):
         for cell in collapsed_cells:
             log(cell)
         # Not converged yet, make a recursive call to ourselves with cells collapsed so far.
+        #log('Not converged. I give up...')
+        #return
         return find_outer_edges(collapsed_cells, nth_recursion=nth_recursion)
 
 

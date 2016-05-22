@@ -8,3 +8,4 @@ class Report:
         self.summary = 0
         self.glossary = 0
         self.participants_list = 0
+        self.notes = 0
