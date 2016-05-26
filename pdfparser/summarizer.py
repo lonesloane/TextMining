@@ -1,6 +1,5 @@
 # -*- coding: utf8 -*-
 import ConfigParser
-import logging
 import os
 
 from sumy.nlp.stemmers import Stemmer
@@ -9,6 +8,7 @@ from sumy.parsers.plaintext import PlaintextParser
 from sumy.summarizers.text_rank import TextRankSummarizer as Summarizer
 from sumy.utils import get_stop_words
 
+from pdfparser import logger, _log_level
 import indexfiles.loader as loader
 import text_extractor
 
@@ -22,9 +22,6 @@ PROJECT_FOLDER = config.get('MAIN', 'project_folder')
 PDF_ROOT_FOLDER = os.path.join(PROJECT_FOLDER, 'pdfs')
 LANGUAGE = "english"
 SENTENCES_COUNT = 10
-# Logging
-LOG_LEVEL = logging.DEBUG
-_log_level = 3  # verbosity of log. 1:normal - 2:verbose - 3:visual
 
 
 class PDFSummarizer:
@@ -32,7 +29,6 @@ class PDFSummarizer:
     def __init__(self, semantic=False):
         if semantic:
             self.file_index, self.topic_index = load_indexes()
-        self.logger = logging_setup()
 
     def generate_summary(self, pdf_sentences):
         pdf_string = '\n'.join([sentence.encode('utf-8') for sentence in pdf_sentences])
@@ -43,8 +39,8 @@ class PDFSummarizer:
         summarizer.stop_words = get_stop_words(LANGUAGE)
 
         for sentence in summarizer(parser.document, SENTENCES_COUNT):
-            self.logger.info(sentence._text.encode('utf-8'))
-        self.logger.info("*"*40+"\n")
+            logger.info(sentence._text.encode('utf-8'))
+        logger.info("*"*40+"\n")
 
 
 def extract_relevant_sentences(pdf_sentences, topics):
@@ -120,28 +116,7 @@ def report(relevant_sentences):
     logger.info("-"*40)
 
 
-def logging_setup():
-    logging.basicConfig(level=LOG_LEVEL, format='%(message)s')
-    _logger = logging.getLogger('summarizer')
-    # create file handler which logs even debug messages
-    fh = logging.FileHandler('summarizer.log', mode='w')
-    fh.setLevel(logging.DEBUG)
-    # create console handler with a higher log level
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.INFO)
-    # create formatter and add it to the handlers
-    formatter = logging.Formatter('%(message)s')
-    fh.setFormatter(formatter)
-    ch.setFormatter(formatter)
-    # add the handlers to the logger
-    _logger.addHandler(fh)
-    _logger.addHandler(ch)
-
-    return _logger
-
-
 def main():
-    logger = logging_setup()
 
     while True:
         file_name = raw_input("File name: (press enter to exit)")

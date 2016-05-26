@@ -1,7 +1,7 @@
 import os
 
 import pdfparser.report
-import pdfparser.text_extractor as pdfextractor
+import pdfparser.text_extractor as text_extractor
 
 PDF_ROOT_FOLDER = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testPDF/pdfs'
 
@@ -12,7 +12,7 @@ def main():
     file_name = raw_input('File name: (press enter to exit)')
     page_number = raw_input('Single page number: (press enter to ignore)')
 
-    extractor = pdfextractor.PDFTextExtractor(report, page_number)
+    extractor = text_extractor.PDFTextExtractor(report, page_number)
     for root, dirs, files_list in os.walk(PDF_ROOT_FOLDER):
         for pdf_file in files_list:
             if os.path.isfile(os.path.join(root, pdf_file)):
@@ -43,7 +43,7 @@ def extract_text(extractor, pdf_long_filename):
 
 def extract_sentences(pdf_text):
     # TODO: take only text section from json!!!
-    pdf_sentences = pdfextractor.extract_sentences(pdf_text)
+    pdf_sentences = text_extractor.extract_sentences(pdf_text)
     print("\n" + "*" * 40 + "\n")
     print("EXTRACTED SENTENCES:\n")
     print("*" * 40 + "\n")

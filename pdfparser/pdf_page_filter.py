@@ -106,7 +106,7 @@ class PDFPageFilter:
             # "Baumol, W. (1967), “Macroeconomics of unbalanced growth: the anatomy of urban crisis”, American"
             # "OECD (2010c), The OECD Innovation Strategy: Getting a Head Start on Tomorrow, Paris: OECD."
             nb += len(re.findall('((?:[A-Z].*[A-Z])?(?:OECD)?.*\([0-9]{4}.*\).*)', fragment))
-            if nb > 2 and current_fragment_type == FragmentType.BIBLIOGRAPHY:
+            if nb > 2: #and current_fragment_type == FragmentType.BIBLIOGRAPHY:
                 self.report.bibliography = 1
                 return True, None
         return False, None
@@ -125,11 +125,21 @@ class PDFPageFilter:
                 continue
             # if regexp matches and previous page was already 'Participants List'
             # then assume this is the continuation of 'Participants List'.
-            # Some examples of patterns usually found in bibliographies:
+            # TODO: write more robust unit tests for all regexp used !!!
             # "Mr. Christian HEDERER, Counsellor for Energy, Trade, Industry and Science"
             # "Ms. Maria-Antoinetta SIMONS, Permanent Delegation of Belgium to the OECD"
-            # nb += len(re.findall('(?:Mr\.|Ms\.)(?: [A-Z][a-z ]*?.*? [A-Z ].*?,)', fragment)) // TODO: check equivalence
             nb += len(re.findall('(?:M[r]?\.|Mme\.?|M[i|r]?s[s]?\.?|Dr\.?)(?: [A-Za-z\s]*?.*? [A-Z ]*[,|\s]?)', fragment))
+            logger.debug('participants found. nb: {nb}'.format(nb=nb))
+            if nb > 2 and current_fragment_type == FragmentType.PARTICIPANTS_LIST:
+                self.report.participants_list = 1
+                return True
+            # "j.a.f.vandewijnboom@minez.nl\n"
+            # "skowalczyk@ijhars.gov.pl \n"
+            # "dkrzyzanowska@ijhars.gov.pl \n"
+            # "dbalinska@ijhars.gov.pl\n"
+            # "aszymanska@ijhars.gov.pl\n"
+            # 'Marta.Dziubiak@minrol.gov.pl\n'
+            nb += len(re.findall('\w*?\.?\w*@\w*\.\w*', fragment))
             logger.debug('participants found. nb: {nb}'.format(nb=nb))
             if nb > 2 and current_fragment_type == FragmentType.PARTICIPANTS_LIST:
                 self.report.participants_list = 1

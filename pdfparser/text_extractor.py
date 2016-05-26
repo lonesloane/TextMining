@@ -1,3 +1,4 @@
+import re
 from cStringIO import StringIO
 from json import JSONEncoder
 
@@ -22,27 +23,34 @@ text_def = None
 class PDFTextExtractor:
 
     def __init__(self, report=None, single_page=None):
-        # self.xml_root = ET.Element('pdfContent')
         self.contents = dict()
         self.report = report
         self.single_page = int(single_page) if single_page else None
 
     def extract_text(self, pdf_file_path):
-        # pdf_text = self.convert_pdf_to_txt(pdf_file)
-        pdf_text = self.convert_pdf_layout_to_text(pdf_file_path)
-        return pdf_text
+        self.convert_pdf_layout_to_text(pdf_file_path)
+        if FragmentType.TEXT in self.contents and len(self.contents[FragmentType.TEXT]) == 0:
+            # some special pdfs are only 'LTFigure'...
+            logger.info('No text extracted from layout analysis! Falling back to raw text extraction.')
+            self.convert_pdf_to_txt(pdf_file_path)
+
+        encoder = JSONEncoder()
+        json_text = encoder.encode(self.contents)
+
+        return json_text
 
     def convert_pdf_to_txt(self, path):
         rsrcmgr = PDFResourceManager()
-        codec = 'utf-8'
+        codec = 'utf-16'
         laparams = LAParams()
         fp = file(path, 'rb')
         password = ""
         maxpages = 0
         caching = True
         pagenos = set()
-        pdf_txt = ''
         page_no = 0
+
+        fragment_type = FragmentType.UNKNOWN
         for page in PDFPage.get_pages(fp, pagenos, maxpages=maxpages, password=password,
                                       caching=caching, check_extractable=True):
             retstr = StringIO()
@@ -51,27 +59,18 @@ class PDFTextExtractor:
             device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
             PDFPageInterpreter(rsrcmgr, device).process_page(page)
 
-            page_txt = retstr.getvalue()
+            page_text = retstr.getvalue().decode(encoding='utf-16')
             device.close()
             retstr.close()
 
-            validated_txt, _continue = self.validate(page_txt, None)
-            if not _continue:
-                break
-
-            if len(validated_txt) > 0:
-                logger.info("-"*40)
-                logger.info("page {page_no} processed".format(page_no=page_no))
-                logger.debug("Page content: %s", validated_txt)
-                logger.info("-"*40)
-
-            pdf_txt += '\n'+validated_txt
+            logger.info('=' * 20)
+            logger.info('Processing page {page_nb}'.format(page_nb=page_no))
+            logger.info('=' * 20)
+            self.add_text_content(page_text, fragment_type=FragmentType.TEXT)
 
         fp.close()
-        return pdf_txt
 
     def convert_pdf_layout_to_text(self, pdf_doc):
-        pdf_txt = ''
         try:
             # open the pdf file
             fp = open(pdf_doc, 'rb')
@@ -94,14 +93,11 @@ class PDFTextExtractor:
                     logger.info('='*20)
                     logger.info('Validating page {page_nb}'.format(page_nb=page_nb))
                     logger.info('='*20)
-                    fragment_type = self.validate(page_text, page_cells, fragment_type)
+                    fragment_type = self.validate_page(page_text, page_cells, fragment_type)
                     page_nb += 1
                     # TODO: See if possible to keep processing documents beyond annexes
                     if fragment_type is FragmentType.ANNEX:
                         break
-
-                #pdf_txt = ET.tostring(self.xml_root)
-                pdf_txt = JSONEncoder().encode(self.contents)
 
         except IOError:
             # the file doesn't exist or similar problem
@@ -109,8 +105,6 @@ class PDFTextExtractor:
         finally:
             # close the pdf file
             fp.close()
-
-        return pdf_txt
 
     def parse_pages(self, doc):
         """With an open PDFDocument object, get the pages and parse each one
@@ -134,7 +128,7 @@ class PDFTextExtractor:
             pages.append(self.parse_page_layout(layout))
         return pages
 
-    def parse_page_layout(self, lt_objs, reverse=True):
+    def parse_page_layout(self, lt_objs):
         """Iterate through the list of LT* objects and capture the text data contained in each"""
         global rec_def, text_def
         if _log_level > 2:
@@ -178,20 +172,33 @@ class PDFTextExtractor:
                 if _log_level > 1:
                     logger.debug('LTFigure -- ignoring')
                 # LTFigure objects are containers for other LT* objects, so recurse through the children
-                # return parse_page_layout(lt_obj, reverse=False)
+                # return self.parse_figure(lt_obj)
                 continue
             else:
                 # yet another type of Layout object...
                 if _log_level > 1:
                     logger.debug('Unknown object type: ' + str(type(lt_obj)))
 
-        if _log_level > 2:
+        if _log_level > 2:  # TODO: make sure this is the right place to do this ?!?
             rec_def.close()
             text_def.close()
 
         return page_text, page_cells
 
-    def extract_object_text_hash(self, h, lt_obj):
+    def parse_figure(self, lt_objs):
+        page_cells = []
+        page_text = dict()  # k=(x0, y0, x1, y1) of the bbox, v=text within that bbox
+        for lt_obj in lt_objs:
+            if isinstance(lt_obj, LTChar):
+                if _log_level > 1:
+                    logger.debug('LTChar')
+                # text container, extract...
+                page_text = self.extract_object_text_hash(page_text, lt_obj)
+
+        return page_text, page_cells
+
+    @staticmethod
+    def extract_object_text_hash(h, lt_obj):
         global text_def
         x0 = lt_obj.bbox[0]
         y0 = lt_obj.bbox[1]
@@ -206,11 +213,12 @@ class PDFTextExtractor:
         h[(x0, y0, x1, y1)] = to_bytestring(lt_obj.get_text())
         return h
 
-    def validate(self, page_txt, page_cells, previous_fragment_type):
+    def validate_page(self, page_txt, page_cells, previous_fragment_type):
         logger.debug('Enter page validation')
         pdf_filter = PDFPageFilter(report=self.report)
 
-        pdf_filter.filter_tables(page_txt, page_cells)
+        if page_cells:
+            pdf_filter.filter_tables(page_txt, page_cells)
         coord = None
         while True:
             is_cover = pdf_filter.is_cover(page_txt)
@@ -257,6 +265,7 @@ class PDFTextExtractor:
                 current_fragment_type = FragmentType.ANNEX
                 break
 
+            # Default: plain simple text
             PDFPageFilter.process_text(page_txt, page_cells)
             current_fragment_type = FragmentType.TEXT
             break
@@ -272,6 +281,8 @@ class PDFTextExtractor:
             self.add_fragment(next_fragment_txt, fragment_type=current_fragment_type)
         else:
             fragment_txt = get_fragment_text(page_txt)
+            fragment_txt = strip_page_number(fragment_txt)
+            fragment_txt = strip_cote(fragment_txt)
             self.add_fragment(fragment_txt, fragment_type=current_fragment_type)
 
         return current_fragment_type
@@ -284,6 +295,61 @@ class PDFTextExtractor:
             self.contents[fragment_type] = content_list
         else:
             self.contents[fragment_type].extend(content_list)
+
+    def add_text_content(self, page_txt, fragment_type):
+        content_list = list()
+        content_list.append(page_txt)
+        if fragment_type not in self.contents:
+            self.contents[fragment_type] = content_list
+        else:
+            self.contents[fragment_type].extend(content_list)
+
+
+def strip_cote(fragment_txt):
+    """
+    Remove cote and any preceding empty strings
+    :param fragment_txt:
+    :return:
+    """
+    cote_idx = None
+    for i in range(0, len(fragment_txt)-1):
+        txt = fragment_txt[i].strip()
+        logger.debug('Searching for cote in fragment: {txt}'.format(txt=txt))
+        if is_cote(txt):
+            logger.debug('found cote at index: {i}'.format(i=i))
+            cote_idx = i
+            break
+        if len(txt) > 0:
+            break  # only strip out the first occurrence of a cote before any actual text
+    if cote_idx is not None:
+        fragment_txt = fragment_txt[cote_idx+1:]
+        logger.debug('Fragment without cote is: {frag}'.format(frag=fragment_txt))
+    return fragment_txt
+
+
+def is_cote(txt):
+    if re.search('[\w]+/[[\w/]+]?\(\d{2,4}\)\d*.*', txt):
+        return True
+    if re.search('C\(\d{2,4}\)\d*.*', txt):
+        return True
+    return False
+
+
+def strip_page_number(fragment_txt):
+    """
+    Remove page number and any trailing empty strings
+    :param fragment_txt:
+    :return:
+    """
+    page_number_idx = None
+    for i in range(len(fragment_txt)-1, 0, -1):
+        txt = fragment_txt[i].strip()
+        if re.search('\d+', txt):
+            logger.debug('found page number at index: {i}'.format(i=i))
+            page_number_idx = i
+            break
+    fragment_txt = fragment_txt[:page_number_idx]
+    return fragment_txt
 
 
 def extract_sentences(pdf_text):
