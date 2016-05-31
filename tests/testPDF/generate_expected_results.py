@@ -4,7 +4,7 @@ import csv
 import pdfparser.report as parsing_report
 import pdfparser.text_extractor as pdfextractor
 
-PDF_ROOT_FOLDER = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testPDF/pdfs'
+PDF_ROOT_FOLDER = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testPDF/pdfs/offdocs'
 
 
 def main():
@@ -12,8 +12,6 @@ def main():
     nb_extracted = 1
     for root, dirs, files_list in os.walk(PDF_ROOT_FOLDER):
         for pdf_file in files_list:
-            if nb_extracted > 100:
-                break
             print '='*40
             print 'processing file number: {nb}'.format(nb=nb_extracted)
             print '=' * 40
@@ -38,9 +36,9 @@ def main():
 
                 nb_extracted += 1
 
-    with open('expected_results.csv', 'wb') as csv_file:
+    with open('expected_results_2.csv', 'wb') as csv_file:
         fieldnames = ['jt', 'cover_page', 'toc', 'summary', 'glossary', 'bibliography', 'participants_list',
-                      'annex', 'tables', 'validated']
+                      'annex', 'tables', 'notes', 'validated']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
         for item in extraction_results:

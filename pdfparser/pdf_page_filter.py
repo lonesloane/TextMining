@@ -18,19 +18,38 @@ class PDFPageFilter:
         self.report = report if report else Report()
 
     def is_cover(self, page_txt):
-        for coord, fragment in page_txt.items():
-            fragment = fragment.strip().lower()
-            if (fragment.find('For Official Use'.lower()) >= 0 or
-                fragment.find('Confidential'.lower()) >= 0 or
-                fragment.find('A usage officiel'.lower()) >= 0 or
-                fragment.find('Confidentiel'.lower()) >= 0 or
-                fragment.find('Non classifié'.lower()) >= 0 or
-                fragment.find('Unclassified'.lower()) >= 0) and \
-                (fragment.find('Organisation de Coopération et de Développement Économiques'.lower()) >= 0 and
-                 fragment.find('Organisation for Economic Co-operation and Development'.lower()) >= 0):
-                self.report.cover = 1
-                return True
-        return False
+        txt = ''
+        # TODO : improve logic by passing page number (cover is expected to be first page only)
+        for _, fragment in page_txt.items():
+            txt += fragment.strip()
+
+        # Cote
+        if not re.search('[\w]+/[[\w/]+]?\(\d{2,4}\)\d*.*|C\(\d{2,4}\)\d*.*', txt):
+            if _log_level > 0:
+                logger.debug('No cote found')
+            return False
+        # Classification
+        if not re.search(ur'For Official Use|Confidential|Unclassified|A Usage Officiel'
+                         '|Confidentiel|Non classifi.|Diffusion Restreinte|Restricted Diffusion'
+                         '|Restricted', txt, re.IGNORECASE):
+            if _log_level > 0:
+                logger.debug('No classification found')
+            return False
+        # OECD
+        if not re.search(ur'Organisation for Economic Co-operation and Development'
+                         '|International Transport Forum|European Conference of Ministers of Transport', txt):
+            if _log_level > 0:
+                logger.debug('No OECD found')
+            return False
+        # OCDE
+        if not re.search(ur'Organisation de Coop.*ration et de D.*veloppement .*conomiques'
+                         '|Forum International des Transports|Conf.*rence Europ.*enne des Ministres des Transports', txt):
+            if _log_level > 0:
+                logger.debug('No OCDE found')
+            return False
+
+        self.report.cover_page = 1
+        return True
 
     def is_summary(self, page_txt, current_fragment_type):
         """
@@ -41,6 +60,7 @@ class PDFPageFilter:
         :param current_fragment_type:
         :return:
         """
+        #TODO: identify text within a box with title containing word summary or résumé (see 'IMP19991826FRE')
         for coord, fragment in page_txt.items():
             fragment = fragment.strip().lower()
             if (fragment == 'SUMMARY'.lower() or
@@ -54,8 +74,8 @@ class PDFPageFilter:
         nb = 0
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
-            if fragment == 'TABLE OF CONTENTS' or \
-               fragment == 'TABLE DES MATIÈRES':  # Expected text in uppercase !
+            if re.search('TABLE OF CONTENTS', fragment) or \
+                    re.search('TABLE DES MATI.+RES', fragment):  # Expected text in uppercase !
                 self.report.toc = 1
                 return True
             # Avoid un-necessary parsing of the page
@@ -74,7 +94,8 @@ class PDFPageFilter:
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
             if (fragment.find('LIST OF ABBREVIATIONS') >= 0 or
-                fragment.find('GLOSSARY') >= 0):   # Expected text in uppercase !
+                fragment.find('GLOSSARY') >= 0 or
+                fragment.find('LIST OF ACRONYMS') >= 0):   # Expected text in uppercase !
                 self.report.glossary = 1
                 return True
             # Some examples of patterns usually found in glossaries:
@@ -90,11 +111,13 @@ class PDFPageFilter:
         nb = 0
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
-            # TODO: improve the following to avoid false positive
+            # TODO: use regexps
             if (fragment.lower() == 'BIBLIOGRAPHY'.lower() or
                 fragment.lower() == 'Bibliographie'.lower() or
                 fragment.lower() == 'REFERENCES'.lower() or
-                fragment.lower() == 'RÉFÉRENCES'.lower()):
+                fragment.lower() == 'RÉFÉRENCES'.lower() or
+                fragment.lower() == 'LITERATURE'.lower() or
+                fragment.lower() == 'LITTERATURE'.lower()):
                 self.report.bibliography = 1
                 return True, coord
             # Avoid un-necessary parsing of the page
@@ -115,17 +138,22 @@ class PDFPageFilter:
         nb = 0
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
-            if (fragment.lower().find('Participants list'.lower()) >= 0 or
-                fragment.lower().find('LIST OF PARTICIPANTS'.lower()) >= 0 or
-                fragment.lower().find('Liste des participants'.lower()) >= 0):
+
+            # TODO: use regexp
+            if (fragment.lower() == 'Participants list'.lower() or
+                fragment.lower() == 'LIST OF PARTICIPANTS'.lower() or
+                fragment.lower() == 'Liste des participants'.lower() or
+                fragment.lower().find('List of Participants / Liste des Participants'.lower()) > 0 or
+                fragment.lower().find('List of Participants/Liste des Participants'.lower()) > 0):
                 self.report.participants_list = 1
                 return True
             # Avoid un-necessary parsing of the page
             if not current_fragment_type == FragmentType.PARTICIPANTS_LIST:
                 continue
+
+            # TODO: write more robust unit tests for all regexp used !!!
             # if regexp matches and previous page was already 'Participants List'
             # then assume this is the continuation of 'Participants List'.
-            # TODO: write more robust unit tests for all regexp used !!!
             # "Mr. Christian HEDERER, Counsellor for Energy, Trade, Industry and Science"
             # "Ms. Maria-Antoinetta SIMONS, Permanent Delegation of Belgium to the OECD"
             nb += len(re.findall('(?:M[r]?\.|Mme\.?|M[i|r]?s[s]?\.?|Dr\.?)(?: [A-Za-z\s]*?.*? [A-Z ]*[,|\s]?)', fragment))
@@ -149,12 +177,14 @@ class PDFPageFilter:
     def is_annex(self, page_txt, current_fragment_type):
         # Expect to find word 'ANNEX' (in upper case) as first word of sentence, top of the page
         # TODO: add logic to check that text is first on page
+        # TODO: use regexp
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
             if fragment.rfind('ANNEX') == 0 or \
-               fragment.rfind('APPENDIX') == 0 or \
-               fragment == 'TECHNICAL ANNEX' or \
-               fragment == 'FIGURE AND TABLE ANNEX':  # Expected text in uppercase !
+                fragment.rfind('[Annex]') == 0 or \
+                fragment.rfind('APPENDIX') == 0 or \
+                fragment == 'TECHNICAL ANNEX' or \
+                fragment == 'FIGURE AND TABLE ANNEX':  # Expected text in uppercase !
                 self.report.annex = 1
                 return True
         return False

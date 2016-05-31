@@ -1,3 +1,4 @@
+# -*- coding: utf8 -*-
 import re
 from cStringIO import StringIO
 from json import JSONEncoder
@@ -25,7 +26,8 @@ class PDFTextExtractor:
     def __init__(self, report=None, single_page=None):
         self.contents = dict()
         self.report = report
-        self.single_page = int(single_page) if single_page else None
+        self.previous_p = None
+        self.single_page = int(single_page) if single_page else -1
 
     def extract_text(self, pdf_file_path):
         self.convert_pdf_layout_to_text(pdf_file_path)
@@ -41,15 +43,15 @@ class PDFTextExtractor:
 
     def convert_pdf_to_txt(self, path):
         rsrcmgr = PDFResourceManager()
-        codec = 'utf-16'
+        codec = 'utf-8'
         laparams = LAParams()
         fp = file(path, 'rb')
         password = ""
         maxpages = 0
         caching = True
         pagenos = set()
-        page_no = 0
 
+        page_no = 0
         fragment_type = FragmentType.UNKNOWN
         for page in PDFPage.get_pages(fp, pagenos, maxpages=maxpages, password=password,
                                       caching=caching, check_extractable=True):
@@ -59,7 +61,7 @@ class PDFTextExtractor:
             device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
             PDFPageInterpreter(rsrcmgr, device).process_page(page)
 
-            page_text = retstr.getvalue().decode(encoding='utf-16')
+            page_text = retstr.getvalue().decode(encoding='utf-8')
             device.close()
             retstr.close()
 
@@ -95,9 +97,12 @@ class PDFTextExtractor:
                     logger.info('='*20)
                     fragment_type = self.validate_page(page_text, page_cells, fragment_type)
                     page_nb += 1
-                    # TODO: See if possible to keep processing documents beyond annexes
+                    # TODO: Keep processing documents beyond annexes
                     if fragment_type is FragmentType.ANNEX:
                         break
+                # Add any leftover text
+                if self.previous_p:
+                    self.contents[FragmentType.TEXT].extend({self.previous_p})
 
         except IOError:
             # the file doesn't exist or similar problem
@@ -115,17 +120,21 @@ class PDFTextExtractor:
         interpreter = PDFPageInterpreter(rsrcmgr, device)
         pages = []
         for i, page in enumerate(PDFPage.create_pages(doc)):
-            if self.single_page and (i < self.single_page or i > self.single_page):
+            if self.single_page != -1 and i != self.single_page:
                 continue
             if _log_level > 2:
                 logger.debug('\n'+'-'*50)
                 logger.debug('Processing page {i}'.format(i=i))
                 logger.debug('-'*50)
-            interpreter.process_page(page)
-            # receive the LTPage object for this page
-            layout = device.get_result()
-            # layout is an LTPage object which may contain child objects like LTTextBox, LTFigure, LTImage, etc.
-            pages.append(self.parse_page_layout(layout))
+            try:
+                interpreter.process_page(page)
+                # receive the LTPage object for this page
+                layout = device.get_result()
+                # layout is an LTPage object which may contain child objects like LTTextBox, LTFigure, LTImage, etc.
+                pages.append(self.parse_page_layout(layout))
+            except TypeError:
+                logger.error('TypeError: "NoneType" object has no attribute "__getitem__"')
+
         return pages
 
     def parse_page_layout(self, lt_objs):
@@ -142,12 +151,12 @@ class PDFTextExtractor:
                 if _log_level > 1:
                     logger.debug('LTTextBox or LTTextLine')
                 # text container, extract...
-                page_text = self.extract_object_text_hash(page_text, lt_obj)
+                page_text = extract_object_text_hash(page_text, lt_obj)
             elif isinstance(lt_obj, LTChar):
                 if _log_level > 1:
                     logger.debug('LTChar')
                 # text container, extract...
-                page_text = self.extract_object_text_hash(page_text, lt_obj)
+                page_text = extract_object_text_hash(page_text, lt_obj)
             elif isinstance(lt_obj, LTRect):
                 # store cell coordinates used to identify table boundaries
                 x0 = lt_obj.bbox[0]
@@ -193,25 +202,9 @@ class PDFTextExtractor:
                 if _log_level > 1:
                     logger.debug('LTChar')
                 # text container, extract...
-                page_text = self.extract_object_text_hash(page_text, lt_obj)
+                page_text = extract_object_text_hash(page_text, lt_obj)
 
         return page_text, page_cells
-
-    @staticmethod
-    def extract_object_text_hash(h, lt_obj):
-        global text_def
-        x0 = lt_obj.bbox[0]
-        y0 = lt_obj.bbox[1]
-        x1 = lt_obj.bbox[2]
-        y1 = lt_obj.bbox[3]
-        if _log_level > 1:
-            logger.debug('[x0={x0}, y0={y0}, x1={x1}, y1={y1}]:\n {s}'.format(x0=x0, y0=y0, x1=x1, y1=y1,
-                                                                              s=to_bytestring(lt_obj.get_text())))
-        if _log_level > 2:
-            text_def.write('{x0}|{y0}|{x1}|{y1}|{s}\n'.format(x0=x0, y0=y0, x1=x1, y1=y1,
-                                                              s=to_bytestring(lt_obj.get_text().replace('\n', ' '))))
-        h[(x0, y0, x1, y1)] = to_bytestring(lt_obj.get_text())
-        return h
 
     def validate_page(self, page_txt, page_cells, previous_fragment_type):
         logger.debug('Enter page validation')
@@ -281,28 +274,104 @@ class PDFTextExtractor:
             self.add_fragment(next_fragment_txt, fragment_type=current_fragment_type)
         else:
             fragment_txt = get_fragment_text(page_txt)
-            fragment_txt = strip_page_number(fragment_txt)
-            fragment_txt = strip_cote(fragment_txt)
+            if current_fragment_type is FragmentType.TEXT:
+                fragment_txt = strip_page_number(fragment_txt)
+                fragment_txt = strip_cote(fragment_txt)
+                fragment_txt = strip_classification(fragment_txt)
             self.add_fragment(fragment_txt, fragment_type=current_fragment_type)
 
         return current_fragment_type
 
-    def add_fragment(self, page_txt, fragment_type):
+    def add_fragment(self, fragment_txt, fragment_type):
+        # TODO: review strategy to replace \n with ' ' (see JT03349191)
         content_list = list()
-        for p in page_txt:
-            content_list.append(p)
+        ptrn_continued = re.compile('[a-zéèçàù]', re.UNICODE)
+        ptrn_punct = re.compile('[\.]{1,}|[\?!:]')
+
+        if _log_level > 0:
+            logger.debug('[add_fragment] Fragment type:{type}'.format(type=fragment_type))
+
+        if fragment_type is not FragmentType.TEXT:
+            for p in fragment_txt:
+                p = p.replace('\n', ' ').strip()
+                if not len(p):
+                    continue
+                content_list.append(p)
+        else:
+            for p in fragment_txt:
+                p = p.replace('\n', ' ').strip()
+                if not len(p):
+                    continue
+                if _log_level > 0:
+                    logger.debug('[add_fragment] - current: {p}'.format(p=p))
+                    logger.debug('[add_fragment] - previous: {p}'.format(p=self.previous_p))
+                if self.previous_p:
+                    if re.match(ptrn_continued, p[0]):
+                        p = self.previous_p + ' ' + p
+                    else:
+                        logger.debug('not continued. p[0]:{p}'.format(p=p[0]))
+                        content_list.append(self.previous_p)
+                    self.previous_p = None
+                if not re.match(ptrn_punct, p[len(p)-1])\
+                        and not re.match('[0-9]+ \w+.*', p):
+                    self.previous_p = p
+                    continue
+                else:
+                    logger.debug('found punctuation: {pct}'.format(pct=p[len(p)-1]))
+
+                content_list.append(p)
+
         if fragment_type not in self.contents:
             self.contents[fragment_type] = content_list
         else:
             self.contents[fragment_type].extend(content_list)
 
-    def add_text_content(self, page_txt, fragment_type):
+    def add_text_content(self, fragment_txt, fragment_type):
         content_list = list()
-        content_list.append(page_txt)
+        content_list.append(fragment_txt.replace('\n', ''))
+
         if fragment_type not in self.contents:
             self.contents[fragment_type] = content_list
         else:
             self.contents[fragment_type].extend(content_list)
+
+
+def extract_object_text_hash(h, lt_obj):
+    global text_def
+    x0 = lt_obj.bbox[0]
+    y0 = lt_obj.bbox[1]
+    x1 = lt_obj.bbox[2]
+    y1 = lt_obj.bbox[3]
+    if _log_level > 1:
+        logger.debug('[x0={x0}, y0={y0}, x1={x1}, y1={y1}]:\n {s}'.format(x0=x0, y0=y0, x1=x1, y1=y1,
+                                                                          s=to_bytestring(lt_obj.get_text())))
+    if _log_level > 2:
+        text_def.write('{x0}|{y0}|{x1}|{y1}|{s}\n'.format(x0=x0, y0=y0, x1=x1, y1=y1,
+                                                          s=to_bytestring(lt_obj.get_text().replace('\n', ' '))))
+    h[(x0, y0, x1, y1)] = to_bytestring(lt_obj.get_text())
+    return h
+
+
+def strip_classification(fragment_txt):
+    """
+    Remove classification
+    :param fragment_txt:
+    :return:
+    """
+    classif_idx = None
+    for i in range(0, len(fragment_txt)-1):
+        txt = fragment_txt[i].strip()
+        # TODO: extract regexp to 'library' of regexps
+        if re.search('For Official Use|Confidential|Unclassified|A Usage Officiel'
+                     '|Confidentiel|Non classifié', txt, re.IGNORECASE):
+            logger.debug('found classification at index: {i}'.format(i=i))
+            classif_idx = i
+            break
+        if len(txt) > 0:
+            break  # only strip out the first occurrence of classification before any actual text
+    if classif_idx is not None:
+        fragment_txt = fragment_txt[classif_idx+1:]
+    return fragment_txt
 
 
 def strip_cote(fragment_txt):
@@ -314,7 +383,6 @@ def strip_cote(fragment_txt):
     cote_idx = None
     for i in range(0, len(fragment_txt)-1):
         txt = fragment_txt[i].strip()
-        logger.debug('Searching for cote in fragment: {txt}'.format(txt=txt))
         if is_cote(txt):
             logger.debug('found cote at index: {i}'.format(i=i))
             cote_idx = i
@@ -323,11 +391,14 @@ def strip_cote(fragment_txt):
             break  # only strip out the first occurrence of a cote before any actual text
     if cote_idx is not None:
         fragment_txt = fragment_txt[cote_idx+1:]
-        logger.debug('Fragment without cote is: {frag}'.format(frag=fragment_txt))
+        if _log_level > 1:
+            logger.debug('Fragment without cote is: {frag}'.format(frag=fragment_txt))
     return fragment_txt
 
 
 def is_cote(txt):
+    # TODO: improve regex to make sure the cote is not part of a longer sentence (i.e. quote)
+    # see IMP19912074FRE, JT03349136
     if re.search('[\w]+/[[\w/]+]?\(\d{2,4}\)\d*.*', txt):
         return True
     if re.search('C\(\d{2,4}\)\d*.*', txt):
@@ -341,6 +412,8 @@ def strip_page_number(fragment_txt):
     :param fragment_txt:
     :return:
     """
+    # TODO: improve regex to make sure the number is not part of a longer sentence (i.e. quote)
+    # see IMP19912074FRE, JT03349136
     page_number_idx = None
     for i in range(len(fragment_txt)-1, 0, -1):
         txt = fragment_txt[i].strip()

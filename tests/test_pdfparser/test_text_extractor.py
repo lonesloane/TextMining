@@ -1,8 +1,10 @@
 # -*- coding: utf8 -*-
-
 import logging
 import unittest
+
+import pdfparser
 import pdfparser.text_extractor as extractor
+from pdfparser.pdf_fragment_type import FragmentType
 
 
 class TextExtractorTestCase(unittest.TestCase):
@@ -71,10 +73,187 @@ class TextExtractorTestCase(unittest.TestCase):
         cotes.append("GOV/TDPC/URB/A(2012)1 \n")
         cotes.append("EXD/OPS/IMSD/DOC(2012)229 \n")
         for cote in cotes:
-            print 'Testing cote:{cote}'.format(cote=cote)
             self.assertTrue(extractor.is_cote(cote), 'Cote not correctly identified: [{cote}]'.format(cote=cote))
 
         self.assertFalse(extractor.is_cote("This is not a cote"))
+
+    def test_strip_classification(self):
+        fragment_text = list()
+        fragment_text.append(" \n")
+        fragment_text.append("CONFIDENTIAL \n")
+        fragment_text.append(" \n")
+        fragment_text.append(" \n")
+        fragment_text.append(" \nDans un courrier au Directeur du Centre de développement (ci-après désigné l « Centre ») daté du \n21 mai  2013,  M. Emmanuel  Kalou,  Directeur  de  Cabinet  du  ministre  d´État,  ministre  des  Affaires \nétrangères de la Côte d’Ivoire, avait exprimé le souhait de son pays de rejoindre le Centre. Cette demande a \nété suivie par la participation d’une forte délégation ivoirienne conduite par le Premier Ministre, M. Daniel \nKablan Duncan, au 13e Forum économique international sur l’Afrique organisé par le Centre à Paris les 7 et \n8  octobre  2013,  puis  confirmée  par  un  courrier  de  M. Charles  Koffi  Diby,  ministre  d´État,  ministre  des \nAffaires étrangères, daté du 22 novembre 2013, qui réitérait le souhait et la demande de la Côte d’Ivoire de \ndevenir membre du Centre. Le gouvernement ivoirien espère pouvoir compter sur les acquis de l’expérience \nde  l’OCDE  pour  l’aider  à  atteindre  l’objectif  qu’il  s’est  fixé  de  faire  de  la  Côte  d’Ivoire  une  économie \némergente à l’horizon 2020. \n")
+
+        self.assertEquals(len(fragment_text), 5)
+
+        fragment_text = extractor.strip_classification(fragment_text)
+
+        self.assertEquals(len(fragment_text), 3)
+        self.assertEquals(" \n", fragment_text[1])
+        self.assertEquals(" \nDans un courrier au Directeur du Centre de développement (ci-après désigné l « Centre ») daté du \n21 mai  2013,  M. Emmanuel  Kalou,  Directeur  de  Cabinet  du  ministre  d´État,  ministre  des  Affaires \nétrangères de la Côte d’Ivoire, avait exprimé le souhait de son pays de rejoindre le Centre. Cette demande a \nété suivie par la participation d’une forte délégation ivoirienne conduite par le Premier Ministre, M. Daniel \nKablan Duncan, au 13e Forum économique international sur l’Afrique organisé par le Centre à Paris les 7 et \n8  octobre  2013,  puis  confirmée  par  un  courrier  de  M. Charles  Koffi  Diby,  ministre  d´État,  ministre  des \nAffaires étrangères, daté du 22 novembre 2013, qui réitérait le souhait et la demande de la Côte d’Ivoire de \ndevenir membre du Centre. Le gouvernement ivoirien espère pouvoir compter sur les acquis de l’expérience \nde  l’OCDE  pour  l’aider  à  atteindre  l’objectif  qu’il  s’est  fixé  de  faire  de  la  Côte  d’Ivoire  une  économie \némergente à l’horizon 2020. \n",
+                          fragment_text[2])
+
+    def test_re_order_text(self):
+        txt = list()
+        txt.append((0, 1, "0:1"))
+        txt.append((1, 0, "1:0"))
+        txt.append((1, 1, "1:1"))
+        txt.append((2, 0, "2:0"))
+        txt.append((2, 1, "2:1"))
+        txt.append((-2, 2, "-2:2"))
+        txt.append((0, 0, "0:0"))
+        txt.append((0, 2, "0:2"))
+        txt.append((1, -2, "1:-2"))
+        actual = extractor.re_order_text(txt)
+        expected = ['-2:2', '0:0', '0:1', '0:2', '1:-2', '1:0', '1:1', '2:0', '2:1']
+        self.assertListEqual(actual, expected)
+
+    def test_get_fragment_text(self):
+        page_txt = dict()
+        page_txt[(0, 1)] = "0:1"
+        page_txt[(1, 0)] = "1:0"
+        page_txt[(1, 1)] = "1:1"
+        page_txt[(2, 0)] = "2:0"
+        page_txt[(2, 1)] = "2:1"
+        page_txt[(2, 2)] = "2:2"
+        page_txt[(0, 0)] = "0:0"
+        page_txt[(0, 2)] = "0:2"
+        page_txt[(1, 2)] = "1:2"
+        actual = extractor.get_fragment_text(page_txt)
+        expected = ['2:2', '1:2', '0:2', '2:1', '1:1', '0:1', '2:0', '1:0', '0:0']
+        self.assertListEqual(expected, actual)
+
+    def test_get_previous_fragment_text(self):
+        page_txt = dict()
+        page_txt[(0, 1)] = "0:1"
+        page_txt[(1, 0)] = "1:0"
+        page_txt[(1, 1)] = "1:1"
+        page_txt[(2, 0)] = "2:0"
+        page_txt[(2, 1)] = "2:1"
+        page_txt[(2, 2)] = "2:2"
+        page_txt[(0, 0)] = "0:0"
+        page_txt[(0, 2)] = "0:2"
+        page_txt[(1, 2)] = "1:2"
+        actual = extractor.get_previous_fragment_text(page_txt, (2, 0))
+        expected = ['2:2', '1:2', '0:2', '2:1', '1:1', '0:1']
+        self.assertListEqual(expected, actual)
+        actual = extractor.get_previous_fragment_text(page_txt, (2, 1))
+        expected = ['2:2', '1:2', '0:2']
+        self.assertListEqual(expected, actual)
+        actual = extractor.get_previous_fragment_text(page_txt, (2, 2))
+        expected = []
+        self.assertListEqual(expected, actual)
+        actual = extractor.get_previous_fragment_text(page_txt, (2, -1))
+        expected = ['2:2', '1:2', '0:2', '2:1', '1:1', '0:1', '2:0', '1:0', '0:0']
+        self.assertListEqual(expected, actual)
+
+    def test_get_next_fragment_text(self):
+        page_txt = dict()
+        page_txt[(0, 1)] = "0:1"
+        page_txt[(1, 0)] = "1:0"
+        page_txt[(1, 1)] = "1:1"
+        page_txt[(2, 0)] = "2:0"
+        page_txt[(2, 1)] = "2:1"
+        page_txt[(2, 2)] = "2:2"
+        page_txt[(0, 0)] = "0:0"
+        page_txt[(0, 2)] = "0:2"
+        page_txt[(1, 2)] = "1:2"
+        actual = extractor.get_next_fragment_text(page_txt, (2, 0))
+        expected = ['2:0', '1:0', '0:0']
+        self.assertListEqual(expected, actual)
+        actual = extractor.get_next_fragment_text(page_txt, (2, 1))
+        expected = ['2:1', '1:1', '0:1', '2:0', '1:0', '0:0']
+        self.assertListEqual(expected, actual)
+        actual = extractor.get_next_fragment_text(page_txt, (2, 2))
+        expected = ['2:2', '1:2', '0:2', '2:1', '1:1', '0:1', '2:0', '1:0', '0:0']
+        self.assertListEqual(expected, actual)
+        actual = extractor.get_next_fragment_text(page_txt, (2, -1))
+        expected = []
+        self.assertListEqual(expected, actual)
+
+    @unittest.skip('Not yet implemented')
+    def test_extract_object_text_hash(self):
+        self.assertTrue(False)
+
+    def test_add_fragment_debug(self):
+        fragment_text = list()
+        fragment_text.append("Representatives of other international organisations, including UNCTAD, UNESCO and IUCN,")
+        fragment_text.append("were invited to intervene and report about their activities as appropriate during the meeting.")
+        text_extractor = extractor.PDFTextExtractor()
+        text_extractor.add_fragment(fragment_text, FragmentType.TEXT)
+        text = text_extractor.contents[FragmentType.TEXT]
+        self.assertEquals(1, len(text))
+        self.assertEquals('Representatives of other international organisations, including UNCTAD, UNESCO and IUCN, were invited to intervene and report about their activities as appropriate during the meeting.', text[0])
+
+
+    def test_add_fragment(self):
+        fragment_text = list()
+        fragment_text.append("A complete sentence.")
+        fragment_text.append("An incomplete sentence")
+        fragment_text.append("continued in the next fragment.")
+        fragment_text.append("Another incomplete sentence")
+        fragment_text.append("also continued. And followed by another complete sentence.")
+        fragment_text.append("And the final sentence.")
+        text_extractor = extractor.PDFTextExtractor()
+        text_extractor.add_fragment(fragment_text, FragmentType.TEXT)
+        text = text_extractor.contents[FragmentType.TEXT]
+        self.assertEquals(4, len(text))
+        self.assertEquals('An incomplete sentence continued in the next fragment.', text[1])
+        self.assertEquals('Another incomplete sentence also continued. And followed by another complete sentence.', text[2])
+        self.assertEquals('And the final sentence.', text[3])
+
+        fragment_text.append("Should also work if the final punctuation is not a dot!!!")
+        text_extractor = extractor.PDFTextExtractor()
+        text_extractor.add_fragment(fragment_text, FragmentType.TEXT)
+        text = text_extractor.contents[FragmentType.TEXT]
+        self.assertEquals(5, len(text))
+        self.assertEquals('Should also work if the final punctuation is not a dot!!!', text[4])
+
+        fragment_text.append("Should also work if the final punctuation is not a dot...")
+        text_extractor = extractor.PDFTextExtractor()
+        text_extractor.add_fragment(fragment_text, FragmentType.TEXT)
+        text = text_extractor.contents[FragmentType.TEXT]
+        self.assertEquals(6, len(text))
+        self.assertEquals('Should also work if the final punctuation is not a dot...', text[5])
+
+        fragment_text.append("Should also work if the final punctuation is not a dot?")
+        text_extractor = extractor.PDFTextExtractor()
+        text_extractor.add_fragment(fragment_text, FragmentType.TEXT)
+        text = text_extractor.contents[FragmentType.TEXT]
+        self.assertEquals(7, len(text))
+        self.assertEquals('Should also work if the final punctuation is not a dot?', text[6])
+        '''
+        fragment_text.append("Should also work if the final fragment is incomplete")
+        text_extractor = extractor.PDFTextExtractor()
+        text_extractor.add_fragment(fragment_text, FragmentType.TEXT)
+        text = text_extractor.contents[FragmentType.TEXT]
+        self.assertEquals(8, len(text))
+        self.assertEquals('Should also work if the final fragment is incomplete', text[7])
+        '''
+
+    def test_add_fragment_over_pages(self):
+        fragment_text = list()
+        fragment_text.append("A complete sentence.")
+        fragment_text.append("An incomplete sentence")
+        fragment_text.append("continued in the next fragment.")
+        fragment_text.append("Another incomplete sentence")
+        fragment_text.append("also continued. And followed by another complete sentence.")
+        fragment_text.append("And the last sentence")
+        text_extractor = extractor.PDFTextExtractor()
+        text_extractor.add_fragment(fragment_text, FragmentType.TEXT)
+        text = text_extractor.contents[FragmentType.TEXT]
+        self.assertEquals(3, len(text))
+        self.assertEquals('Another incomplete sentence also continued. And followed by another complete sentence.', text[2])
+
+        fragment_text = list()
+        fragment_text.append("is now a complete sentence.")
+        fragment_text.append("An incomplete sentence")
+        fragment_text.append("continued in the next fragment.")
+        text_extractor.add_fragment(fragment_text, FragmentType.TEXT)
+        text = text_extractor.contents[FragmentType.TEXT]
+        self.assertEquals(5, len(text))
+        self.assertEquals('And the last sentence is now a complete sentence.', text[3])
 
 
 if __name__ == '__main__':

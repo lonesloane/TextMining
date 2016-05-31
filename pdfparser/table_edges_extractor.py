@@ -7,8 +7,8 @@ ADJ_DISTANCE = 1.0  # TODO: come up with better way to define a reasonable "adja
 
 class Cell:
 
-    MIN_HEIGHT = 2.0
-    MIN_WIDTH = 2.0
+    MIN_HEIGHT = 2.0  # TODO: extract to config file
+    MIN_WIDTH = 2.0  # TODO: extract to config file
 
     def __init__(self, x0, y0, x1, y1, rows=1, columns=1):
         self.x0 = x0
@@ -24,7 +24,8 @@ class Cell:
 
     def __repr__(self):
         return '[' + 'x0: ' + str(self.x0) + ', y0: ' + str(self.y0) \
-               + ', x1: ' + str(self.x1) + ', y1: ' + str(self.y1) + ']'
+               + ', x1: ' + str(self.x1) + ', y1: ' + str(self.y1) \
+               + ', rows: ' + str(self.rows) + ', columns: ' + str(self.columns) + ']'
 
 
 def adjacent(pt1, pt2):
