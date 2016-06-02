@@ -103,7 +103,7 @@ if __name__ == '__main__':
 
     # min_x, max_x, min_y, max_y, cells = load_test_cells()
     min_x, max_x, min_y, max_y, cells = load_cells(rec_def_file)
-    #plot_cells(cells, 'blue')
+    plot_cells(cells, 'blue')
 
     min_x, max_x, min_y, max_y, text_blocks = load_text(text_def_file)
     plot_cells(text_blocks, 'black')

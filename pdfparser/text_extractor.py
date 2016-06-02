@@ -293,13 +293,16 @@ class PDFTextExtractor:
 
         if fragment_type is not FragmentType.TEXT:
             for p in fragment_txt:
-                p = p.replace('\n', ' ').strip()
+                # TODO: replace \n only if not following a punctuation mark and not preceding a capital letter
+                #  p = p.replace('\n', ' ').strip()
+                p = p.strip()
                 if not len(p):
                     continue
                 content_list.append(p)
         else:
             for p in fragment_txt:
-                p = p.replace('\n', ' ').strip()
+                #  p = p.replace('\n', ' ').strip()
+                p = p.strip()
                 if not len(p):
                     continue
                 if _log_level > 0:
@@ -413,7 +416,7 @@ def strip_page_number(fragment_txt):
     :return:
     """
     # TODO: improve regex to make sure the number is not part of a longer sentence (i.e. quote)
-    # see IMP19912074FRE, JT03349136
+    # see IMP19912074FRE, JT03349136, IMP1999245ENG
     page_number_idx = None
     for i in range(len(fragment_txt)-1, 0, -1):
         txt = fragment_txt[i].strip()

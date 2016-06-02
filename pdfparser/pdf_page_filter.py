@@ -19,7 +19,9 @@ class PDFPageFilter:
 
     def is_cover(self, page_txt):
         txt = ''
-        # TODO : improve logic by passing page number (cover is expected to be first page only)
+        # TODO: use compile regexp for better performances
+        # TODO: improve logic by passing page number (cover is expected to be first page only)
+        # TODO: deal with 'old' documents (see IMP19945916FRE)
         for _, fragment in page_txt.items():
             txt += fragment.strip()
 
@@ -183,6 +185,7 @@ class PDFPageFilter:
             if fragment.rfind('ANNEX') == 0 or \
                 fragment.rfind('[Annex]') == 0 or \
                 fragment.rfind('APPENDIX') == 0 or \
+                fragment.rfind('APPENDICE') == 0 or \
                 fragment == 'TECHNICAL ANNEX' or \
                 fragment == 'FIGURE AND TABLE ANNEX':  # Expected text in uppercase !
                 self.report.annex = 1
