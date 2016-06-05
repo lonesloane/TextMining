@@ -1,24 +1,31 @@
-59.5191|767.25666|62.2791|781.76322|  
-59.5191|730.231812|62.58822|744.926052|  
-59.5191|680.970168|303.44946|719.722836|    RESSOURCES BUDGETAIRES REQUISES (K EUR) :  
-246.358956|717.57666|348.83886|732.29298|Répartition des coûts  
-482.27934|767.25666|532.799484|781.76322|C(2004)39  
-104.399|436.89666|313.079|681.11682|  A.  Coût total estimé : Personnel permanent : Personnel de projet Consultants : Missions : Autres dépenses de fonctionnement (à préciser) : Frais généraux de fonctionnement :    B. Total Ressources existantes  Personnel permanent : Personnel de projet Consultants : Missions : Autres dépenses de fonctionnement : Frais généraux de fonctionnement :   (A-B) = C.  Total déficit de financement :  
-332.639232|692.489904|355.289268|705.766584|2003  
-386.758884|692.489904|409.40892|705.766584|2004  
-440.999052|692.489904|463.649088|705.766584|2005  
-498.118656|692.489904|520.768692|705.766584|2006  
-341.39852|557.73666|346.799|681.68322|                           
-341.39852|449.61666|346.799|546.20322|                     
-388.558904|652.77642|407.878904|667.49274|310  
-396.838904|639.45642|399.598904|653.96298|  
-388.558904|449.13666|407.878904|640.28298|180  90  40        60      50  10        
-388.559|436.41666|407.879|451.13298|250  
-453.95876|666.69642|456.71876|681.20298|  
-451.078424|557.495988|453.838424|667.49274|                
-451.078424|449.13666|453.839|545.72298|              
-506.879|557.97666|512.279|668.00322|                        
-506.879|437.73666|512.279|546.20322|                        
-59.51852|258.69666|534.250664|425.48322|  JUSTIFICATION DU BESOIN DE FINANCEMENT COMPLEMENTAIRE :    Bien que ce projet s'appuie sur le PTB 2003-2004 actuel (sécurité, vie privée et biométrie), les pays  Membres ne s'intéressent que depuis peu à l'impact de ces questions sur le transport international de  voyageurs. Jusqu'à présent, les travaux ont été conduits en considérant qu'aucune ressource de la partie I ne  serait prélevée sur le programme de travail convenu pour 2003-04. Des contributions volontaires ont  permis de mener à bien les travaux réalisés à ce jour, et permettront d'autres travaux en 2004.    Même si ce projet est inclus à titre prioritaire dans le PTB pour 2005-2006, des ressources additionnelles  (FCP et contributions volontaires) sont nécessaires pour mener à bien les travaux en 2004.      
-59.5191|62.736852|62.2791|77.243412|  
-293.519628|62.736852|299.039628|77.243412|7 
+62.4|766.32432|183.22176|778.64496|DAFFE/TOU/STAT(95)10 
+180.48|718.50096|417.25344|729.01632|Table 4: Gross fixed capital formation by tourism industries 
+213.84096|703.14288|383.84688|713.65824|Current prices; values in            ; year 1993 
+274.56192|687.7848|323.31744|698.30016|COUNTRY: 
+382.08|672.92136|481.95912|682.05312|Gross fixed capital formation 
+372.48|656.84136|388.43088|665.97312|Net* 
+463.55208|656.84136|503.04912|665.97312|VAT, net** 
+64.8|628.99776|255.40272|649.36008|Activity classification (coding according to ISIC (1) Rev.3) MARKET PRODUCERS 
+64.8|612.92136|72.9576|622.05312|55 
+64.8|596.60136|77.04432|605.44008|551 
+64.8|560.12136|77.04432|581.20008|552 60 
+64.8|494.12136|81.1152|552.64008|601 602 6021 6022 61 
+64.8|477.80136|77.04432|486.64008|611 
+64.8|440.60136|77.04432|461.68008|612 62 
+64.8|399.56136|77.04432|433.12008|621 622 63 
+64.8|371.48136|81.1152|380.32008|6304 
+64.8|347.48136|72.9576|356.61312|92 
+95.99688|612.92136|173.49408|622.05312|Hotels and restaurants 
+95.99688|560.12136|222.2844|605.44008|Hotels; camping sites and other provision of short-stay accommodation Restaurants, bars and canteens Land transport 
+95.99688|494.12136|274.45032|552.64008|Transport via railways Other land transport of which: other scheduled passenger land transport of which: other non-scheduled passenger land transport Water transport 
+95.99688|440.60136|195.48792|486.64008|Sea and coastal water transport of which: cruise ships Inland water transport Air transport 
+95.99688|399.56136|250.722|433.12008|Scheduled air transport Non-scheduled air transport Supporting and auxiliary transport activities; 
+95.99688|347.48136|264.88296|393.33312|Activities of travel agencies of which: activities of travel agencies, tour operation and tourist guides Recreational, cultural and sporting activities 
+95.99688|293.72136|279.05976|340.00008|of which: dramatic arts, music and other arts activities of which: other entertainment activities Libraries, archives, museums and other cultural activities Sporting and other recreational activities 
+64.8|281.48136|144.99792|340.00008|9214 9219 923 924 OTHER PRODUCERS 
+64.8|265.40136|72.9576|274.53312|92 
+95.99688|265.40136|247.40352|274.53312|Recreational, cultural and sporting activities 
+95.99688|211.64136|279.05976|257.92008|of which: dramatic arts, music and other arts activities of which: other entertainment activities Libraries, archives, museums and other cultural activities Sporting and other recreational activities 
+64.8|199.40136|146.64528|257.92008|9214 9219 923 924 Total tourism industries 
+64.8|135.31776|361.38816|191.92008|Memorandum item : total economy *) Net of any value added tax (VAT) **) For example, non-deductible VAT on products included in gross fixed capital formation 1. International Standard Industrial Classification. Source: OECD 
+293.5224|61.92816|304.5624|74.2488|14 

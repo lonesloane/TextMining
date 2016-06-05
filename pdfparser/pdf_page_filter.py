@@ -19,13 +19,15 @@ class PDFPageFilter:
 
     def is_cover(self, page_txt):
         txt = ''
-        # TODO: use compile regexp for better performances
+        # TODO: use compiled regexp for better performances
         # TODO: improve logic by passing page number (cover is expected to be first page only)
-        # TODO: deal with 'old' documents (see IMP19945916FRE)
+        # TODO: deal with 'old' documents (see IMP19945916FRE) ==> look for combination of criteria
+        #       rather than for all at once.
         for _, fragment in page_txt.items():
             txt += fragment.strip()
 
         # Cote
+        # TODO: FIX this: DCD(2000)7
         if not re.search('[\w]+/[[\w/]+]?\(\d{2,4}\)\d*.*|C\(\d{2,4}\)\d*.*', txt):
             if _log_level > 0:
                 logger.debug('No cote found')
@@ -66,6 +68,7 @@ class PDFPageFilter:
         for coord, fragment in page_txt.items():
             fragment = fragment.strip().lower()
             if (fragment == 'SUMMARY'.lower() or
+                fragment == 'ABSTRACT'.lower() or
                 fragment == 'RÉSUMÉ'.lower() or
                 fragment == 'EXECUTIVE SUMMARY'.lower()):
                 self.report.summary = 1
@@ -73,11 +76,14 @@ class PDFPageFilter:
         return False
 
     def is_toc(self, page_txt, current_fragment_type):
+        # TODO: IMP19961349FRE
+        # TODO: improve to handle situation where text follows toc on same page (see IMP19981804ENG, IMP19901498FRE)
         nb = 0
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
             if re.search('TABLE OF CONTENTS', fragment) or \
-                    re.search('TABLE DES MATI.+RES', fragment):  # Expected text in uppercase !
+                    re.search('TABLE DES MATI.+RES', fragment) or \
+                    re.search('SOMMAIRE', fragment):  # Expected text in uppercase !
                 self.report.toc = 1
                 return True
             # Avoid un-necessary parsing of the page
@@ -137,6 +143,8 @@ class PDFPageFilter:
         return False, None
 
     def is_participants_list(self, page_txt, current_fragment_type):
+        # TODO: try to not rely on specific words (improve pattern recognition)
+        # TODO: Fix: IMP19926745FRE
         nb = 0
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
@@ -144,8 +152,10 @@ class PDFPageFilter:
             # TODO: use regexp
             if (fragment.lower() == 'Participants list'.lower() or
                 fragment.lower() == 'LIST OF PARTICIPANTS'.lower() or
+                fragment == 'PRESENT' or fragment == 'PRESENTS' or
                 fragment.lower() == 'Liste des participants'.lower() or
                 fragment.lower().find('List of Participants / Liste des Participants'.lower()) > 0 or
+                fragment.find('Liste des Participants/List of Presence') > 0 or
                 fragment.lower().find('List of Participants/Liste des Participants'.lower()) > 0):
                 self.report.participants_list = 1
                 return True
@@ -194,7 +204,7 @@ class PDFPageFilter:
 
     def is_notes(self, page_txt, current_fragment_type):
         # TODO: Finalize implementation of regexp
-        # test on JT03367009
+        # test on JT03367009, JT00111451
         nb = 0
         # Expect to find word 'NOTES' (in upper case) as first word of sentence, top of the page
         # TODO: add logic to check that text is first on page
@@ -239,6 +249,8 @@ class PDFPageFilter:
                                                                                       ncolumns=table.columns))
             logger.debug('Before table filtering, length of page text:{len}'.format(len=len(page_txt)))
             for coord, _ in page_txt.items():
+                # TODO: change this to remove only numbers
+                # and keep 1 occurrence of any textual content found in the tables (see JT00021419)
                 if text_is_a_cell(coord, outer_edges):
                     logger.debug('\nignored text: {txt}'.format(txt=page_txt[coord]))
                     del page_txt[coord]
@@ -249,7 +261,7 @@ class PDFPageFilter:
         for coord, substring in page_txt.items():
             # remove paragraph numbers, e.g. "23."
             # sometimes wrongly inserted within the text from incorrect layout analysis
-            result = re.sub('(^\s?[0-9]{1,4}\.\s?)', ' ', substring)
+            result = re.sub('(^\s?[0-9]{1,4}\.(?:[0-9]{1,4})?\s?)', ' ', substring)
             if _log_level > 2:
                 logger.debug('regexp on [{substring}]'.format(substring=substring))
                 logger.debug('result: [{result}]'.format(result=result))

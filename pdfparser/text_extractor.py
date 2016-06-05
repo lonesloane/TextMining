@@ -30,8 +30,10 @@ class PDFTextExtractor:
         self.single_page = int(single_page) if single_page else -1
 
     def extract_text(self, pdf_file_path):
+        # TODO: See if possible to detect that page is in landscape mode instead of regular portrait mode
+        #       (eg. IMP19953820ENG)
         self.convert_pdf_layout_to_text(pdf_file_path)
-        if FragmentType.TEXT in self.contents and len(self.contents[FragmentType.TEXT]) == 0:
+        if FragmentType.TEXT not in self.contents or len(self.contents[FragmentType.TEXT]) == 0:
             # some special pdfs are only 'LTFigure'...
             logger.info('No text extracted from layout analysis! Falling back to raw text extraction.')
             self.convert_pdf_to_txt(pdf_file_path)
@@ -73,6 +75,7 @@ class PDFTextExtractor:
         fp.close()
 
     def convert_pdf_layout_to_text(self, pdf_doc):
+        # TODO: Refactor to extract only necessary pages (i.e. stop as soon as annex found) see JT03336009
         try:
             # open the pdf file
             fp = open(pdf_doc, 'rb')
@@ -207,6 +210,10 @@ class PDFTextExtractor:
         return page_text, page_cells
 
     def validate_page(self, page_txt, page_cells, previous_fragment_type):
+        # TODO: Do some systematic tests to compare the quality of the text extracted from layout
+        #       with that of text extracted with "regular" text extraction.
+        # TODO: what about very special cases like statistical reports with no text at all? See JT00021419
+        # TODO: Define priority order for the possible fragments (i.e glossary over annex) See JT00154636
         logger.debug('Enter page validation')
         pdf_filter = PDFPageFilter(report=self.report)
 
@@ -283,7 +290,10 @@ class PDFTextExtractor:
         return current_fragment_type
 
     def add_fragment(self, fragment_txt, fragment_type):
+        # TODO: identify titles from the 'orphans' which are not continued on the next paragraph
         # TODO: review strategy to replace \n with ' ' (see JT03349191)
+        # TODO: see also JT03394203 page 4
+        # TODO: continue fragments if first word is all capital letters (i.e. acronym) see JT03216126 page 14-15
         content_list = list()
         ptrn_continued = re.compile('[a-zéèçàù]', re.UNICODE)
         ptrn_punct = re.compile('[\.]{1,}|[\?!:]')
@@ -340,6 +350,7 @@ class PDFTextExtractor:
 
 
 def extract_object_text_hash(h, lt_obj):
+    # TODO: strange behaviour to investigate: see Summary section of JT03380961
     global text_def
     x0 = lt_obj.bbox[0]
     y0 = lt_obj.bbox[1]
@@ -420,10 +431,12 @@ def strip_page_number(fragment_txt):
     page_number_idx = None
     for i in range(len(fragment_txt)-1, 0, -1):
         txt = fragment_txt[i].strip()
-        if re.search('\d+', txt):
+        if re.search('\s*?\d+\s*?', txt):
             logger.debug('found page number at index: {i}'.format(i=i))
             page_number_idx = i
             break
+        if len(txt) > 0:
+            break  # only strip out the first occurrence of a number before any actual text
     fragment_txt = fragment_txt[:page_number_idx]
     return fragment_txt
 
