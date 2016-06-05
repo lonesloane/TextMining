@@ -1,6 +1,7 @@
 import logging
 from pdfparser import logger, _log_level
 
+# TODO: extract to config file
 MAX_RECURSION = 100  # To avoid infinite recursion...should never require that many steps!!!
 ADJ_DISTANCE = 1.0  # TODO: come up with better way to define a reasonable "adjacence" limit
 
@@ -19,8 +20,8 @@ class Cell:
         self.rows = rows if height > Cell.MIN_HEIGHT else 0
         width = abs(self.x0 - self.x1)
         self.columns = columns if width > Cell.MIN_WIDTH else 0
-        log('Width: {width} - Nb columns: {nb_col}'.format(width=width, nb_col=self.columns))
-        log('Height: {height} - Nb rows: {nb_row}'.format(height=height, nb_row=self.rows))
+        #log('Width: {width} - Nb columns: {nb_col}'.format(width=width, nb_col=self.columns))
+        #log('Height: {height} - Nb rows: {nb_row}'.format(height=height, nb_row=self.rows))
 
     def __repr__(self):
         return '[' + 'x0: ' + str(self.x0) + ', y0: ' + str(self.y0) \
@@ -63,106 +64,101 @@ def find_outer_edges(cells, nth_recursion=0):
         collapsed = False
         if cell in ignored_cells:
             continue
+        collapsed_cell = cell
 
         for neighbor_cell in neighbor_cells:
+            collapsed = False
             if neighbor_cell in ignored_cells or same_cell(cell, neighbor_cell):
+                log('neighbor cell ignored')
                 continue
 
             log('neighbor cell {neighbor_cell}'.format(neighbor_cell=neighbor_cell))
 
             # Collapse adjacent cell on West side
-            if not collapsed and (adjacent(cell.x0, neighbor_cell.x1)) and \
-                    (adjacent(neighbor_cell.y0, cell.y0) or adjacent(neighbor_cell.y1, cell.y1)):
-                log('[W] collapsing cells {cell} and {neighbor_cell}'.format(cell=cell,
+            if (adjacent(collapsed_cell.x0, neighbor_cell.x1)) and \
+                    (adjacent(neighbor_cell.y0, collapsed_cell.y0) or adjacent(neighbor_cell.y1, collapsed_cell.y1)):
+                log('[W] collapsing cells {cell} and {neighbor_cell}'.format(cell=collapsed_cell,
                                                                              neighbor_cell=neighbor_cell))
-                collapsed_cell = collapse_west(cell, neighbor_cell)
+                collapsed_cell = collapse_west(collapsed_cell, neighbor_cell)
                 log('[W] resulting cell {cell}'.format(cell=collapsed_cell))
-                collapsed_cells.append(collapsed_cell)
                 collapsed = True
 
             # Collapse adjacent cell on East side
-            if not collapsed and (adjacent(neighbor_cell.x0, cell.x1)) and \
-                    (adjacent(neighbor_cell.y0, cell.y0) or adjacent(neighbor_cell.y1, cell.y1)):
-                log('[E] collapsing cells {cell} and {neighbor_cell}'.format(cell=cell,
+            if (adjacent(neighbor_cell.x0, collapsed_cell.x1)) and \
+                    (adjacent(neighbor_cell.y0, collapsed_cell.y0) or adjacent(neighbor_cell.y1, collapsed_cell.y1)):
+                log('[E] collapsing cells {cell} and {neighbor_cell}'.format(cell=collapsed_cell,
                                                                              neighbor_cell=neighbor_cell))
-                collapsed_cell = collapse_east(cell, neighbor_cell)
+                collapsed_cell = collapse_east(collapsed_cell, neighbor_cell)
                 log('[E] resulting cell {cell}'.format(cell=collapsed_cell))
-                collapsed_cells.append(collapsed_cell)
                 collapsed = True
 
             # Collapse adjacent cell on South side
-            if not collapsed and (adjacent(cell.y0, neighbor_cell.y1)) and \
-                    (adjacent(neighbor_cell.x0, cell.x0) or adjacent(neighbor_cell.x1, cell.x1)):
-                log('[S] collapsing cells {cell} and {neighbor_cell}'.format(cell=cell,
+            if (adjacent(collapsed_cell.y0, neighbor_cell.y1)) and \
+                    (adjacent(neighbor_cell.x0, collapsed_cell.x0) or adjacent(neighbor_cell.x1, collapsed_cell.x1)):
+                log('[S] collapsing cells {cell} and {neighbor_cell}'.format(cell=collapsed_cell,
                                                                              neighbor_cell=neighbor_cell))
-                collapsed_cell = collapse_south(cell, neighbor_cell)
+                collapsed_cell = collapse_south(collapsed_cell, neighbor_cell)
                 log('[S] resulting cell {cell}'.format(cell=collapsed_cell))
-                collapsed_cells.append(collapsed_cell)
                 collapsed = True
 
             # Collapse adjacent cell on North side
-            if not collapsed and (adjacent(neighbor_cell.y0, cell.y1)) and \
-                    (adjacent(neighbor_cell.x0, cell.x0) or adjacent(neighbor_cell.x1, cell.x1)):
-                log('[N] collapsing cells {cell} and {neighbor_cell}'.format(cell=cell,
+            if (adjacent(neighbor_cell.y0, collapsed_cell.y1)) and \
+                    (adjacent(neighbor_cell.x0, collapsed_cell.x0) or adjacent(neighbor_cell.x1, collapsed_cell.x1)):
+                log('[N] collapsing cells {cell} and {neighbor_cell}'.format(cell=collapsed_cell,
                                                                              neighbor_cell=neighbor_cell))
-                collapsed_cell = collapse_north(cell, neighbor_cell)
+                collapsed_cell = collapse_north(collapsed_cell, neighbor_cell)
                 log('[N] resulting cell {cell}'.format(cell=collapsed_cell))
-                collapsed_cells.append(collapsed_cell)
                 collapsed = True
 
             # Collapse inner cell
-            if not collapsed and (cell.x0 <= neighbor_cell.x0 <= neighbor_cell.x1 <= cell.x1) and \
-                    (cell.y0 <= neighbor_cell.y0 <= neighbor_cell.y1 <= cell.y1):
-                log('[INNER] collapsing cells {cell} and {neighbor_cell}'.format(cell=cell,
+            if (collapsed_cell.x0 <= neighbor_cell.x0 <= neighbor_cell.x1 <= collapsed_cell.x1) and \
+                    (collapsed_cell.y0 <= neighbor_cell.y0 <= neighbor_cell.y1 <= collapsed_cell.y1):
+                log('[INNER] collapsing cells {cell} and {neighbor_cell}'.format(cell=collapsed_cell,
                                                                                  neighbor_cell=neighbor_cell))
-                log('[INNER] resulting cell {cell}'.format(cell=cell))
-                cell.columns += neighbor_cell.columns
-                cell.rows += neighbor_cell.rows
-                collapsed_cells.append(cell)
+                log('[INNER] resulting cell {cell}'.format(cell=collapsed_cell))
+                collapsed_cell.columns += neighbor_cell.columns
+                collapsed_cell.rows += neighbor_cell.rows
                 collapsed = True
 
             # Collapse outer cell
-            if not collapsed and (neighbor_cell.x0 <= cell.x0 <= cell.x1 <= neighbor_cell.x1) and \
-                    (neighbor_cell.y0 <= cell.y0 <= cell.y1 <= neighbor_cell.y1):
-                log('[OUTER] collapsing cells {cell} and {neighbor_cell}'.format(cell=cell,
+            if (neighbor_cell.x0 <= collapsed_cell.x0 <= collapsed_cell.x1 <= neighbor_cell.x1) and \
+                    (neighbor_cell.y0 <= collapsed_cell.y0 <= collapsed_cell.y1 <= neighbor_cell.y1):
+                log('[OUTER] collapsing cells {cell} and {neighbor_cell}'.format(cell=collapsed_cell,
                                                                                  neighbor_cell=neighbor_cell))
                 log('[OUTER] resulting cell {cell}'.format(cell=neighbor_cell))
-                neighbor_cell.columns += cell.columns
-                neighbor_cell.rows += cell.rows
-                collapsed_cells.append(neighbor_cell)
+                neighbor_cell.columns += collapsed_cell.columns
+                neighbor_cell.rows += collapsed_cell.rows
+                collapsed_cell = neighbor_cell
                 collapsed = True
 
             # Collapse overlapping cell on the right
-            if not collapsed and (neighbor_cell.x0 <= cell.x1 and
-                                  (cell.y0 <= neighbor_cell.y0 <= cell.y1 or
-                                   cell.y0 <= neighbor_cell.y1 <= cell.y1)):
-                log('[OE] collapsing cells {cell} and {neighbor_cell}'.format(cell=cell,
+            if (neighbor_cell.x0 <= collapsed_cell.x1 and
+                                  (collapsed_cell.y0 <= neighbor_cell.y0 <= collapsed_cell.y1 or
+                                               collapsed_cell.y0 <= neighbor_cell.y1 <= collapsed_cell.y1)):
+                log('[OE] collapsing cells {cell} and {neighbor_cell}'.format(cell=collapsed_cell,
                                                                               neighbor_cell=neighbor_cell))
-                collapsed_cell = collapse_overlapping(cell, neighbor_cell)
+                collapsed_cell = collapse_overlapping(collapsed_cell, neighbor_cell)
                 log('[OE] resulting cell {cell}'.format(cell=collapsed_cell))
-                collapsed_cells.append(collapsed_cell)
                 collapsed = True
 
             # Collapse overlapping cell on the left
-            if not collapsed and (neighbor_cell.x1 >= cell.x0 and
-                                  (cell.y0 <= neighbor_cell.y0 <= cell.y1 or
-                                   cell.y0 <= neighbor_cell.y1 <= cell.y1)):
-                log('[OW] collapsing cells {cell} and {neighbor_cell}'.format(cell=cell,
+            if (neighbor_cell.x1 >= collapsed_cell.x0 and
+                                  (collapsed_cell.y0 <= neighbor_cell.y0 <= collapsed_cell.y1 or
+                                               collapsed_cell.y0 <= neighbor_cell.y1 <= collapsed_cell.y1)):
+                log('[OW] collapsing cells {cell} and {neighbor_cell}'.format(cell=collapsed_cell,
                                                                               neighbor_cell=neighbor_cell))
-                collapsed_cell = collapse_overlapping(cell, neighbor_cell)
+                collapsed_cell = collapse_overlapping(collapsed_cell, neighbor_cell)
                 log('[OW] resulting cell {cell}'.format(cell=collapsed_cell))
-                collapsed_cells.append(collapsed_cell)
                 collapsed = True
 
             if collapsed:
                 ignored_cells.append(cell)
                 ignored_cells.append(neighbor_cell)
                 converged = False
-                break
+            else:
+                log('No match found for neighbor cell {cell}'.format(cell=neighbor_cell))
 
-        if not collapsed:
-            log('Failed to collapse cell: {cell}. Must be "alone"...'.format(cell=cell))
-            collapsed_cells.append(cell)
+        collapsed_cells.append(collapsed_cell)
 
     if converged:
         log('Converged. All cells collapsed....')
