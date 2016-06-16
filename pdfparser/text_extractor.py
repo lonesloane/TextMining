@@ -2,6 +2,8 @@
 import re
 from cStringIO import StringIO
 from json import JSONEncoder
+import ConfigParser
+import os
 
 from nltk import PunktSentenceTokenizer
 from pdfminer.converter import TextConverter, PDFPageAggregator
@@ -24,9 +26,17 @@ text_def = None
 class PDFTextExtractor:
 
     def __init__(self, report=None, single_page=None):
+        # Get configuration parameters
+        basedir = os.path.abspath(os.path.dirname(__file__))
+        config = ConfigParser.SafeConfigParser()
+        config.read(os.path.join(basedir, 'pdfparser.conf'))
+
+        self.filter_tables = config.getboolean('MAIN', 'filter_tables')
         self.contents = dict()
         self.report = report
+        self.pdf_filter = PDFPageFilter(report=self.report)
         self.previous_p = None
+        self.annex_found = False
         self.single_page = int(single_page) if single_page else -1
 
     def extract_text(self, pdf_file_path):
@@ -34,6 +44,7 @@ class PDFTextExtractor:
         #       (eg. IMP19953820ENG)
         self.convert_pdf_layout_to_text(pdf_file_path)
         if FragmentType.TEXT not in self.contents or len(self.contents[FragmentType.TEXT]) == 0:
+            # TODO: Take pdf 'type' into account (see JT03366237)
             # some special pdfs are only 'LTFigure'...
             logger.info('No text extracted from layout analysis! Falling back to raw text extraction.')
             self.convert_pdf_to_txt(pdf_file_path)
@@ -63,7 +74,7 @@ class PDFTextExtractor:
             device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
             PDFPageInterpreter(rsrcmgr, device).process_page(page)
 
-            page_text = retstr.getvalue().decode(encoding='utf-8')
+            page_text = retstr.getvalue()  # .decode(encoding='utf-8')
             device.close()
             retstr.close()
 
@@ -75,7 +86,6 @@ class PDFTextExtractor:
         fp.close()
 
     def convert_pdf_layout_to_text(self, pdf_doc):
-        # TODO: Refactor to extract only necessary pages (i.e. stop as soon as annex found) see JT03336009
         try:
             # open the pdf file
             fp = open(pdf_doc, 'rb')
@@ -92,17 +102,15 @@ class PDFTextExtractor:
                 logger.info("="*20)
                 pages = self.parse_pages(doc)
 
+                total_nb_pages = len(pages)
                 page_nb = 0
                 fragment_type = FragmentType.UNKNOWN
                 for page_text, page_cells in pages:
                     logger.info('='*20)
                     logger.info('Validating page {page_nb}'.format(page_nb=page_nb))
                     logger.info('='*20)
-                    fragment_type = self.validate_page(page_text, page_cells, fragment_type)
+                    fragment_type = self.validate_page(page_text, page_cells, fragment_type, page_nb)
                     page_nb += 1
-                    # TODO: Keep processing documents beyond annexes
-                    if fragment_type is FragmentType.ANNEX:
-                        break
                 # Add any leftover text
                 if self.previous_p:
                     self.contents[FragmentType.TEXT].extend({self.previous_p})
@@ -169,18 +177,11 @@ class PDFTextExtractor:
                 cell = Cell(x0, y0, x1, y1)
                 if cell.rows > 0 or cell.columns > 0:  # ignore 'lines' (i.e. cell without content within)
                     page_cells.append(cell)
-                if _log_level > 1:
-                    logger.debug('LTRect: [x0={x0}, y0={y0}, x1={x1}, y1={y1}]'.format(x0=x0, y0=y0, x1=x1, y1=y1))
-                    if _log_level > 2:
-                        rec_def.write('{x0},{y0},{x1},{y1}\n'.format(x0=x0, y0=y0, x1=x1, y1=y1))
+                    if _log_level > 1:
+                        logger.debug('LTRect: [x0={x0}, y0={y0}, x1={x1}, y1={y1}]'.format(x0=x0, y0=y0, x1=x1, y1=y1))
+                        if _log_level > 2:
+                            rec_def.write('{x0},{y0},{x1},{y1}\n'.format(x0=x0, y0=y0, x1=x1, y1=y1))
             elif isinstance(lt_obj, LTFigure):
-                # TODO: Some documents are entirely made up of LTFigures. Not possible to simply ignore them !!!
-                # At least, check if no text was extracted at all, in which case fallback to other extraction strategy.
-                # eg:
-                # '2014/11/03/JT03365454.pdf'
-                # '2014/11/07/JT03365773.pdf'
-                # '2014/11/07/JT03365809.pdf'
-                # '2014/11/27/JT03367264.pdf'
                 if _log_level > 1:
                     logger.debug('LTFigure -- ignoring')
                 # LTFigure objects are containers for other LT* objects, so recurse through the children
@@ -191,7 +192,7 @@ class PDFTextExtractor:
                 if _log_level > 1:
                     logger.debug('Unknown object type: ' + str(type(lt_obj)))
 
-        if _log_level > 2:  # TODO: make sure this is the right place to do this ?!?
+        if _log_level > 2:
             rec_def.close()
             text_def.close()
 
@@ -209,72 +210,77 @@ class PDFTextExtractor:
 
         return page_text, page_cells
 
-    def validate_page(self, page_txt, page_cells, previous_fragment_type):
+    def validate_page(self, page_txt, page_cells, previous_fragment_type, page_nb):
         # TODO: Do some systematic tests to compare the quality of the text extracted from layout
         #       with that of text extracted with "regular" text extraction.
         # TODO: what about very special cases like statistical reports with no text at all? See JT00021419
         # TODO: Define priority order for the possible fragments (i.e glossary over annex) See JT00154636
+        # TODO: refactor to submit page only once and validate every options all at the same time.
+        # ==> then only decide what type of fragment (i.e. annex or participants list... see JT00124770)
+        # TODO: Identify chapter or paragraph titles to detect the end of a section (see IMP1997345ENG page 2)
         logger.debug('Enter page validation')
-        pdf_filter = PDFPageFilter(report=self.report)
 
-        if page_cells:
-            pdf_filter.filter_tables(page_txt, page_cells)
+        if page_cells and self.filter_tables:
+            self.pdf_filter.filter_tables(page_txt, page_cells)
         coord = None
+
         while True:
-            is_cover = pdf_filter.is_cover(page_txt)
+
+            # cover is expected to be first page only
+            is_cover = False if page_nb > 0 else self.pdf_filter.is_cover(page_txt)
             if is_cover:
                 logger.info('\nMATCH - {Cover Page} found.')
                 current_fragment_type = FragmentType.COVER_PAGE
                 break
 
-            is_toc = pdf_filter.is_toc(page_txt, previous_fragment_type)
+            is_toc = self.pdf_filter.is_toc(page_txt, previous_fragment_type)
             if is_toc:
                 logger.info('\nMATCH - {Table Of Contents} found.')
                 current_fragment_type = FragmentType.TABLE_OF_CONTENTS
                 break
 
-            is_summary = pdf_filter.is_summary(page_txt, previous_fragment_type)
+            is_summary = self.pdf_filter.is_summary(page_txt, previous_fragment_type)
             if is_summary:
                 logger.info('\nMATCH - {Summary} found.')
                 current_fragment_type = FragmentType.SUMMARY
                 break
 
-            is_glossary = pdf_filter.is_glossary(page_txt, previous_fragment_type)
+            is_glossary = self.pdf_filter.is_glossary(page_txt, previous_fragment_type)
             if is_glossary:
                 logger.info('\nMATCH - {Glossary} found.')
                 current_fragment_type = FragmentType.GLOSSARY
                 break
 
-            is_bibliography, coord = pdf_filter.is_bibliography(page_txt, previous_fragment_type)
+            is_bibliography, coord = self.pdf_filter.is_bibliography(page_txt, previous_fragment_type)
             if is_bibliography:
                 logger.info('\nMATCH - {Bibliography} found.')
                 current_fragment_type = FragmentType.BIBLIOGRAPHY
                 break
 
-            is_participants_list = pdf_filter.is_participants_list(page_txt, previous_fragment_type)
+            is_participants_list = self.pdf_filter.is_participants_list(page_txt, previous_fragment_type)
             if is_participants_list:
                 logger.info('\nMATCH - {Participants List} found.')
                 current_fragment_type = FragmentType.PARTICIPANTS_LIST
                 break
 
-            # TODO: implement call to pdf_filter.is_notes(page_txt, previous_fragment_type)
-
-            is_annex = pdf_filter.is_annex(page_txt, previous_fragment_type)
+            is_annex = self.pdf_filter.is_annex(page_txt, previous_fragment_type)
             if is_annex:
                 logger.info('\nMATCH - {Annex} found.')
                 current_fragment_type = FragmentType.ANNEX
+                self.annex_found = True
                 break
 
             # Default: plain simple text
-            PDFPageFilter.process_text(page_txt, page_cells)
-            current_fragment_type = FragmentType.TEXT
+            process_text(page_txt)
+            if self.annex_found:
+                current_fragment_type = FragmentType.ANNEX
+            else:
+                current_fragment_type = FragmentType.TEXT
             break
 
         logger.debug('Exit page validation')
 
-        if coord:  # TODO: remove condition, should always be true...
-            # TODO: split page_txt before and after coord
-            # then call add_fragment with previous and current fragment_type
+        if coord:
             previous_fragment_txt = get_previous_fragment_text(page_txt, coord)
             next_fragment_txt = get_next_fragment_text(page_txt, coord)
             self.add_fragment(previous_fragment_txt, fragment_type=previous_fragment_type)
@@ -296,18 +302,37 @@ class PDFTextExtractor:
         # TODO: continue fragments if first word is all capital letters (i.e. acronym) see JT03216126 page 14-15
         content_list = list()
         ptrn_continued = re.compile('[a-zéèçàù]', re.UNICODE)
-        ptrn_punct = re.compile('[\.]{1,}|[\?!:]')
+        ptrn_punct = re.compile('[\.]+|[\?!:]')
 
-        if _log_level > 0:
+        if _log_level > 1:
             logger.debug('[add_fragment] Fragment type:{type}'.format(type=fragment_type))
 
-        if fragment_type is not FragmentType.TEXT:
+        if fragment_type is FragmentType.TEXT or fragment_type is FragmentType.SUMMARY:
             for p in fragment_txt:
-                # TODO: replace \n only if not following a punctuation mark and not preceding a capital letter
-                #  p = p.replace('\n', ' ').strip()
-                p = p.strip()
+                # TODO: strip out whitespaces between independent sentences (see IMP19912074FRE)
+                # p = p.replace(' {2,}', ' ', re.UNICODE).strip()
+                p = p.strip().replace('\n', ' ')
                 if not len(p):
                     continue
+                if _log_level > 1:
+                    logger.debug('[add_fragment] - current: {p}'.format(p=p))
+                    logger.debug('[add_fragment] - previous: {p}'.format(p=self.previous_p))
+                if self.previous_p:
+                    if re.match(ptrn_continued, p[0]):
+                        p = self.previous_p + ' ' + p
+                    else:
+                        if _log_level > 1:
+                            logger.debug('not continued. p[0]:{p}'.format(p=p[0]))
+                        content_list.append(self.previous_p)
+                    self.previous_p = None
+                if not re.match(ptrn_punct, p[len(p) - 1]) \
+                        and not re.match('[0-9]+ \w+.*', p):
+                    self.previous_p = p
+                    continue
+                else:
+                    if _log_level > 1:
+                        logger.debug('found punctuation: {pct}'.format(pct=p[len(p) - 1]))
+
                 content_list.append(p)
         else:
             for p in fragment_txt:
@@ -315,23 +340,6 @@ class PDFTextExtractor:
                 p = p.strip()
                 if not len(p):
                     continue
-                if _log_level > 0:
-                    logger.debug('[add_fragment] - current: {p}'.format(p=p))
-                    logger.debug('[add_fragment] - previous: {p}'.format(p=self.previous_p))
-                if self.previous_p:
-                    if re.match(ptrn_continued, p[0]):
-                        p = self.previous_p + ' ' + p
-                    else:
-                        logger.debug('not continued. p[0]:{p}'.format(p=p[0]))
-                        content_list.append(self.previous_p)
-                    self.previous_p = None
-                if not re.match(ptrn_punct, p[len(p)-1])\
-                        and not re.match('[0-9]+ \w+.*', p):
-                    self.previous_p = p
-                    continue
-                else:
-                    logger.debug('found punctuation: {pct}'.format(pct=p[len(p)-1]))
-
                 content_list.append(p)
 
         if fragment_type not in self.contents:
@@ -341,12 +349,23 @@ class PDFTextExtractor:
 
     def add_text_content(self, fragment_txt, fragment_type):
         content_list = list()
-        content_list.append(fragment_txt.replace('\n', ''))
+        content_list.append(fragment_txt)
 
         if fragment_type not in self.contents:
             self.contents[fragment_type] = content_list
         else:
             self.contents[fragment_type].extend(content_list)
+
+
+def process_text(page_txt):
+    for coord, substring in page_txt.items():
+        # remove paragraph numbers, e.g. "23."
+        # sometimes wrongly inserted within the text from incorrect layout analysis
+        result = re.sub('(^\s?[0-9]{1,4}\.(?:[0-9]{1,4})?\s?)', ' ', substring)
+        if _log_level > 2:
+            logger.debug('regexp on [{substring}]'.format(substring=substring))
+            logger.debug('result: [{result}]'.format(result=result))
+        page_txt[coord] = result
 
 
 def extract_object_text_hash(h, lt_obj):
@@ -372,12 +391,12 @@ def strip_classification(fragment_txt):
     :param fragment_txt:
     :return:
     """
+    ptrn_classif = re.compile('For Official Use|Confidential|Unclassified|A Usage Officiel|'
+                              'Confidentiel|Non classifié', re.IGNORECASE)
     classif_idx = None
     for i in range(0, len(fragment_txt)-1):
         txt = fragment_txt[i].strip()
-        # TODO: extract regexp to 'library' of regexps
-        if re.search('For Official Use|Confidential|Unclassified|A Usage Officiel'
-                     '|Confidentiel|Non classifié', txt, re.IGNORECASE):
+        if re.search(ptrn_classif, txt):
             logger.debug('found classification at index: {i}'.format(i=i))
             classif_idx = i
             break
@@ -411,11 +430,9 @@ def strip_cote(fragment_txt):
 
 
 def is_cote(txt):
-    # TODO: improve regex to make sure the cote is not part of a longer sentence (i.e. quote)
-    # see IMP19912074FRE, JT03349136
-    if re.search('[\w]+/[[\w/]+]?\(\d{2,4}\)\d*.*', txt):
+    if re.match('[\w]+/[[\w/]+]?\(\d{2,4}\)\d*.*', txt):
         return True
-    if re.search('C\(\d{2,4}\)\d*.*', txt):
+    if re.match('C\(\d{2,4}\)\d*.*', txt):
         return True
     return False
 
@@ -426,12 +443,10 @@ def strip_page_number(fragment_txt):
     :param fragment_txt:
     :return:
     """
-    # TODO: improve regex to make sure the number is not part of a longer sentence (i.e. quote)
-    # see IMP19912074FRE, JT03349136, IMP1999245ENG
     page_number_idx = None
     for i in range(len(fragment_txt)-1, 0, -1):
         txt = fragment_txt[i].strip()
-        if re.search('\s*?\d+\s*?', txt):
+        if re.match('\s*?\d+\s*?', txt):
             logger.debug('found page number at index: {i}'.format(i=i))
             page_number_idx = i
             break
@@ -463,11 +478,12 @@ def get_next_fragment_text(page_txt, split_coord):
 
 def re_order_text(txt):
     txt = sorted(txt)
-    logger.debug('-' * 20)
-    logger.debug('Sorted page text:')
-    logger.debug('-' * 20)
-    for elem in txt:
-        logger.debug('{elem}'.format(elem=elem))
+    if _log_level > 1:
+        logger.debug('-' * 20)
+        logger.debug('Sorted page text:')
+        logger.debug('-' * 20)
+        for elem in txt:
+            logger.debug('{elem}'.format(elem=elem))
     return [str_array for _, _, str_array in txt]
 
 

@@ -16,44 +16,68 @@ class PDFPageFilter:
 
     def __init__(self, report=None):
         self.report = report if report else Report()
+        self.tables_text = list()
 
     def is_cover(self, page_txt):
+        nb_match = 0
         txt = ''
-        # TODO: use compiled regexp for better performances
-        # TODO: improve logic by passing page number (cover is expected to be first page only)
-        # TODO: deal with 'old' documents (see IMP19945916FRE) ==> look for combination of criteria
-        #       rather than for all at once.
+        ptrn_cote = re.compile('[\w]+/[[\w/]+]?\(\d{2,4}\)\d*.*|'
+                               '[\w]+\(\d{2,4}\)\d*.*')
+        ptrn_classif = re.compile('For Official Use|Confidential|Unclassified|A Usage Officiel'
+                                  '|Confidentiel|Non classifi.{1,2}|Diffusion Restreinte|Restricted Diffusion'
+                                  '|Restricted|general distribution', re.IGNORECASE)
+        ptrn_oecd = re.compile('Organisation for Economic Co-operation and Development'
+                               '|International Transport Forum|'
+                               'European Conference of Ministers of Transport|'
+                               'Co-ordinated Organisations')
+        ptrn_ocde = re.compile('Organisation de Coop.{1,2}ration et de D.{1,2}veloppement .{1,2}conomiques'
+                               '|Forum International des Transports|'
+                               'Conf.{1,2}rence Europ.{1,2}enne des Ministres des Transports|'
+                               'Organisations Coordonn.{1,2}es')
+        ptrn_oecd_telex = re.compile('.*ORGANISATION FOR ECONOMIC.*\s?.*CO.*?OPERATION AND DEVELOPMENT.*', re.MULTILINE)
+        ptrn_oecd_telex_start = re.compile('.*ORGANISATION FOR ECONOMIC.*\s?.*')
+        ptrn_oecd_telex_end = re.compile('.*CO.*?OPERATION AND DEVELOPMENT.*')
+        ptrn_ocde_telex = re.compile('.*ORGANISATION DE COOP.{1,2}RATION.*\s?.*ET DE D.{1,2}VELOPPEMENT .{1,2}CONOMIQUES.*', re.MULTILINE)
+        ptrn_ocde_telex_start = re.compile('.*ORGANISATION DE COOP.{1,2}RATION.*\s?.*')
+        ptrn_ocde_telex_end = re.compile('.*ET DE D.{1,2}VELOPPEMENT .{1,2}CONOMIQUES.*')
+
         for _, fragment in page_txt.items():
             txt += fragment.strip()
 
         # Cote
-        # TODO: FIX this: DCD(2000)7
-        if not re.search('[\w]+/[[\w/]+]?\(\d{2,4}\)\d*.*|C\(\d{2,4}\)\d*.*', txt):
+        if re.search(ptrn_cote, txt):
+            nb_match += 1
+        else:
             if _log_level > 0:
                 logger.debug('No cote found')
-            return False
         # Classification
-        if not re.search(ur'For Official Use|Confidential|Unclassified|A Usage Officiel'
-                         '|Confidentiel|Non classifi.|Diffusion Restreinte|Restricted Diffusion'
-                         '|Restricted', txt, re.IGNORECASE):
+        if re.search(ptrn_classif, txt):
+            nb_match += 1
+        else:
             if _log_level > 0:
                 logger.debug('No classification found')
-            return False
         # OECD
-        if not re.search(ur'Organisation for Economic Co-operation and Development'
-                         '|International Transport Forum|European Conference of Ministers of Transport', txt):
+        if re.search(ptrn_oecd, txt) or re.search(ptrn_oecd_telex, txt):
+            nb_match += 1
+        elif re.search(ptrn_oecd_telex_start, txt) or re.search(ptrn_oecd_telex_end, txt):
+            nb_match += 0.5
+        else:
             if _log_level > 0:
                 logger.debug('No OECD found')
-            return False
         # OCDE
-        if not re.search(ur'Organisation de Coop.*ration et de D.*veloppement .*conomiques'
-                         '|Forum International des Transports|Conf.*rence Europ.*enne des Ministres des Transports', txt):
+        if re.search(ptrn_ocde, txt) or re.search(ptrn_ocde_telex, txt):
+            nb_match += 1
+        elif re.search(ptrn_ocde_telex_start, txt) or re.search(ptrn_ocde_telex_end, txt):
+            nb_match += 0.5
+        else:
             if _log_level > 0:
                 logger.debug('No OCDE found')
-            return False
 
-        self.report.cover_page = 1
-        return True
+        if nb_match > 2:
+            self.report.cover_page = 1
+            return True
+        else:
+            return False
 
     def is_summary(self, page_txt, current_fragment_type):
         """
@@ -64,26 +88,28 @@ class PDFPageFilter:
         :param current_fragment_type:
         :return:
         """
-        #TODO: identify text within a box with title containing word summary or résumé (see 'IMP19991826FRE')
+        # TODO: Do not extract summary if annex already found.
+        ptrn_summary = re.compile('^\s*?SUMMARY\s*?$|'
+                                  '^\s*?ABSTRACT\s*?$|'
+                                  '^\s*?R.{1,2}SUM.{1,2}\s*?$|'
+                                  '^\s*?EXECUTIVE SUMMARY\s*?$', re.IGNORECASE)
         for coord, fragment in page_txt.items():
-            fragment = fragment.strip().lower()
-            if (fragment == 'SUMMARY'.lower() or
-                fragment == 'ABSTRACT'.lower() or
-                fragment == 'RÉSUMÉ'.lower() or
-                fragment == 'EXECUTIVE SUMMARY'.lower()):
+            fragment = fragment.strip()
+            if re.match(ptrn_summary, fragment):
+                logger.debug('Summary "Title" found: {frag}'.format(frag=fragment))
                 self.report.summary = 1
                 return True
         return False
 
     def is_toc(self, page_txt, current_fragment_type):
-        # TODO: IMP19961349FRE
         # TODO: improve to handle situation where text follows toc on same page (see IMP19981804ENG, IMP19901498FRE)
+        ptrn_toc_title = re.compile('TABLE OF CONTENTS|TABLE DES MATI.{1,2}RES|SOMMAIRE')  # Expected text in uppercase
+        ptrn_toc_exact = re.compile('Table des mati.{1,2}res')  # Expected text in uppercase
+        ptrn_toc_cont = re.compile('([\.]{10,}?\s[0-9]{1,4})')
         nb = 0
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
-            if re.search('TABLE OF CONTENTS', fragment) or \
-                    re.search('TABLE DES MATI.+RES', fragment) or \
-                    re.search('SOMMAIRE', fragment):  # Expected text in uppercase !
+            if re.search(ptrn_toc_title, fragment) or re.match(ptrn_toc_exact, fragment):
                 self.report.toc = 1
                 return True
             # Avoid un-necessary parsing of the page
@@ -91,41 +117,48 @@ class PDFPageFilter:
                 continue
             # if regexp matches and previous page was already 'Table of Content'
             # then assume this is the continuation of 'Table of Content'
-            nb += len(re.findall('([\.]{10,}?\s[0-9]{1,4})', fragment))
+            nb += len(re.findall(ptrn_toc_cont, fragment))
             if nb > 2 and current_fragment_type == FragmentType.TABLE_OF_CONTENTS:
                 self.report.toc = 1
                 return True
         return False
 
     def is_glossary(self, page_txt, current_fragment_type):
+        ptrn_glossary_title = re.compile('^\W*?LIST OF ABBREVIATIONS|'
+                                         '^\W*?GLOSSARY|'
+                                         '^\W*?LIST OF ACRONYMS|'
+                                         '^\W*?Abbreviations\s*?$')
+        ptrn_glossary_struct = re.compile('(?:[A-Z]{3,10}\s+?–\s+?[A-Z])')
         nb = 0
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
-            if (fragment.find('LIST OF ABBREVIATIONS') >= 0 or
-                fragment.find('GLOSSARY') >= 0 or
-                fragment.find('LIST OF ACRONYMS') >= 0):   # Expected text in uppercase !
+            if re.search(ptrn_glossary_title, fragment):   # Expected text in uppercase !
                 self.report.glossary = 1
                 return True
+            # Avoid un-necessary parsing of the page
+            if not current_fragment_type == FragmentType.GLOSSARY:
+                continue
             # Some examples of patterns usually found in glossaries:
             # "ATM – Agriculture Trade and Markets division of TAD"
             # "COAG – Committee for Agriculture of the OECD"
-            nb += len(re.findall('(?:[A-Z]{3,10}\s+?–\s+?[A-Z])', fragment))
+            nb += len(re.findall(ptrn_glossary_struct, fragment))
             if nb > 5:
                 self.report.glossary = 1
                 return True
         return False
 
     def is_bibliography(self, page_txt, current_fragment_type):
+        # TODO: either improve regexp (case sensitive?)
+        # or detect that text initially came from a table (see JT03366941 page 49)
+        ptrn_biblio = re.compile('^\s*?bibliograph(y|ie)\s*?$|'
+                                 '^\s*?r.{1,2}f.{1,2}rence(?:s)?\s*?$|'
+                                 '^\s*?lit(?:t)?erature\s*?$', re.IGNORECASE)
+        ptrn_biblio_cont = re.compile('((?:[A-Z].*[A-Z])?(?:OECD)?.*\([0-9]{4}.*\).*)')
         nb = 0
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
-            # TODO: use regexps
-            if (fragment.lower() == 'BIBLIOGRAPHY'.lower() or
-                fragment.lower() == 'Bibliographie'.lower() or
-                fragment.lower() == 'REFERENCES'.lower() or
-                fragment.lower() == 'RÉFÉRENCES'.lower() or
-                fragment.lower() == 'LITERATURE'.lower() or
-                fragment.lower() == 'LITTERATURE'.lower()):
+            if re.match(ptrn_biblio, fragment):
+                logger.debug('Bibliography "Title" found: {frag}'.format(frag=fragment))
                 self.report.bibliography = 1
                 return True, coord
             # Avoid un-necessary parsing of the page
@@ -136,40 +169,52 @@ class PDFPageFilter:
             # Some examples of patterns usually found in bibliographies:
             # "Baumol, W. (1967), “Macroeconomics of unbalanced growth: the anatomy of urban crisis”, American"
             # "OECD (2010c), The OECD Innovation Strategy: Getting a Head Start on Tomorrow, Paris: OECD."
-            nb += len(re.findall('((?:[A-Z].*[A-Z])?(?:OECD)?.*\([0-9]{4}.*\).*)', fragment))
-            if nb > 2: #and current_fragment_type == FragmentType.BIBLIOGRAPHY:
+            nb += len(re.findall(ptrn_biblio_cont, fragment))
+            if nb > 2:  # and current_fragment_type == FragmentType.BIBLIOGRAPHY:
+                logger.debug('Bibliography "pattern" found.')
                 self.report.bibliography = 1
                 return True, None
         return False, None
 
     def is_participants_list(self, page_txt, current_fragment_type):
-        # TODO: try to not rely on specific words (improve pattern recognition)
-        # TODO: Fix: IMP19926745FRE
+        ptrn_part_exact_1 = re.compile('Participants list|LIST OF PARTICIPANTS|Liste des participants',
+                                       re.IGNORECASE)
+        ptrn_part_exact_2 = re.compile('PRESENT(S)?')
+        ptrn_part_find_1 = re.compile('(List of Participants|Liste des Participants)'
+                                    ' ?/ ?(Liste des Participants|List of Presence)',
+                                    re.IGNORECASE)
+        ptrn_part_find_2 = re.compile('LIST OF PARTICIPANTS')
         nb = 0
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
 
-            # TODO: use regexp
-            if (fragment.lower() == 'Participants list'.lower() or
-                fragment.lower() == 'LIST OF PARTICIPANTS'.lower() or
-                fragment == 'PRESENT' or fragment == 'PRESENTS' or
-                fragment.lower() == 'Liste des participants'.lower() or
-                fragment.lower().find('List of Participants / Liste des Participants'.lower()) > 0 or
-                fragment.find('Liste des Participants/List of Presence') > 0 or
-                fragment.lower().find('List of Participants/Liste des Participants'.lower()) > 0):
+            if re.match(ptrn_part_exact_1, fragment) :
                 self.report.participants_list = 1
+                logger.debug('participants section title found. Match:{match}'.format(match='ptrn_part_exact_1'))
+                return True
+            if re.match(ptrn_part_exact_2, fragment):
+                self.report.participants_list = 1
+                logger.debug('participants section title found. Match:{match}'.format(match='ptrn_part_exact_2'))
+                return True
+            if re.search(ptrn_part_find_1, fragment):
+                self.report.participants_list = 1
+                logger.debug('participants section title found. Match:{match}'.format(match='ptrn_part_find_1'))
+                return True
+            if re.search(ptrn_part_find_2, fragment):
+                self.report.participants_list = 1
+                logger.debug('participants section title found. Match:{match}'.format(match='ptrn_part_find_2'))
                 return True
             # Avoid un-necessary parsing of the page
             if not current_fragment_type == FragmentType.PARTICIPANTS_LIST:
                 continue
 
-            # TODO: write more robust unit tests for all regexp used !!!
+            # TODO: Fix IMP19911126ENG - false positive continuation
             # if regexp matches and previous page was already 'Participants List'
             # then assume this is the continuation of 'Participants List'.
             # "Mr. Christian HEDERER, Counsellor for Energy, Trade, Industry and Science"
             # "Ms. Maria-Antoinetta SIMONS, Permanent Delegation of Belgium to the OECD"
-            nb += len(re.findall('(?:M[r]?\.|Mme\.?|M[i|r]?s[s]?\.?|Dr\.?)(?: [A-Za-z\s]*?.*? [A-Z ]*[,|\s]?)', fragment))
-            logger.debug('participants found. nb: {nb}'.format(nb=nb))
+            nb += len(re.findall('^\s*?(?:M[r]?\.?|Mme\.?|M[i|r]?s[s]?\.?|Dr\.?)(?: [A-Za-z\s]*?.*? [A-Z ]*[,|\s]?)', fragment))
+            logger.debug('continued participants found. nb: {nb}'.format(nb=nb))
             if nb > 2 and current_fragment_type == FragmentType.PARTICIPANTS_LIST:
                 self.report.participants_list = 1
                 return True
@@ -180,51 +225,24 @@ class PDFPageFilter:
             # "aszymanska@ijhars.gov.pl\n"
             # 'Marta.Dziubiak@minrol.gov.pl\n'
             nb += len(re.findall('\w*?\.?\w*@\w*\.\w*', fragment))
-            logger.debug('participants found. nb: {nb}'.format(nb=nb))
+            logger.debug('continued participants found. nb: {nb}'.format(nb=nb))
             if nb > 2 and current_fragment_type == FragmentType.PARTICIPANTS_LIST:
                 self.report.participants_list = 1
                 return True
         return False
 
     def is_annex(self, page_txt, current_fragment_type):
-        # Expect to find word 'ANNEX' (in upper case) as first word of sentence, top of the page
         # TODO: add logic to check that text is first on page
-        # TODO: use regexp
+        ptrn_annex = re.compile('^\W*ANNEX(E)?\s*[0-9]?[A-Z]?\.?\s*$|'
+                                '^\W*ANNEX(E)?\s*[0-9]?[A-Z]?\.?\s*?-?\s*?:?[\W\w]*?$|'
+                                '^\W*Annex(e)?\s{1,2}[0-9]?[a-z]?\s*$|'
+                                '^\W*APPENDI(X|CE)\s*[0-9]?[A-Z]?\s*$|'
+                                '^\s*TECHNICAL ANNEX\s*$|'
+                                '^\s*FIGURE AND TABLE ANNEX\s*$')
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
-            if fragment.rfind('ANNEX') == 0 or \
-                fragment.rfind('[Annex]') == 0 or \
-                fragment.rfind('APPENDIX') == 0 or \
-                fragment.rfind('APPENDICE') == 0 or \
-                fragment == 'TECHNICAL ANNEX' or \
-                fragment == 'FIGURE AND TABLE ANNEX':  # Expected text in uppercase !
+            if re.search(ptrn_annex, fragment):
                 self.report.annex = 1
-                return True
-        return False
-
-    def is_notes(self, page_txt, current_fragment_type):
-        # TODO: Finalize implementation of regexp
-        # test on JT03367009, JT00111451
-        nb = 0
-        # Expect to find word 'NOTES' (in upper case) as first word of sentence, top of the page
-        # TODO: add logic to check that text is first on page
-        for coord, fragment in page_txt.items():
-            fragment = fragment.strip()
-            if fragment.rfind('NOTES') == 0:  # Expected text in uppercase !
-                self.report.notes = 1
-                return True
-            # Avoid un-necessary parsing of the page
-            if not current_fragment_type == FragmentType.NOTES:
-                continue
-            # if regexp matches and previous page was already 'Notes'
-            # then assume this is the continuation of 'Notes'.
-            # Some examples of patterns usually found in notes:
-            # "13 See also Dumbill (2012), for which “big data” is “data that exceeds the processing capacity of "
-            # "3 Drew Harwell, Whirlpool’s “Internet of Things” problem: No one really wants a “smart”"
-            nb += len(re.findall('(?:M[r]?\.|Mme\.?|M[i|r]?s[s]?\.?|Dr\.?)(?: [A-Za-z\s]*?.*? [A-Z ]*[,|\s]?)', fragment))
-            logger.debug('participants found. nb: {nb}'.format(nb=nb))
-            if nb > 2 and current_fragment_type == FragmentType.NOTES:
-                self.report.notes = 1
                 return True
         return False
 
@@ -235,12 +253,11 @@ class PDFPageFilter:
 
         if len(outer_edges) > 0:
             # Consider only tables with at least MIN_NUMBER_ROWS and MIN_NUMBER_COLS
-            outer_edges = [table for table in outer_edges if table.rows > PDFPageFilter.MIN_NUMBER_ROWS
-                           and table.columns > PDFPageFilter.MIN_NUMBER_COLS]
+            outer_edges = [table for table in outer_edges if table.rows > PDFPageFilter.MIN_NUMBER_ROWS and
+                           table.columns > PDFPageFilter.MIN_NUMBER_COLS]
 
         if len(outer_edges) > 0:
-            # TODO: Find a way to keep the content of tables, surrounded by explicit "table" elements
-            self.report.tables += len(outer_edges)
+            self.report.tables = 1
             logger.info('\nMATCH - {Table} found.')
             logger.debug('Found {ntables} actual tables on page'.format(ntables=len(outer_edges)))
             for table in outer_edges:
@@ -249,31 +266,73 @@ class PDFPageFilter:
                                                                                       ncolumns=table.columns))
             logger.debug('Before table filtering, length of page text:{len}'.format(len=len(page_txt)))
             for coord, _ in page_txt.items():
-                # TODO: change this to remove only numbers
-                # and keep 1 occurrence of any textual content found in the tables (see JT00021419)
                 if text_is_a_cell(coord, outer_edges):
-                    logger.debug('\nignored text: {txt}'.format(txt=page_txt[coord]))
-                    del page_txt[coord]
+                    #TODO: rework this piece of crap!!! (see IMP19991826FRE page 5 for example)
+                    #cell_content = page_txt[coord].strip()
+                    #cell_content = filter_number(cell_content)
+                    #cell_content = filter_repetition(self.tables_text, cell_content)
+                    #page_txt[coord] = cell_content
+                    page_txt.pop(coord)
             logger.debug('After table filtering, length of page text:{len}'.format(len=len(page_txt)))
 
-    @staticmethod
-    def process_text(page_txt, page_cells):
-        for coord, substring in page_txt.items():
-            # remove paragraph numbers, e.g. "23."
-            # sometimes wrongly inserted within the text from incorrect layout analysis
-            result = re.sub('(^\s?[0-9]{1,4}\.(?:[0-9]{1,4})?\s?)', ' ', substring)
-            if _log_level > 2:
-                logger.debug('regexp on [{substring}]'.format(substring=substring))
-                logger.debug('result: [{result}]'.format(result=result))
-            page_txt[coord] = result
+
+def filter_repetition(tables_text, cell_content):
+    if _log_level > 1:
+        logger.debug('Looking if {txt} is a repetition'.format(txt=cell_content))
+    fragments = split_cell_content(cell_content)
+    result = ''
+    for fragment in fragments:
+        if fragment in tables_text:
+            if _log_level > 1:
+                logger.debug('[Table inner text] - repetition found: {txt}'.format(txt=fragment))
+        else:
+            if _log_level > 1:
+                logger.debug('{txt} not found yet in table'.format(txt=fragment))
+            tables_text.append(fragment)
+            result += fragment + '\n'
+    return result
+
+
+def filter_number(cell_content):
+    if _log_level > 1:
+        logger.debug('Looking if {txt} is a number'.format(txt=cell_content))
+    fragments = split_cell_content(cell_content)
+    result = ''
+    for fragment in fragments:
+        if re.match('[0-9\.]+', fragment):
+            if _log_level > 1:
+                logger.debug('[Table inner text] - number found: {nb}'.format(nb=fragment))
+        else:
+            if _log_level > 1:
+                logger.debug('[Table inner text] - not a number.')
+            result += fragment + '\n'
+    return result
+
+
+def split_cell_content(cell_content):
+    fragments = list()
+    if '.' in cell_content:
+        splits = cell_content.split('.')
+        if len(splits) > 1:
+            for frag in splits:
+                if '\n' in frag:
+                    fragments.extend(frag.split('\n'))
+                else:
+                    fragments.append(frag)
+    elif '\n' in cell_content:
+        fragments = fragments.extend(cell_content.split('\n'))
+    else:
+        fragments[0] = cell_content
+    logger.debug('fragments: {f}'.format(f=fragments))
+    return fragments
 
 
 def text_is_a_cell(coord, outer_edges):
     for table in outer_edges:
         if text_within_table(coord, table) and text_is_a_fraction(coord, table):
-            if _log_level > 2:
-                logger.debug('Match found: {text_cell} and {cell}'.format(cell=table, text_cell=coord))
-                logger.debug('Inner text ignored.')
+        #if text_within_table(coord, table):
+            if _log_level > 1:
+               logger.debug('Text cell {text_cell} inside table.'.format(text_cell=coord))
             return True
     return False
 
@@ -286,13 +345,13 @@ def text_within_table(coord, table):
 
 
 def text_is_a_fraction(coord, table):
-    cell_width = abs(table.x0 - table.x1)
+    table_width = abs(table.x0 - table.x1)
     text_width = abs(coord[X0] - coord[X1])
-    fraction = text_width / cell_width
+    fraction = text_width / table_width
 
     if _log_level > 2:
         logger.debug('table x0: {x0} - table x1: {x1}'.format(x0=table.x0, x1=table.x1))
-        logger.debug('table width: {cw}'.format(cw=cell_width))
+        logger.debug('table width: {cw}'.format(cw=table_width))
         logger.debug('text x0: {x0} - text x1: {x1}'.format(x0=coord[X0], x1=coord[X1]))
         logger.debug('text width: {tw}'.format(tw=text_width))
         logger.debug('Fraction: {fraction}'.format(fraction=fraction))

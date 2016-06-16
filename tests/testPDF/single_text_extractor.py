@@ -11,6 +11,8 @@ def main():
     report = pdfparser.report.Report()
     file_name = raw_input('File name: (press enter to exit)')
     page_number = raw_input('Single page number: (press enter to ignore)')
+    if page_number:
+        pdfparser._log_level = 2
 
     extractor = text_extractor.PDFTextExtractor(report, page_number)
     for root, dirs, files_list in os.walk(PDF_ROOT_FOLDER):
