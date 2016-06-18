@@ -2,8 +2,6 @@
 import re
 from cStringIO import StringIO
 from json import JSONEncoder
-import ConfigParser
-import os
 
 from nltk import PunktSentenceTokenizer
 from pdfminer.converter import TextConverter, PDFPageAggregator
@@ -13,7 +11,7 @@ from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.pdfpage import PDFPage
 from pdfminer.pdfparser import PDFParser
 
-from pdfparser import logger, _log_level
+from pdfparser import logger, _log_level, _config
 from pdfparser.pdf_fragment_type import FragmentType
 from pdfparser.pdf_page_filter import PDFPageFilter
 from pdfparser.table_edges_extractor import Cell
@@ -26,12 +24,8 @@ text_def = None
 class PDFTextExtractor:
 
     def __init__(self, report=None, single_page=None):
-        # Get configuration parameters
-        basedir = os.path.abspath(os.path.dirname(__file__))
-        config = ConfigParser.SafeConfigParser()
-        config.read(os.path.join(basedir, 'pdfparser.conf'))
+        self.filter_tables = _config.getboolean('MAIN', 'filter_tables')
 
-        self.filter_tables = config.getboolean('MAIN', 'filter_tables')
         self.contents = dict()
         self.report = report
         self.pdf_filter = PDFPageFilter(report=self.report)
@@ -214,7 +208,6 @@ class PDFTextExtractor:
         # TODO: Do some systematic tests to compare the quality of the text extracted from layout
         #       with that of text extracted with "regular" text extraction.
         # TODO: what about very special cases like statistical reports with no text at all? See JT00021419
-        # TODO: Define priority order for the possible fragments (i.e glossary over annex) See JT00154636
         # TODO: refactor to submit page only once and validate every options all at the same time.
         # ==> then only decide what type of fragment (i.e. annex or participants list... see JT00124770)
         # TODO: Identify chapter or paragraph titles to detect the end of a section (see IMP1997345ENG page 2)
@@ -239,7 +232,8 @@ class PDFTextExtractor:
                 current_fragment_type = FragmentType.TABLE_OF_CONTENTS
                 break
 
-            is_summary = self.pdf_filter.is_summary(page_txt, previous_fragment_type)
+            is_summary = False if self.report.annex != 0 else self.pdf_filter.is_summary(page_txt,
+                                                                                         previous_fragment_type)
             if is_summary:
                 logger.info('\nMATCH - {Summary} found.')
                 current_fragment_type = FragmentType.SUMMARY
@@ -361,7 +355,9 @@ def process_text(page_txt):
     for coord, substring in page_txt.items():
         # remove paragraph numbers, e.g. "23."
         # sometimes wrongly inserted within the text from incorrect layout analysis
-        result = re.sub('(^\s?[0-9]{1,4}\.(?:[0-9]{1,4})?\s?)', ' ', substring)
+        #result = re.sub('(^\s?[0-9]{1,4}\.([0-9]{1,4})?\s?)', ' ', substring)
+        filter_paragraph_numbers = re.compile('(^\s?([0-9]+\.)+[0-9]{0,3}\s?)')
+        result = re.sub(filter_paragraph_numbers, ' ', substring)
         if _log_level > 2:
             logger.debug('regexp on [{substring}]'.format(substring=substring))
             logger.debug('result: [{result}]'.format(result=result))
@@ -462,7 +458,8 @@ def extract_sentences(pdf_text):
 
 
 def get_fragment_text(page_txt):
-    txt = [(-coord[1], -coord[0], str_array) for coord, str_array in page_txt.items()]
+    #txt = [(-coord[1], -coord[0], str_array) for coord, str_array in page_txt.items()]
+    txt = [(-coord[1], coord[0], str_array) for coord, str_array in page_txt.items()]
     return re_order_text(txt)
 
 

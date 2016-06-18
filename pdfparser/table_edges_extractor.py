@@ -1,15 +1,13 @@
-import logging
-from pdfparser import logger, _log_level
+from pdfparser import logger, _log_level, _config
 
-# TODO: extract to config file
-MAX_RECURSION = 100  # To avoid infinite recursion...should never require that many steps!!!
-ADJ_DISTANCE = 1.0  # TODO: come up with better way to define a reasonable "adjacence" limit
+MAX_RECURSION = _config.getint('MAIN', 'MAX_RECURSION')
+ADJ_DISTANCE = _config.getfloat('MAIN', 'ADJ_DISTANCE')
 
 
 class Cell:
 
-    MIN_HEIGHT = 2.0  # TODO: extract to config file
-    MIN_WIDTH = 2.0  # TODO: extract to config file
+    _MIN_HEIGHT = _config.getfloat('MAIN', 'CELL_MIN_HEIGHT')
+    _MIN_WIDTH = _config.getfloat('MAIN', 'CELL_MIN_WIDTH')
 
     def __init__(self, x0, y0, x1, y1, rows=1, columns=1):
         self.x0 = x0
@@ -17,11 +15,9 @@ class Cell:
         self.x1 = x1
         self.y1 = y1
         height = abs(self.y0 - self.y1)
-        self.rows = rows if height > Cell.MIN_HEIGHT else 0
+        self.rows = rows if height > Cell._MIN_HEIGHT else 0
         width = abs(self.x0 - self.x1)
-        self.columns = columns if width > Cell.MIN_WIDTH else 0
-        #log('Width: {width} - Nb columns: {nb_col}'.format(width=width, nb_col=self.columns))
-        #log('Height: {height} - Nb rows: {nb_row}'.format(height=height, nb_row=self.rows))
+        self.columns = columns if width > Cell._MIN_WIDTH else 0
 
     def __repr__(self):
         return '[' + 'x0: ' + str(self.x0) + ', y0: ' + str(self.y0) \

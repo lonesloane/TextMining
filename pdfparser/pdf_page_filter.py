@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 import re
 
-from pdfparser import logger, _log_level
+from pdfparser import logger, _log_level, _config
 import pdfparser.table_edges_extractor as table_extractor
 from pdfparser.pdf_fragment_type import FragmentType
 from pdfparser.report import Report
@@ -10,11 +10,12 @@ X0, Y0, X1, Y1 = 0, 1, 2, 3
 
 
 class PDFPageFilter:
-    # TODO: extract to configuration file
-    MIN_NUMBER_ROWS = 2
-    MIN_NUMBER_COLS = 2
 
     def __init__(self, report=None):
+        self.__TEXT_MIN_FRACTION_SIZE = _config.getfloat('MAIN', 'TEXT_MIN_FRACTION_SIZE')
+        self.__MIN_NUMBER_ROWS = _config.getfloat('MAIN', 'MIN_NUMBER_ROWS')
+        self.__MIN_NUMBER_COLS = _config.getfloat('MAIN', 'MIN_NUMBER_COLS')
+
         self.report = report if report else Report()
         self.tables_text = list()
 
@@ -88,7 +89,6 @@ class PDFPageFilter:
         :param current_fragment_type:
         :return:
         """
-        # TODO: Do not extract summary if annex already found.
         ptrn_summary = re.compile('^\s*?SUMMARY\s*?$|'
                                   '^\s*?ABSTRACT\s*?$|'
                                   '^\s*?R.{1,2}SUM.{1,2}\s*?$|'
@@ -102,7 +102,7 @@ class PDFPageFilter:
         return False
 
     def is_toc(self, page_txt, current_fragment_type):
-        # TODO: improve to handle situation where text follows toc on same page (see IMP19981804ENG, IMP19901498FRE)
+        # TODO: improve to handle situation where text follows toc on same page (see IMP19901498FRE)
         ptrn_toc_title = re.compile('TABLE OF CONTENTS|TABLE DES MATI.{1,2}RES|SOMMAIRE')  # Expected text in uppercase
         ptrn_toc_exact = re.compile('Table des mati.{1,2}res')  # Expected text in uppercase
         ptrn_toc_cont = re.compile('([\.]{10,}?\s[0-9]{1,4})')
@@ -179,7 +179,7 @@ class PDFPageFilter:
     def is_participants_list(self, page_txt, current_fragment_type):
         ptrn_part_exact_1 = re.compile('Participants list|LIST OF PARTICIPANTS|Liste des participants',
                                        re.IGNORECASE)
-        ptrn_part_exact_2 = re.compile('PRESENT(S)?')
+        ptrn_part_exact_2 = re.compile('^\W*?PRESENT(S)?\W*?$')
         ptrn_part_find_1 = re.compile('(List of Participants|Liste des Participants)'
                                     ' ?/ ?(Liste des Participants|List of Presence)',
                                     re.IGNORECASE)
@@ -191,24 +191,23 @@ class PDFPageFilter:
             if re.match(ptrn_part_exact_1, fragment) :
                 self.report.participants_list = 1
                 logger.debug('participants section title found. Match:{match}'.format(match='ptrn_part_exact_1'))
-                return True
+                return True, coord
             if re.match(ptrn_part_exact_2, fragment):
                 self.report.participants_list = 1
                 logger.debug('participants section title found. Match:{match}'.format(match='ptrn_part_exact_2'))
-                return True
+                return True, coord
             if re.search(ptrn_part_find_1, fragment):
                 self.report.participants_list = 1
                 logger.debug('participants section title found. Match:{match}'.format(match='ptrn_part_find_1'))
-                return True
+                return True, coord
             if re.search(ptrn_part_find_2, fragment):
                 self.report.participants_list = 1
                 logger.debug('participants section title found. Match:{match}'.format(match='ptrn_part_find_2'))
-                return True
+                return True, coord
             # Avoid un-necessary parsing of the page
             if not current_fragment_type == FragmentType.PARTICIPANTS_LIST:
                 continue
 
-            # TODO: Fix IMP19911126ENG - false positive continuation
             # if regexp matches and previous page was already 'Participants List'
             # then assume this is the continuation of 'Participants List'.
             # "Mr. Christian HEDERER, Counsellor for Energy, Trade, Industry and Science"
@@ -232,7 +231,6 @@ class PDFPageFilter:
         return False
 
     def is_annex(self, page_txt, current_fragment_type):
-        # TODO: add logic to check that text is first on page
         ptrn_annex = re.compile('^\W*ANNEX(E)?\s*[0-9]?[A-Z]?\.?\s*$|'
                                 '^\W*ANNEX(E)?\s*[0-9]?[A-Z]?\.?\s*?-?\s*?:?[\W\w]*?$|'
                                 '^\W*Annex(e)?\s{1,2}[0-9]?[a-z]?\s*$|'
@@ -253,8 +251,8 @@ class PDFPageFilter:
 
         if len(outer_edges) > 0:
             # Consider only tables with at least MIN_NUMBER_ROWS and MIN_NUMBER_COLS
-            outer_edges = [table for table in outer_edges if table.rows > PDFPageFilter.MIN_NUMBER_ROWS and
-                           table.columns > PDFPageFilter.MIN_NUMBER_COLS]
+            outer_edges = [table for table in outer_edges if table.rows > self.__MIN_NUMBER_ROWS and
+                           table.columns > self.__MIN_NUMBER_COLS]
 
         if len(outer_edges) > 0:
             self.report.tables = 1
@@ -266,7 +264,7 @@ class PDFPageFilter:
                                                                                       ncolumns=table.columns))
             logger.debug('Before table filtering, length of page text:{len}'.format(len=len(page_txt)))
             for coord, _ in page_txt.items():
-                if text_is_a_cell(coord, outer_edges):
+                if self.text_is_a_cell(coord, outer_edges):
                     #TODO: rework this piece of crap!!! (see IMP19991826FRE page 5 for example)
                     #cell_content = page_txt[coord].strip()
                     #cell_content = filter_number(cell_content)
@@ -274,6 +272,30 @@ class PDFPageFilter:
                     #page_txt[coord] = cell_content
                     page_txt.pop(coord)
             logger.debug('After table filtering, length of page text:{len}'.format(len=len(page_txt)))
+
+    def text_is_a_fraction(self, coord, table):
+        table_width = abs(table.x0 - table.x1)
+        text_width = abs(coord[X0] - coord[X1])
+        fraction = text_width / table_width
+
+        if _log_level > 2:
+            logger.debug('table x0: {x0} - table x1: {x1}'.format(x0=table.x0, x1=table.x1))
+            logger.debug('table width: {cw}'.format(cw=table_width))
+            logger.debug('text x0: {x0} - text x1: {x1}'.format(x0=coord[X0], x1=coord[X1]))
+            logger.debug('text width: {tw}'.format(tw=text_width))
+            logger.debug('Fraction: {fraction}'.format(fraction=fraction))
+
+        if fraction < self.__TEXT_MIN_FRACTION_SIZE:
+            return True
+        return False
+
+    def text_is_a_cell(self, coord, outer_edges):
+        for table in outer_edges:
+            if text_within_table(coord, table) and self.text_is_a_fraction(coord, table):
+                if _log_level > 1:
+                    logger.debug('Text cell {text_cell} inside table.'.format(text_cell=coord))
+                return True
+        return False
 
 
 def filter_repetition(tables_text, cell_content):
@@ -327,35 +349,9 @@ def split_cell_content(cell_content):
     return fragments
 
 
-def text_is_a_cell(coord, outer_edges):
-    for table in outer_edges:
-        if text_within_table(coord, table) and text_is_a_fraction(coord, table):
-        #if text_within_table(coord, table):
-            if _log_level > 1:
-               logger.debug('Text cell {text_cell} inside table.'.format(text_cell=coord))
-            return True
-    return False
-
-
 def text_within_table(coord, table):
     if table.x0 <= coord[X0] and table.y0 <= coord[Y0] \
             and table.x1 >= coord[X1] and table.y1 >= coord[Y1]:
         return True
     return False
 
-
-def text_is_a_fraction(coord, table):
-    table_width = abs(table.x0 - table.x1)
-    text_width = abs(coord[X0] - coord[X1])
-    fraction = text_width / table_width
-
-    if _log_level > 2:
-        logger.debug('table x0: {x0} - table x1: {x1}'.format(x0=table.x0, x1=table.x1))
-        logger.debug('table width: {cw}'.format(cw=table_width))
-        logger.debug('text x0: {x0} - text x1: {x1}'.format(x0=coord[X0], x1=coord[X1]))
-        logger.debug('text width: {tw}'.format(tw=text_width))
-        logger.debug('Fraction: {fraction}'.format(fraction=fraction))
-
-    if fraction < .50:  # TODO: extract limit to config file
-        return True
-    return False
