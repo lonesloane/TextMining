@@ -210,7 +210,6 @@ class PDFTextExtractor:
         # TODO: what about very special cases like statistical reports with no text at all? See JT00021419
         # TODO: refactor to submit page only once and validate every options all at the same time.
         # ==> then only decide what type of fragment (i.e. annex or participants list... see JT00124770)
-        # TODO: Identify chapter or paragraph titles to detect the end of a section (see IMP1997345ENG page 2)
         logger.debug('Enter page validation')
 
         if page_cells and self.filter_tables:
@@ -283,54 +282,57 @@ class PDFTextExtractor:
             fragment_txt = get_fragment_text(page_txt)
             if current_fragment_type is FragmentType.TEXT:
                 fragment_txt = strip_page_number(fragment_txt)
-                fragment_txt = strip_cote(fragment_txt)
-                fragment_txt = strip_classification(fragment_txt)
+                fragment_txt = strip_header(fragment_txt)
             self.add_fragment(fragment_txt, fragment_type=current_fragment_type)
 
         return current_fragment_type
 
     def add_fragment(self, fragment_txt, fragment_type):
-        # TODO: identify titles from the 'orphans' which are not continued on the next paragraph
-        # TODO: review strategy to replace \n with ' ' (see JT03349191)
-        # TODO: see also JT03394203 page 4
-        # TODO: continue fragments if first word is all capital letters (i.e. acronym) see JT03216126 page 14-15
         content_list = list()
-        ptrn_continued = re.compile('[a-zéèçàù]', re.UNICODE)
-        ptrn_punct = re.compile('[\.]+|[\?!:]')
+        ptrn_continued = re.compile('([a-zéèçàù]|[A-Z]{2,})', re.UNICODE)
+        ptrn_punct = re.compile('[\.]+|[\?!:]', re.UNICODE)
+        ptrn_useless_crlf = re.compile('(?<!\.)\n(?![A-Z][a-z])', re.UNICODE)
 
         if _log_level > 1:
             logger.debug('[add_fragment] Fragment type:{type}'.format(type=fragment_type))
 
         if fragment_type is FragmentType.TEXT or fragment_type is FragmentType.SUMMARY:
-            for p in fragment_txt:
-                # TODO: strip out whitespaces between independent sentences (see IMP19912074FRE)
-                # p = p.replace(' {2,}', ' ', re.UNICODE).strip()
-                p = p.strip().replace('\n', ' ')
+            fragment_txt = remove_empty_lines(fragment_txt)
+            logger.debug('fragment length: {l}'.format(l=len(fragment_txt)))
+            for i, p in enumerate(fragment_txt):
+                if _log_level > 2:
+                    logger.debug('[START] {i}th sentence: {p}'.format(i=i, p=p))
+                p = re.sub(ptrn_useless_crlf, ' ', p)
+                p = re.sub(' +', ' ', p)
+                p = p.strip()
                 if not len(p):
                     continue
-                if _log_level > 1:
-                    logger.debug('[add_fragment] - current: {p}'.format(p=p))
-                    logger.debug('[add_fragment] - previous: {p}'.format(p=self.previous_p))
                 if self.previous_p:
                     if re.match(ptrn_continued, p[0]):
                         p = self.previous_p + ' ' + p
                     else:
                         if _log_level > 1:
-                            logger.debug('not continued. p[0]:{p}'.format(p=p[0]))
+                            logger.debug(u'not continued. p[0]:{p}'.format(p=p))
+                            logger.debug(u'adding leftover. :{p}'.format(p=self.previous_p))
                         content_list.append(self.previous_p)
                     self.previous_p = None
-                if not re.match(ptrn_punct, p[len(p) - 1]) \
+
+                #Only for last of page and first of next page...(i.e. if there are notes, we're screwed!!!)
+                if i == len(fragment_txt)-1 and not re.match(ptrn_punct, p[len(p) - 1]) \
                         and not re.match('[0-9]+ \w+.*', p):
+                    if _log_level > 1:
+                        logger.debug(u'not finished. p[0]:{p}'.format(p=p))
                     self.previous_p = p
                     continue
                 else:
-                    if _log_level > 1:
-                        logger.debug('found punctuation: {pct}'.format(pct=p[len(p) - 1]))
+                    if _log_level > 2:
+                        logger.debug(u'[END] {i}th sentence: {p}'.format(i=i, p=p))
 
                 content_list.append(p)
         else:
             for p in fragment_txt:
-                #  p = p.replace('\n', ' ').strip()
+                p = re.sub('(?<!\.)\n(?![A-Z])', ' ', p)
+                p = re.sub(' +', ' ', p)
                 p = p.strip()
                 if not len(p):
                     continue
@@ -351,12 +353,22 @@ class PDFTextExtractor:
             self.contents[fragment_type].extend(content_list)
 
 
+def remove_empty_lines(fragment_txt):
+    result = list()
+    for p in fragment_txt:
+        p = re.sub(' +', ' ', p)
+        p = p.strip()
+        if len(p):
+            result.append(p)
+    return result
+
+
 def process_text(page_txt):
     for coord, substring in page_txt.items():
         # remove paragraph numbers, e.g. "23."
         # sometimes wrongly inserted within the text from incorrect layout analysis
         #result = re.sub('(^\s?[0-9]{1,4}\.([0-9]{1,4})?\s?)', ' ', substring)
-        filter_paragraph_numbers = re.compile('(^\s?([0-9]+\.)+[0-9]{0,3}\s?)')
+        filter_paragraph_numbers = re.compile('(^\W?([0-9]+\.)+[0-9]{0,3}\W?)')
         result = re.sub(filter_paragraph_numbers, ' ', substring)
         if _log_level > 2:
             logger.debug('regexp on [{substring}]'.format(substring=substring))
@@ -377,8 +389,29 @@ def extract_object_text_hash(h, lt_obj):
     if _log_level > 2:
         text_def.write('{x0}|{y0}|{x1}|{y1}|{s}\n'.format(x0=x0, y0=y0, x1=x1, y1=y1,
                                                           s=to_bytestring(lt_obj.get_text().replace('\n', ' '))))
-    h[(x0, y0, x1, y1)] = to_bytestring(lt_obj.get_text())
+    #h[(x0, y0, x1, y1)] = to_bytestring(lt_obj.get_text())
+    h[(x0, y0, x1, y1)] = lt_obj.get_text()
     return h
+
+
+def strip_header(fragment_txt):
+    ptrn_classif = re.compile('For Official Use|Confidential|Unclassified|A Usage Officiel|'
+                              'Confidentiel|Non classifié', re.IGNORECASE)
+    ptrn_cote = re.compile('^\W*[\w\(\)/0-9]+\W*$')
+    classif_idx = None
+    for i in range(0, len(fragment_txt) - 1):
+        txt = fragment_txt[i].strip()
+        if len(txt) == 0:
+            continue
+        if re.search(ptrn_cote, txt) or re.search(ptrn_classif, txt):
+            logger.debug(u'found header {txt} at index: {i}'.format(txt=txt, i=i))
+            continue
+        else:
+            classif_idx = i
+            break
+    if classif_idx is not None:
+        fragment_txt = fragment_txt[classif_idx:]
+    return fragment_txt
 
 
 def strip_classification(fragment_txt):
@@ -409,10 +442,11 @@ def strip_cote(fragment_txt):
     :param fragment_txt:
     :return:
     """
+    ptrn_cote = re.compile('[\w]+/[[\w/]+]?\(\d{2,4}\)\d*.*|[\w]+\(\d{2,4}\)\d*.*')
     cote_idx = None
     for i in range(0, len(fragment_txt)-1):
         txt = fragment_txt[i].strip()
-        if is_cote(txt):
+        if re.search(ptrn_cote, txt):
             logger.debug('found cote at index: {i}'.format(i=i))
             cote_idx = i
             break
@@ -426,7 +460,8 @@ def strip_cote(fragment_txt):
 
 
 def is_cote(txt):
-    if re.match('[\w]+/[[\w/]+]?\(\d{2,4}\)\d*.*', txt):
+    logger.debug('Looking for cote in {txt}'.format(txt=txt))
+    if re.match('[\w]+/[[\w/]+]?\(\d{2,4}\)\d*.*|[\w]+\(\d{2,4}\)\d*.*', txt):
         return True
     if re.match('C\(\d{2,4}\)\d*.*', txt):
         return True
@@ -457,22 +492,6 @@ def extract_sentences(pdf_text):
         return pdf_sentences
 
 
-def get_fragment_text(page_txt):
-    #txt = [(-coord[1], -coord[0], str_array) for coord, str_array in page_txt.items()]
-    txt = [(-coord[1], coord[0], str_array) for coord, str_array in page_txt.items()]
-    return re_order_text(txt)
-
-
-def get_previous_fragment_text(page_txt, split_coord):
-    txt = [(-coord[1], -coord[0], str_array) for coord, str_array in page_txt.items() if coord[1] > split_coord[1]]
-    return re_order_text(txt)
-
-
-def get_next_fragment_text(page_txt, split_coord):
-    txt = [(-coord[1], -coord[0], str_array) for coord, str_array in page_txt.items() if coord[1] <= split_coord[1]]
-    return re_order_text(txt)
-
-
 def re_order_text(txt):
     txt = sorted(txt)
     if _log_level > 1:
@@ -482,6 +501,21 @@ def re_order_text(txt):
         for elem in txt:
             logger.debug('{elem}'.format(elem=elem))
     return [str_array for _, _, str_array in txt]
+
+
+def get_fragment_text(page_txt):
+    txt = [(round(-coord[1], 0), round(coord[0], 0), str_array) for coord, str_array in page_txt.items()]
+    return re_order_text(txt)
+
+
+def get_previous_fragment_text(page_txt, split_coord):
+    txt = [(round(-coord[1], 0), round(coord[0], 0), str_array) for coord, str_array in page_txt.items() if coord[1] > split_coord[1]]
+    return re_order_text(txt)
+
+
+def get_next_fragment_text(page_txt, split_coord):
+    txt = [(round(-coord[1], 0), round(coord[0], 0), str_array) for coord, str_array in page_txt.items() if coord[1] <= split_coord[1]]
+    return re_order_text(txt)
 
 
 def to_bytestring(s, enc='utf-8'):

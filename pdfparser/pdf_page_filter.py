@@ -264,14 +264,32 @@ class PDFPageFilter:
                                                                                       ncolumns=table.columns))
             logger.debug('Before table filtering, length of page text:{len}'.format(len=len(page_txt)))
             for coord, _ in page_txt.items():
+                cell_content = page_txt[coord].strip()
                 if self.text_is_a_cell(coord, outer_edges):
-                    #TODO: rework this piece of crap!!! (see IMP19991826FRE page 5 for example)
-                    #cell_content = page_txt[coord].strip()
-                    #cell_content = filter_number(cell_content)
-                    #cell_content = filter_repetition(self.tables_text, cell_content)
-                    #page_txt[coord] = cell_content
-                    page_txt.pop(coord)
+                    cell_content = filter_number(cell_content)
+                    cell_content = self.filter_repetition(cell_content)
+                    page_txt[coord] = cell_content
             logger.debug('After table filtering, length of page text:{len}'.format(len=len(page_txt)))
+
+    def filter_repetition(self, cell_content):
+        if _log_level > 2:
+            logger.debug(u'Looking if {txt} is a repetition'.format(txt=cell_content))
+        fragments = split_cell_content(cell_content)
+        result = ''
+
+        if not fragments:
+            return cell_content
+
+        for fragment in fragments:
+            if fragment in self.tables_text:
+                if _log_level > 1:
+                    logger.debug(u'[Table inner text] - repetition found: {txt}'.format(txt=fragment))
+            else:
+                if _log_level > 2:
+                    logger.debug(u'{txt} not found yet in {tt}'.format(txt=fragment, tt=self.tables_text))
+                self.tables_text.append(fragment)
+                result += fragment + '\n'
+        return result
 
     def text_is_a_fraction(self, coord, table):
         table_width = abs(table.x0 - table.x1)
@@ -291,42 +309,26 @@ class PDFPageFilter:
 
     def text_is_a_cell(self, coord, outer_edges):
         for table in outer_edges:
-            if text_within_table(coord, table) and self.text_is_a_fraction(coord, table):
+            #if text_within_table(coord, table) and self.text_is_a_fraction(coord, table):
+            if text_within_table(coord, table):
                 if _log_level > 1:
                     logger.debug('Text cell {text_cell} inside table.'.format(text_cell=coord))
                 return True
         return False
 
 
-def filter_repetition(tables_text, cell_content):
-    if _log_level > 1:
-        logger.debug('Looking if {txt} is a repetition'.format(txt=cell_content))
-    fragments = split_cell_content(cell_content)
-    result = ''
-    for fragment in fragments:
-        if fragment in tables_text:
-            if _log_level > 1:
-                logger.debug('[Table inner text] - repetition found: {txt}'.format(txt=fragment))
-        else:
-            if _log_level > 1:
-                logger.debug('{txt} not found yet in table'.format(txt=fragment))
-            tables_text.append(fragment)
-            result += fragment + '\n'
-    return result
-
-
 def filter_number(cell_content):
-    if _log_level > 1:
-        logger.debug('Looking if {txt} is a number'.format(txt=cell_content))
+    if _log_level > 2:
+        logger.debug(u'Looking if {txt} is a number'.format(txt=cell_content))
     fragments = split_cell_content(cell_content)
     result = ''
     for fragment in fragments:
-        if re.match('[0-9\.]+', fragment):
+        if re.match('^\s*?[0-9\.,]+\s*?$', fragment):
             if _log_level > 1:
-                logger.debug('[Table inner text] - number found: {nb}'.format(nb=fragment))
+                logger.debug(u'[Table inner text] - number found: {nb}'.format(nb=fragment))
         else:
             if _log_level > 1:
-                logger.debug('[Table inner text] - not a number.')
+                logger.debug(u'[Table inner text] - not a number.')
             result += fragment + '\n'
     return result
 
@@ -334,7 +336,7 @@ def filter_number(cell_content):
 def split_cell_content(cell_content):
     fragments = list()
     if '.' in cell_content:
-        splits = cell_content.split('.')
+        splits = [elem+'.' for elem in cell_content.split('.') if len(elem)]
         if len(splits) > 1:
             for frag in splits:
                 if '\n' in frag:
@@ -342,10 +344,11 @@ def split_cell_content(cell_content):
                 else:
                     fragments.append(frag)
     elif '\n' in cell_content:
-        fragments = fragments.extend(cell_content.split('\n'))
+        splits = [elem for elem in cell_content.split('\n') if len(elem)]
+        for frag in splits:
+            fragments.append(frag)
     else:
-        fragments[0] = cell_content
-    logger.debug('fragments: {f}'.format(f=fragments))
+        fragments.append(cell_content)
     return fragments
 
 
