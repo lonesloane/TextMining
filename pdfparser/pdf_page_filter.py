@@ -3,8 +3,10 @@ import re
 
 from pdfparser import logger, _log_level, _config
 import pdfparser.table_edges_extractor as table_extractor
+import pdfparser.text_table_extractor as text_table_extractor
 from pdfparser.pdf_fragment_type import FragmentType
 from pdfparser.report import Report
+from pdfparser.text_table_extractor import Cell, compare_cells
 
 X0, Y0, X1, Y1 = 0, 1, 2, 3
 
@@ -96,7 +98,7 @@ class PDFPageFilter:
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
             if re.match(ptrn_summary, fragment):
-                logger.debug('Summary "Title" found: {frag}'.format(frag=fragment))
+                logger.debug(u'Summary "Title" found: {frag}'.format(frag=fragment))
                 self.report.summary = 1
                 return True
         return False
@@ -126,6 +128,7 @@ class PDFPageFilter:
     def is_glossary(self, page_txt, current_fragment_type):
         ptrn_glossary_title = re.compile('^\W*?LIST OF ABBREVIATIONS|'
                                          '^\W*?GLOSSARY|'
+                                         '^\W*?Glossary\W*?$|'
                                          '^\W*?LIST OF ACRONYMS|'
                                          '^\W*?Abbreviations\s*?$')
         ptrn_glossary_struct = re.compile('(?:[A-Z]{3,10}\s+?–\s+?[A-Z])')
@@ -158,7 +161,7 @@ class PDFPageFilter:
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
             if re.match(ptrn_biblio, fragment):
-                logger.debug('Bibliography "Title" found: {frag}'.format(frag=fragment))
+                logger.debug(u'Bibliography "Title" found: {frag}'.format(frag=fragment))
                 self.report.bibliography = 1
                 return True, coord
             # Avoid un-necessary parsing of the page
@@ -171,7 +174,7 @@ class PDFPageFilter:
             # "OECD (2010c), The OECD Innovation Strategy: Getting a Head Start on Tomorrow, Paris: OECD."
             nb += len(re.findall(ptrn_biblio_cont, fragment))
             if nb > 2:  # and current_fragment_type == FragmentType.BIBLIOGRAPHY:
-                logger.debug('Bibliography "pattern" found.')
+                logger.debug(u'Bibliography "pattern" found.')
                 self.report.bibliography = 1
                 return True, None
         return False, None
@@ -190,19 +193,19 @@ class PDFPageFilter:
 
             if re.match(ptrn_part_exact_1, fragment) :
                 self.report.participants_list = 1
-                logger.debug('participants section title found. Match:{match}'.format(match='ptrn_part_exact_1'))
+                logger.debug(u'participants section title found. Match:{match}'.format(match='ptrn_part_exact_1'))
                 return True, coord
             if re.match(ptrn_part_exact_2, fragment):
                 self.report.participants_list = 1
-                logger.debug('participants section title found. Match:{match}'.format(match='ptrn_part_exact_2'))
+                logger.debug(u'participants section title found. Match:{match}'.format(match='ptrn_part_exact_2'))
                 return True, coord
             if re.search(ptrn_part_find_1, fragment):
                 self.report.participants_list = 1
-                logger.debug('participants section title found. Match:{match}'.format(match='ptrn_part_find_1'))
+                logger.debug(u'participants section title found. Match:{match}'.format(match='ptrn_part_find_1'))
                 return True, coord
             if re.search(ptrn_part_find_2, fragment):
                 self.report.participants_list = 1
-                logger.debug('participants section title found. Match:{match}'.format(match='ptrn_part_find_2'))
+                logger.debug(u'participants section title found. Match:{match}'.format(match='ptrn_part_find_2'))
                 return True, coord
             # Avoid un-necessary parsing of the page
             if not current_fragment_type == FragmentType.PARTICIPANTS_LIST:
@@ -212,8 +215,9 @@ class PDFPageFilter:
             # then assume this is the continuation of 'Participants List'.
             # "Mr. Christian HEDERER, Counsellor for Energy, Trade, Industry and Science"
             # "Ms. Maria-Antoinetta SIMONS, Permanent Delegation of Belgium to the OECD"
-            nb += len(re.findall('^\s*?(?:M[r]?\.?|Mme\.?|M[i|r]?s[s]?\.?|Dr\.?)(?: [A-Za-z\s]*?.*? [A-Z ]*[,|\s]?)', fragment))
-            logger.debug('continued participants found. nb: {nb}'.format(nb=nb))
+            ptrn_participants_names = re.compile('(?:M[r]?|Mme|M[i|r]?s[s]?|Dr)\.?(?: [[A-Z][a-z\s]*?]*? [A-Z ]+)')
+            nb += len(re.findall(ptrn_participants_names, fragment))
+            logger.debug(u'continued participants found. nb: {nb}'.format(nb=nb))
             if nb > 2 and current_fragment_type == FragmentType.PARTICIPANTS_LIST:
                 self.report.participants_list = 1
                 return True
@@ -223,8 +227,9 @@ class PDFPageFilter:
             # "dbalinska@ijhars.gov.pl\n"
             # "aszymanska@ijhars.gov.pl\n"
             # 'Marta.Dziubiak@minrol.gov.pl\n'
-            nb += len(re.findall('\w*?\.?\w*@\w*\.\w*', fragment))
-            logger.debug('continued participants found. nb: {nb}'.format(nb=nb))
+            ptrn_participants_emails = re.compile('\w*?\.?\w*@\w*\.\w*')
+            nb += len(re.findall(ptrn_participants_emails, fragment))
+            logger.debug(u'continued participants found. nb: {nb}'.format(nb=nb))
             if nb > 2 and current_fragment_type == FragmentType.PARTICIPANTS_LIST:
                 self.report.participants_list = 1
                 return True
@@ -244,10 +249,28 @@ class PDFPageFilter:
                 return True
         return False
 
+    def filter_text_tables(self, page_txt):
+        text_cells = [Cell(x0, y0, x1, y1) for x0, y0, x1, y1 in page_txt.keys()]
+        text_cells.sort(key=compare_cells, reverse=True)
+
+        logger.debug('text cells\n{tc}'.format(tc=text_cells))
+        outer_edges = text_table_extractor.find_table_cells(text_cells) if len(text_cells) > 1 else []
+        logger.debug('outer edges\n{oe}'.format(oe=outer_edges))
+        logger.debug(u'nb candidate cells found: {nb}'.format(nb=len(outer_edges)))
+        logger.debug(u'Before table filtering, length of page text:{len}'.format(len=len(page_txt)))
+        for cell in outer_edges:
+            logger.debug(u'removing cell: {x0} {y0} {x1} {y1} - {c}'.format(x0=cell.x0,
+                                                                         y0=cell.y0,
+                                                                         x1=cell.x1,
+                                                                         y1=cell.y1,
+                                                                         c=page_txt[(cell.x0, cell.y0, cell.x1, cell.y1)]))
+            page_txt.pop((cell.x0, cell.y0, cell.x1, cell.y1))
+        logger.debug(u'After table filtering, length of page text:{len}'.format(len=len(page_txt)))
+
     def filter_tables(self, page_txt, page_cells):
-        logger.debug('nb cells: {nb}'.format(nb=len(page_cells)))
+        logger.debug(u'nb cells: {nb}'.format(nb=len(page_cells)))
         outer_edges = table_extractor.find_outer_edges(page_cells) if len(page_cells) > 1 else []
-        logger.debug('nb candidate tables found: {nb}'.format(nb=len(outer_edges)))
+        logger.debug(u'nb candidate tables found: {nb}'.format(nb=len(outer_edges)))
 
         if len(outer_edges) > 0:
             # Consider only tables with at least MIN_NUMBER_ROWS and MIN_NUMBER_COLS
@@ -257,39 +280,49 @@ class PDFPageFilter:
         if len(outer_edges) > 0:
             self.report.tables = 1
             logger.info('\nMATCH - {Table} found.')
-            logger.debug('Found {ntables} actual tables on page'.format(ntables=len(outer_edges)))
+            logger.debug(u'Found {ntables} actual tables on page'.format(ntables=len(outer_edges)))
             for table in outer_edges:
                 logger.debug(table)
-                logger.debug('{nrows} inner rows and {ncolumns} inner columns'.format(nrows=table.rows,
+                logger.debug(u'{nrows} inner rows and {ncolumns} inner columns'.format(nrows=table.rows,
                                                                                       ncolumns=table.columns))
-            logger.debug('Before table filtering, length of page text:{len}'.format(len=len(page_txt)))
+            logger.debug(u'Before table filtering, length of page text:{len}'.format(len=len(page_txt)))
             for coord, _ in page_txt.items():
                 cell_content = page_txt[coord].strip()
                 if self.text_is_a_cell(coord, outer_edges):
-                    cell_content = filter_number(cell_content)
-                    cell_content = self.filter_repetition(cell_content)
-                    page_txt[coord] = cell_content
-            logger.debug('After table filtering, length of page text:{len}'.format(len=len(page_txt)))
+                    page_txt.pop(coord)
+                    #cell_content = self.filter_number(cell_content)
+                    #cell_content = self.filter_repetition(cell_content)
+                    #page_txt[coord] = cell_content
+            logger.debug(u'After table filtering, length of page text:{len}'.format(len=len(page_txt)))
 
     def filter_repetition(self, cell_content):
-        if _log_level > 2:
-            logger.debug(u'Looking if {txt} is a repetition'.format(txt=cell_content))
-        fragments = split_cell_content(cell_content)
-        result = ''
+        cell_content = cell_content.strip()
+        # remove inner line breaks
+        cell_content = cell_content.replace('\n', ' ')
 
-        if not fragments:
+        if cell_content in self.tables_text:
+            if _log_level > 1:
+                logger.debug(u'[Table inner text] - repetition found: {txt}'.format(txt=cell_content))
+            return ''
+        else:
+            if _log_level > 2:
+                logger.debug(u'{txt} not found yet'.format(txt=cell_content, tt=self.tables_text))
+            self.tables_text.append(cell_content)
             return cell_content
 
-        for fragment in fragments:
-            if fragment in self.tables_text:
-                if _log_level > 1:
-                    logger.debug(u'[Table inner text] - repetition found: {txt}'.format(txt=fragment))
-            else:
-                if _log_level > 2:
-                    logger.debug(u'{txt} not found yet in {tt}'.format(txt=fragment, tt=self.tables_text))
-                self.tables_text.append(fragment)
-                result += fragment + '\n'
-        return result
+    def filter_number(self, cell_content):
+        cell_content = cell_content.strip()
+        if _log_level > 2:
+            logger.debug(u'Looking if {txt} is a number'.format(txt=cell_content))
+
+        if re.match('^\s*?[0-9\.,]+\s*?$', cell_content):
+            if _log_level > 1:
+                logger.debug(u'[Table inner text] - number found: {nb}'.format(nb=cell_content))
+            return ''
+        else:
+            if _log_level > 1:
+                logger.debug(u'[Table inner text] - not a number.')
+            return cell_content
 
     def text_is_a_fraction(self, coord, table):
         table_width = abs(table.x0 - table.x1)
@@ -309,47 +342,21 @@ class PDFPageFilter:
 
     def text_is_a_cell(self, coord, outer_edges):
         for table in outer_edges:
-            #if text_within_table(coord, table) and self.text_is_a_fraction(coord, table):
-            if text_within_table(coord, table):
+            if text_within_table(coord, table) and self.text_is_a_fraction(coord, table):
+            #if text_within_table(coord, table):
                 if _log_level > 1:
-                    logger.debug('Text cell {text_cell} inside table.'.format(text_cell=coord))
+                    logger.debug(u'Text cell {text_cell} inside table.'.format(text_cell=coord))
                 return True
         return False
 
 
-def filter_number(cell_content):
-    if _log_level > 2:
-        logger.debug(u'Looking if {txt} is a number'.format(txt=cell_content))
-    fragments = split_cell_content(cell_content)
-    result = ''
-    for fragment in fragments:
-        if re.match('^\s*?[0-9\.,]+\s*?$', fragment):
-            if _log_level > 1:
-                logger.debug(u'[Table inner text] - number found: {nb}'.format(nb=fragment))
-        else:
-            if _log_level > 1:
-                logger.debug(u'[Table inner text] - not a number.')
-            result += fragment + '\n'
-    return result
-
-
 def split_cell_content(cell_content):
     fragments = list()
-    if '.' in cell_content:
-        splits = [elem+'.' for elem in cell_content.split('.') if len(elem)]
-        if len(splits) > 1:
-            for frag in splits:
-                if '\n' in frag:
-                    fragments.extend(frag.split('\n'))
-                else:
-                    fragments.append(frag)
-    elif '\n' in cell_content:
-        splits = [elem for elem in cell_content.split('\n') if len(elem)]
-        for frag in splits:
-            fragments.append(frag)
-    else:
-        fragments.append(cell_content)
+    cell_content = cell_content.strip()
+    # remove inner line breaks
+    cell_content = cell_content.replace('\n', ' ')
     return fragments
+
 
 
 def text_within_table(coord, table):

@@ -1,5 +1,4 @@
 import os
-import logging
 from json.decoder import JSONDecoder
 
 import pdfparser
@@ -8,69 +7,27 @@ import pdfparser.text_extractor as text_extractor
 from pdfparser.text_extractor import ExtractMode
 
 PDF_ROOT_FOLDER = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testPDF/pdfs'
-LOG_LEVEL = logging.DEBUG
-_log_level = 3  # verbosity of log. 1:normal - 2:verbose - 3:visual
 
 
 def main():
-    file_name = raw_input("File name: (press enter to exit)")
-    if not file_name or len(file_name) == 0:
-        return
 
-    pdf_path = None
-    jt = None
-    # find pdf on file system
     for root, dirs, files_list in os.walk(PDF_ROOT_FOLDER):
         if 'Summaries' in root.split('/'):
             continue
-        if jt: break
         for pdf_file in files_list:
             if os.path.isfile(os.path.join(root, pdf_file)):
-                jt = pdf_file.split('.')[0]
-                if jt != file_name:
-                    jt = None
-                    continue
-                else:
-                    pdf_path = os.path.join(root, pdf_file)
-                    break
+                pdf_path = os.path.join(root, pdf_file)
+                generate_summaries(pdf_file, pdf_path)
 
-    print 'pdf_path: '+pdf_path
-    print 'filename: '+file_name
-    print 'pdf: '+pdf_file
-    print 'jt: '+jt
 
-    if not pdf_path or not jt:
-        print ('File {f} not found'.format(f=file_name))
-        return
-
-    with open(PDF_ROOT_FOLDER + '/Summaries/' + jt + '.pdf.summary', mode='wb') as out_file:
-        out_file.write('File {jt} found.\n'.format(jt=file_name))
+def generate_summaries(pdf_file, pdf_path):
+    with open(PDF_ROOT_FOLDER + '/Summaries/' + pdf_file + '.summary', mode='wb') as out_file:
+        print 'Processing file {f}'.format(f=pdf_path)
         out_file.write('Path: {pdf_path}\n'.format(pdf_path=pdf_path))
 
         generate_raw_summary(out_file, pdf_path)
-
         json_pdf_text = generate_summary(out_file, pdf_path)
-
         print_pdf_summary(json_pdf_text, out_file)
-
-        return
-
-        '''
-        # retrieve semantic enrichment result for given file
-        enrichment_file = file_name+'.xml'
-        topics = get_topics_for_file(enrichment_file, file_index, topic_index)
-        # Identify 'most relevant sentences'
-        relevant_sentences = extract_relevant_sentences(pdf_sentences, topics)
-        report(relevant_sentences)
-
-        # Extract 'semantically oriented' summary
-        logger.debug("*"*40+"\n")
-        logger.info("Semantic based summary:\n")
-        logger.debug("*"*40+"\n")
-        # TODO: add logic to figure out optimal score threshold
-        pdf_string = "\n".join([s for _, s, score in relevant_sentences if score > 0])
-        generate_summary(pdf_string)
-        '''
 
 
 def print_pdf_summary(json_pdf_text, out_file):
@@ -92,6 +49,7 @@ def generate_summary(out_file, pdf_path):
     out_file.write("*" * 40 + "\n")
     out_file.write("JSON based summary:\n")
     out_file.write("*" * 40 + "\n")
+    print 'Generating json based summary'
     sentences = extract_sentences(pdf_txt)
     summarizer = pdfsummarizer.PDFSummarizer()
     results = summarizer.generate_summary(sentences)
@@ -110,6 +68,7 @@ def generate_raw_summary(out_file, pdf_path):
     out_file.write("*" * 40 + "\n")
     out_file.write("Raw text summary:\n")
     out_file.write("*" * 40 + "\n")
+    print 'Generating raw text summary'
     sentences = extract_sentences(raw_pdf_text)
     summarizer = pdfsummarizer.PDFSummarizer()
     results = summarizer.generate_summary(sentences)
@@ -139,9 +98,6 @@ def get_summary_or_toc(json_content):
 def get_text_from_json(json_content):
     decoder = JSONDecoder()
     json_pdf = decoder.decode(json_content)
-    print("\n" + "*" * 40 + "\n")
-    print("EXTRACTED PDF TEXT:\n")
-    print("*" * 40 + "\n")
     pdf_txt = ''
 
     if 'Summary' in json_pdf.keys():
@@ -162,14 +118,6 @@ def extract_text(extractor, pdf_long_filename, extract_mode):
 
 def extract_sentences(pdf_text):
     pdf_sentences = pdfparser.summarizer.extract_sentences(pdf_text)
-    print("\n" + "*" * 40 + "\n")
-    print("EXTRACTED SENTENCES:\n")
-    print("*" * 40 + "\n")
-    isentence = 0
-    for sentence in pdf_sentences:
-        isentence += 1
-        sentence = sentence.strip()
-    print("*" * 40 + "\n")
     return pdf_sentences
 
 

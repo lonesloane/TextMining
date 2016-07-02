@@ -3,7 +3,7 @@ import re
 from cStringIO import StringIO
 from json import JSONEncoder
 
-from nltk import PunktSentenceTokenizer
+from xml.etree.ElementTree import Element, SubElement, tostring
 from pdfminer.converter import TextConverter, PDFPageAggregator
 from pdfminer.layout import LAParams, LTTextBox, LTTextLine, LTFigure, LTRect, LTChar
 from pdfminer.pdfdocument import PDFDocument
@@ -14,11 +14,29 @@ from pdfminer.pdfparser import PDFParser
 from pdfparser import logger, _log_level, _config
 from pdfparser.pdf_fragment_type import FragmentType
 from pdfparser.pdf_page_filter import PDFPageFilter
+from pdfparser.report import Report
 from pdfparser.table_edges_extractor import Cell
 
 # LOG Files for debugging and visual analysis purposes
 rec_def = None
 text_def = None
+
+
+class ExtractMode:
+    def __init__(self):
+        pass
+
+    LAYOUT = 'layout'
+    TEXT = 'text'
+
+
+class OutputFormat:
+    def __init__(self):
+        pass
+
+    JSON = 'json'
+    XML = 'xml'
+    TEXT = 'text'
 
 
 class PDFTextExtractor:
@@ -27,26 +45,49 @@ class PDFTextExtractor:
         self.filter_tables = _config.getboolean('MAIN', 'filter_tables')
 
         self.contents = dict()
-        self.report = report
+        self.report = report if report else Report()
         self.pdf_filter = PDFPageFilter(report=self.report)
         self.previous_p = None
         self.annex_found = False
         self.single_page = int(single_page) if single_page else -1
 
-    def extract_text(self, pdf_file_path):
+    def extract_text(self, pdf_file_path, mode=None, format=None):
         # TODO: See if possible to detect that page is in landscape mode instead of regular portrait mode
         #       (eg. IMP19953820ENG)
-        self.convert_pdf_layout_to_text(pdf_file_path)
-        if FragmentType.TEXT not in self.contents or len(self.contents[FragmentType.TEXT]) == 0:
-            # TODO: Take pdf 'type' into account (see JT03366237)
-            # some special pdfs are only 'LTFigure'...
-            logger.info('No text extracted from layout analysis! Falling back to raw text extraction.')
+        # TODO: Take pdf 'type' into account (see JT03366237)
+        # TODO: set config parameter to choose output format (i.e. plain text, json, xml)
+
+        output = None
+        output_format = format if format else OutputFormat.JSON
+        mode = mode if mode else ExtractMode.LAYOUT
+
+        if mode is ExtractMode.LAYOUT:
+            logger.info('Layout based extraction.')
+            self.convert_pdf_layout_to_text(pdf_file_path)
+        if mode is ExtractMode.TEXT or FragmentType.TEXT not in self.contents \
+                or len(self.contents[FragmentType.TEXT]) == 0:
+            logger.info('Raw text extraction.')
             self.convert_pdf_to_txt(pdf_file_path)
 
-        encoder = JSONEncoder()
-        json_text = encoder.encode(self.contents)
+        if output_format is OutputFormat.TEXT:
+            output = ''
+            for key in self.contents.keys():
+                for elem in self.contents[key]:
+                    output += elem.encode('utf-8')+'\n'
+        if output_format is OutputFormat.JSON:
+            encoder = JSONEncoder()
+            output = encoder.encode(self.contents)
+        elif output_format is OutputFormat.XML:
+            top = Element('pdf-content')
+            for key in self.contents.keys():
+                child = SubElement(top, key.lower())
+                for elem in self.contents[key]:
+                    sub_child = SubElement(child, 'item')
+                    sub_child.text = elem
 
-        return json_text
+            output = tostring(top)
+
+        return output
 
     def convert_pdf_to_txt(self, path):
         rsrcmgr = PDFResourceManager()
@@ -59,18 +100,22 @@ class PDFTextExtractor:
         pagenos = set()
 
         page_no = 0
-        fragment_type = FragmentType.UNKNOWN
         for page in PDFPage.get_pages(fp, pagenos, maxpages=maxpages, password=password,
                                       caching=caching, check_extractable=True):
             retstr = StringIO()
             page_no += 1
 
+            page_text = ''
             device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
-            PDFPageInterpreter(rsrcmgr, device).process_page(page)
-
-            page_text = retstr.getvalue()  # .decode(encoding='utf-8')
-            device.close()
-            retstr.close()
+            try:
+                PDFPageInterpreter(rsrcmgr, device).process_page(page)
+            except TypeError:
+                logger.error('TypeError: "NoneType" object has no attribute "__getitem__"')
+            else:
+                page_text = retstr.getvalue().decode(encoding='utf-8')
+            finally:
+                device.close()
+                retstr.close()
 
             logger.info('=' * 20)
             logger.info('Processing page {page_nb}'.format(page_nb=page_no))
@@ -80,6 +125,7 @@ class PDFTextExtractor:
         fp.close()
 
     def convert_pdf_layout_to_text(self, pdf_doc):
+        fp = None
         try:
             # open the pdf file
             fp = open(pdf_doc, 'rb')
@@ -108,13 +154,16 @@ class PDFTextExtractor:
                 # Add any leftover text
                 if self.previous_p:
                     self.contents[FragmentType.TEXT].extend({self.previous_p})
+            else:
+                logger.error('Document not extractable')
 
         except IOError:
             # the file doesn't exist or similar problem
             logger.error("Error while processing pdf file.")
         finally:
             # close the pdf file
-            fp.close()
+            if fp:
+                fp.close()
 
     def parse_pages(self, doc):
         """With an open PDFDocument object, get the pages and parse each one
@@ -212,6 +261,7 @@ class PDFTextExtractor:
         # ==> then only decide what type of fragment (i.e. annex or participants list... see JT00124770)
         logger.debug('Enter page validation')
 
+        self.pdf_filter.filter_text_tables(page_txt)
         if page_cells and self.filter_tables:
             self.pdf_filter.filter_tables(page_txt, page_cells)
         coord = None
@@ -231,6 +281,7 @@ class PDFTextExtractor:
                 current_fragment_type = FragmentType.TABLE_OF_CONTENTS
                 break
 
+            # do not report summary found within annex
             is_summary = False if self.report.annex != 0 else self.pdf_filter.is_summary(page_txt,
                                                                                          previous_fragment_type)
             if is_summary:
@@ -264,7 +315,6 @@ class PDFTextExtractor:
                 break
 
             # Default: plain simple text
-            process_text(page_txt)
             if self.annex_found:
                 current_fragment_type = FragmentType.ANNEX
             else:
@@ -281,6 +331,7 @@ class PDFTextExtractor:
         else:
             fragment_txt = get_fragment_text(page_txt)
             if current_fragment_type is FragmentType.TEXT:
+                fragment_txt = strip_paragraph_numbers(fragment_txt)
                 fragment_txt = strip_page_number(fragment_txt)
                 fragment_txt = strip_header(fragment_txt)
             self.add_fragment(fragment_txt, fragment_type=current_fragment_type)
@@ -289,7 +340,7 @@ class PDFTextExtractor:
 
     def add_fragment(self, fragment_txt, fragment_type):
         content_list = list()
-        ptrn_continued = re.compile('([a-zéèçàù]|[A-Z]{2,})', re.UNICODE)
+        ptrn_continued = re.compile('^(?<!\n)([a-zéèçàù]|[A-Z]{2,})', re.UNICODE)
         ptrn_punct = re.compile('[\.]+|[\?!:]', re.UNICODE)
         ptrn_useless_crlf = re.compile('(?<!\.)\n(?![A-Z][a-z])', re.UNICODE)
 
@@ -301,21 +352,29 @@ class PDFTextExtractor:
             logger.debug('fragment length: {l}'.format(l=len(fragment_txt)))
             for i, p in enumerate(fragment_txt):
                 if _log_level > 2:
-                    logger.debug('[START] {i}th sentence: {p}'.format(i=i, p=p))
+                    logger.debug(u'[START] {i}th sentence: {p}'.format(i=i, p=p))
                 p = re.sub(ptrn_useless_crlf, ' ', p)
                 p = re.sub(' +', ' ', p)
                 p = p.strip()
                 if not len(p):
+                    logger.debug('nothing left...')
                     continue
                 if self.previous_p:
                     if re.match(ptrn_continued, p[0]):
-                        p = self.previous_p + ' ' + p
+                        if _log_level > 2:
+                            logger.debug(u'continued. p[0]:{p}'.format(p=p))
+                            logger.debug(u'adding previous. :{p}'.format(p=self.previous_p))
+                        self.previous_p = self.previous_p + ' ' + p
+                        continue
                     else:
-                        if _log_level > 1:
+                        if _log_level > 2:
                             logger.debug(u'not continued. p[0]:{p}'.format(p=p))
                             logger.debug(u'adding leftover. :{p}'.format(p=self.previous_p))
-                        content_list.append(self.previous_p)
-                    self.previous_p = None
+                        content_list.append(self.previous_p+'.')
+                        self.previous_p = p
+                else:
+                    self.previous_p = p
+                    continue
 
                 #Only for last of page and first of next page...(i.e. if there are notes, we're screwed!!!)
                 if i == len(fragment_txt)-1 and not re.match(ptrn_punct, p[len(p) - 1]) \
@@ -328,7 +387,7 @@ class PDFTextExtractor:
                     if _log_level > 2:
                         logger.debug(u'[END] {i}th sentence: {p}'.format(i=i, p=p))
 
-                content_list.append(p)
+                #content_list.append(p)
         else:
             for p in fragment_txt:
                 p = re.sub('(?<!\.)\n(?![A-Z])', ' ', p)
@@ -363,19 +422,6 @@ def remove_empty_lines(fragment_txt):
     return result
 
 
-def process_text(page_txt):
-    for coord, substring in page_txt.items():
-        # remove paragraph numbers, e.g. "23."
-        # sometimes wrongly inserted within the text from incorrect layout analysis
-        #result = re.sub('(^\s?[0-9]{1,4}\.([0-9]{1,4})?\s?)', ' ', substring)
-        filter_paragraph_numbers = re.compile('(^\W?([0-9]+\.)+[0-9]{0,3}\W?)')
-        result = re.sub(filter_paragraph_numbers, ' ', substring)
-        if _log_level > 2:
-            logger.debug('regexp on [{substring}]'.format(substring=substring))
-            logger.debug('result: [{result}]'.format(result=result))
-        page_txt[coord] = result
-
-
 def extract_object_text_hash(h, lt_obj):
     # TODO: strange behaviour to investigate: see Summary section of JT03380961
     global text_def
@@ -389,15 +435,45 @@ def extract_object_text_hash(h, lt_obj):
     if _log_level > 2:
         text_def.write('{x0}|{y0}|{x1}|{y1}|{s}\n'.format(x0=x0, y0=y0, x1=x1, y1=y1,
                                                           s=to_bytestring(lt_obj.get_text().replace('\n', ' '))))
-    #h[(x0, y0, x1, y1)] = to_bytestring(lt_obj.get_text())
     h[(x0, y0, x1, y1)] = lt_obj.get_text()
     return h
+
+
+def old_strip_paragraph_numbers(page_txt):
+    for coord, substring in page_txt.items():
+        # remove paragraph numbers, e.g. "23."
+        # sometimes wrongly inserted within the text from incorrect layout analysis
+        #result = re.sub('(^\s?[0-9]{1,4}\.([0-9]{1,4})?\s?)', ' ', substring)
+        filter_paragraph_lead_numbers = re.compile('(^\W?([0-9]+\.)+[0-9]{0,3}\W?)')
+        filter_paragraph_inserted_numbers = re.compile('(\W?([0-9]+\.)+(?!\s[A-Z]))')
+        result = re.sub(filter_paragraph_lead_numbers, ' ', substring)
+        result = re.sub(filter_paragraph_inserted_numbers, ' ', result)
+        if _log_level > 2:
+            logger.debug(u'regexp on [{substring}]'.format(substring=substring))
+            logger.debug(u'result: [{result}]'.format(result=result))
+        page_txt[coord] = result
+
+
+def strip_paragraph_numbers(fragment_txt):
+    filter_paragraph_lead_numbers = re.compile('(^\W?([0-9]+\.)+[0-9]{0,3}\W?)')
+    filter_paragraph_inserted_numbers = re.compile('(\W?([0-9]+\.)+(?!\s[A-Z]))')
+    for i in range(0, len(fragment_txt) - 1):
+        txt = fragment_txt[i].strip()
+        # remove paragraph numbers, e.g. "23."
+        # sometimes wrongly inserted within the text from incorrect layout analysis
+        result = re.sub(filter_paragraph_lead_numbers, ' ', txt)
+        result = re.sub(filter_paragraph_inserted_numbers, ' ', result)
+        if _log_level > 2:
+            logger.debug(u'[strip_paragraph_numbers] regexp on [{substring}]'.format(substring=txt))
+            logger.debug(u'[strip_paragraph_numbers] result: [{result}]'.format(result=result))
+        fragment_txt[i] = result
+    return fragment_txt
 
 
 def strip_header(fragment_txt):
     ptrn_classif = re.compile('For Official Use|Confidential|Unclassified|A Usage Officiel|'
                               'Confidentiel|Non classifié', re.IGNORECASE)
-    ptrn_cote = re.compile('^\W*[\w\(\)/0-9]+\W*$')
+    ptrn_cote = re.compile('^\W*([\w]+?[\(\)/0-9]+[\w]*?)+\W*$')
     classif_idx = None
     for i in range(0, len(fragment_txt) - 1):
         txt = fragment_txt[i].strip()
@@ -485,11 +561,6 @@ def strip_page_number(fragment_txt):
             break  # only strip out the first occurrence of a number before any actual text
     fragment_txt = fragment_txt[:page_number_idx]
     return fragment_txt
-
-
-def extract_sentences(pdf_text):
-        pdf_sentences = PunktSentenceTokenizer().tokenize(pdf_text.decode('utf-8'))
-        return pdf_sentences
 
 
 def re_order_text(txt):

@@ -94,7 +94,7 @@ def plot_cells(rec_list, color, fill=False):
 
 
 if __name__ == '__main__':
-    # rec_def_file = 'rec_def-JT03365818-1.log'
+    # rec_def_file = '__rec_def-JT03365818-1.log'
     # text_def_file = 'text_def-JT03365818-1.log'
     rec_def_file = 'rec_def.log'
     text_def_file = 'text_def.log'
@@ -103,7 +103,7 @@ if __name__ == '__main__':
 
     # min_x, max_x, min_y, max_y, cells = load_test_cells()
     min_x, max_x, min_y, max_y, cells = load_cells(rec_def_file)
-    plot_cells(cells, 'blue')
+#    plot_cells(cells, 'blue')
 
     min_x, max_x, min_y, max_y, text_blocks = load_text(text_def_file)
     plot_cells(text_blocks, 'black')
@@ -116,7 +116,7 @@ if __name__ == '__main__':
     for cell in outer_edges:
         print 'Collapsed cell built from {nrows} inner rows and {ncolumns} inner columns'.format(nrows=cell.rows,
                                                                                                  ncolumns=cell.columns)
-    plot_cells(outer_edges, 'red')
+    #plot_cells(outer_edges, 'red')
 
     plt.show()
 

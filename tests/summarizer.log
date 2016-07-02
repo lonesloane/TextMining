@@ -1,0 +1,90 @@
+Logging object initialized with log level 2
+found page number at index: 5
+--------------------
+Sorted page text:
+--------------------
+(-2, -2, '2:2')
+(-2, -1, '1:2')
+(-2, 0, '0:2')
+(-1, -2, '2:1')
+(-1, -1, '1:1')
+(-1, 0, '0:1')
+(0, -2, '2:0')
+(0, -1, '1:0')
+(0, 0, '0:0')
+--------------------
+Sorted page text:
+--------------------
+(0, -2, '2:0')
+(0, -1, '1:0')
+(0, 0, '0:0')
+--------------------
+Sorted page text:
+--------------------
+(-1, -2, '2:1')
+(-1, -1, '1:1')
+(-1, 0, '0:1')
+(0, -2, '2:0')
+(0, -1, '1:0')
+(0, 0, '0:0')
+--------------------
+Sorted page text:
+--------------------
+(-2, -2, '2:2')
+(-2, -1, '1:2')
+(-2, 0, '0:2')
+(-1, -2, '2:1')
+(-1, -1, '1:1')
+(-1, 0, '0:1')
+(0, -2, '2:0')
+(0, -1, '1:0')
+(0, 0, '0:0')
+--------------------
+Sorted page text:
+--------------------
+--------------------
+Sorted page text:
+--------------------
+(-2, -2, '2:2')
+(-2, -1, '1:2')
+(-2, 0, '0:2')
+(-1, -2, '2:1')
+(-1, -1, '1:1')
+(-1, 0, '0:1')
+--------------------
+Sorted page text:
+--------------------
+(-2, -2, '2:2')
+(-2, -1, '1:2')
+(-2, 0, '0:2')
+--------------------
+Sorted page text:
+--------------------
+--------------------
+Sorted page text:
+--------------------
+(-2, -2, '2:2')
+(-2, -1, '1:2')
+(-2, 0, '0:2')
+(-1, -2, '2:1')
+(-1, -1, '1:1')
+(-1, 0, '0:1')
+(0, -2, '2:0')
+(0, -1, '1:0')
+(0, 0, '0:0')
+--------------------
+Sorted page text:
+--------------------
+(-2, 2, '-2:2')
+(0, 0, '0:0')
+(0, 1, '0:1')
+(0, 2, '0:2')
+(1, -2, '1:-2')
+(1, 0, '1:0')
+(1, 1, '1:1')
+(2, 0, '2:0')
+(2, 1, '2:1')
+Searching for cote in fragment: 
+Searching for cote in fragment: C(2014)151
+found cote at index: 1
+Fragment without cote is: [' \n', ' \n', ' \nDans un courrier au Directeur du Centre de d\xc3\xa9veloppement (ci-apr\xc3\xa8s d\xc3\xa9sign\xc3\xa9 l \xc2\xab Centre \xc2\xbb) dat\xc3\xa9 du \n21 mai  2013,  M. Emmanuel  Kalou,  Directeur  de  Cabinet  du  ministre  d\xc2\xb4\xc3\x89tat,  ministre  des  Affaires \n\xc3\xa9trang\xc3\xa8res de la C\xc3\xb4te d\xe2\x80\x99Ivoire, avait exprim\xc3\xa9 le souhait de son pays de rejoindre le Centre. Cette demande a \n\xc3\xa9t\xc3\xa9 suivie par la participation d\xe2\x80\x99une forte d\xc3\xa9l\xc3\xa9gation ivoirienne conduite par le Premier Ministre, M. Daniel \nKablan Duncan, au 13e Forum \xc3\xa9conomique international sur l\xe2\x80\x99Afrique organis\xc3\xa9 par le Centre \xc3\xa0 Paris les 7 et \n8  octobre  2013,  puis  confirm\xc3\xa9e  par  un  courrier  de  M. Charles  Koffi  Diby,  ministre  d\xc2\xb4\xc3\x89tat,  ministre  des \nAffaires \xc3\xa9trang\xc3\xa8res, dat\xc3\xa9 du 22 novembre 2013, qui r\xc3\xa9it\xc3\xa9rait le souhait et la demande de la C\xc3\xb4te d\xe2\x80\x99Ivoire de \ndevenir membre du Centre. Le gouvernement ivoirien esp\xc3\xa8re pouvoir compter sur les acquis de l\xe2\x80\x99exp\xc3\xa9rience \nde  l\xe2\x80\x99OCDE  pour  l\xe2\x80\x99aider  \xc3\xa0  atteindre  l\xe2\x80\x99objectif  qu\xe2\x80\x99il  s\xe2\x80\x99est  fix\xc3\xa9  de  faire  de  la  C\xc3\xb4te  d\xe2\x80\x99Ivoire  une  \xc3\xa9conomie \n\xc3\xa9mergente \xc3\xa0 l\xe2\x80\x99horizon 2020. \n']

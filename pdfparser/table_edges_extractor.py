@@ -164,8 +164,6 @@ def find_outer_edges(cells, nth_recursion=0):
         for cell in collapsed_cells:
             log(cell)
         # Not converged yet, make a recursive call to ourselves with cells collapsed so far.
-        #log('Not converged. I give up...')
-        #return
         return find_outer_edges(collapsed_cells, nth_recursion=nth_recursion)
 
 
