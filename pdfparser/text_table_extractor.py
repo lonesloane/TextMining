@@ -1,5 +1,3 @@
-from pdfparser import logger, _log_level, _config
-
 
 class Cell:
 
@@ -8,15 +6,35 @@ class Cell:
         self.y0 = y0
         self.x1 = x1
         self.y1 = y1
-        height = abs(self.y0 - self.y1)
         self.rows = rows
-        width = abs(self.x0 - self.x1)
         self.columns = columns
+        self.width = self.get_width()
+        self.height = self.get_height()
 
     def __repr__(self):
-        return '[' + 'x0: ' + str(self.x0) + ', y0: ' + str(self.y0) \
-               + ', x1: ' + str(self.x1) + ', y1: ' + str(self.y1) \
-               + ', rows: ' + str(self.rows) + ', columns: ' + str(self.columns) + ']'
+        return ('[x0: {self.x0}, y0: {self.y0}, x1: {self.x1}, y1: {self.y1}, '
+                'rows: {self.rows}, columns: {self.columns}, '
+                'width: {self.width}, height: {self.height}]'.format(self=self))
+
+    def absorb(self, cell):
+        if cell.x0 < self.x0:
+            self.x0 = cell.x0
+        if cell.x1 > self.x1:
+            self.x1 = cell.x1
+        if cell.y0 < self.y0:
+            self.y0 = cell.y0
+        if cell.y1 > self.y1:
+            self.y1 = cell.y1
+
+        # TODO: replace this with @property !!!
+        self.width = self.get_width()
+        self.height = self.get_height()
+
+    def get_width(self):
+        return abs(self.x0 - self.x1)
+
+    def get_height(self):
+        return abs(self.y0 - self.y1)
 
 
 class Row:
@@ -42,9 +60,10 @@ class Row:
         return False
 
     def aligned(self, cell):
+        # TODO: review this logic, seems "funky"
         if self.min_y > cell.y0 and self.min_y > cell.y1:
             return False
-        if self.max_y <= cell.y0 and self.max_y <= cell.y1:
+        if self.max_y <= cell.y0 and self.max_y <= cell.y1:  # TODO: <= or < ?
             return False
         return True
 
@@ -55,9 +74,14 @@ class Table:
         self.max_y = None
         self.min_y = None
         self.cells = list()
+        self.rows = list()
+
+    def add_row(self, row):
+        self.rows.append(row)
+        self.add_cells(row)
 
     def add_cells(self, row):
-        for cell in row:
+        for cell in row.cells:
             self.cells.append(cell)
             self.update_boundaries(cell)
 
@@ -72,39 +96,56 @@ class Table:
             return True
         return False
 
+    def candidate_cells(self, page_width):
+        if len(self.rows) > 2:  # TODO: extract to config file
+            cells = (cell for cell in self.cells if cell.get_width() < page_width/2.5)
+        else:
+            cells = ()
+
+        return cells
+
 
 def find_table_cells(cells):
+    # TODO: ensure cells are sorted correctly, do not assume caller has done it already !
 
-    candidate_cells = list()
+    global_cell = None
+    tables = list()
     table = Table()
     candidate_row = Row()
     for cell in cells:
+        # keep track of page global dimensions
+        if not global_cell:
+            global_cell = Cell(cell.x0, cell.y0, cell.x1, cell.y1)
+        else:
+            global_cell.absorb(cell)
+
+        # store cells into rows and rows into tables
         if len(candidate_row.cells) == 0:
             candidate_row.add_cell(cell)
         else:
-            if candidate_row.aligned(cell) or candidate_row.included(cell) or table.included(cell):  # append to candidate row
+            if candidate_row.aligned(cell) or candidate_row.included(cell) or table.included(cell):  # append
                 candidate_row.add_cell(cell)
             else:
                 if len(candidate_row.cells) > 2:    # save previous row
-                    candidate_cells.extend(candidate_row.cells)
-                    table.add_cells(candidate_row.cells)
+                    table.add_row(candidate_row)
+                else:
+                    tables.append(table)
+                    table = Table()
 
                 candidate_row = Row()
                 candidate_row.add_cell(cell)
 
+    # deal with leftovers, if any...
     if len(candidate_row.cells) > 2:
-        candidate_cells.extend(candidate_row.cells)
+        table.add_row(candidate_row)
 
-    return candidate_cells
+    cells = [cell for table in tables for cell in table.candidate_cells(global_cell.get_width())]
+    return cells
 
-
+'''
 def compare_cells(cell):
-    return cell.y0, cell.y1, cell.x0, cell.x1
-
-
-def log(log_text):
-    if _log_level > 2:
-        logger.debug(log_text)
+    return cell.y0, cell.x0, cell.x1, cell.y1
+'''
 
 if __name__ == '__main__':
     pass

@@ -20,6 +20,7 @@ from pdfparser.table_edges_extractor import Cell
 # LOG Files for debugging and visual analysis purposes
 rec_def = None
 text_def = None
+text_keys = {'Text', 'Summary'}
 
 
 class ExtractMode:
@@ -64,19 +65,21 @@ class PDFTextExtractor:
         if mode is ExtractMode.LAYOUT:
             logger.info('Layout based extraction.')
             self.convert_pdf_layout_to_text(pdf_file_path)
-        if mode is ExtractMode.TEXT or FragmentType.TEXT not in self.contents \
-                or len(self.contents[FragmentType.TEXT]) == 0:
+
+        if mode is ExtractMode.TEXT or self.should_force_raw_extraction():
             logger.info('Raw text extraction.')
             self.convert_pdf_to_txt(pdf_file_path)
 
         if output_format is OutputFormat.TEXT:
             output = ''
-            for key in self.contents.keys():
+            for key in text_keys.intersection(self.contents.keys()):
                 for elem in self.contents[key]:
                     output += elem.encode('utf-8')+'\n'
-        if output_format is OutputFormat.JSON:
+
+        elif output_format is OutputFormat.JSON:
             encoder = JSONEncoder()
             output = encoder.encode(self.contents)
+
         elif output_format is OutputFormat.XML:
             top = Element('pdf-content')
             for key in self.contents.keys():
@@ -84,10 +87,17 @@ class PDFTextExtractor:
                 for elem in self.contents[key]:
                     sub_child = SubElement(child, 'item')
                     sub_child.text = elem
-
             output = tostring(top)
 
         return output
+
+    def should_force_raw_extraction(self):
+        if self.single_page != -1:
+            return False
+        elif (FragmentType.TEXT not in self.contents or len(self.contents[FragmentType.TEXT]) == 0):
+            return True
+        else:
+            return False
 
     def convert_pdf_to_txt(self, path):
         rsrcmgr = PDFResourceManager()
@@ -99,11 +109,9 @@ class PDFTextExtractor:
         caching = True
         pagenos = set()
 
-        page_no = 0
-        for page in PDFPage.get_pages(fp, pagenos, maxpages=maxpages, password=password,
-                                      caching=caching, check_extractable=True):
+        for page_no, page in enumerate(PDFPage.get_pages(fp, pagenos, maxpages=maxpages, password=password,
+                                                         caching=caching, check_extractable=True)):
             retstr = StringIO()
-            page_no += 1
 
             page_text = ''
             device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
@@ -142,18 +150,18 @@ class PDFTextExtractor:
                 logger.info("="*20)
                 pages = self.parse_pages(doc)
 
-                total_nb_pages = len(pages)
                 page_nb = 0
                 fragment_type = FragmentType.UNKNOWN
-                for page_text, page_cells in pages:
-                    logger.info('='*20)
-                    logger.info('Validating page {page_nb}'.format(page_nb=page_nb))
-                    logger.info('='*20)
-                    fragment_type = self.validate_page(page_text, page_cells, fragment_type, page_nb)
-                    page_nb += 1
-                # Add any leftover text
-                if self.previous_p:
-                    self.contents[FragmentType.TEXT].extend({self.previous_p})
+                if self.single_page == -1:
+                    for page_text, page_cells in pages:
+                        logger.info('='*20)
+                        logger.info('Validating page {page_nb}'.format(page_nb=page_nb))
+                        logger.info('='*20)
+                        fragment_type = self.validate_page(page_text, page_cells, fragment_type, page_nb)
+                        page_nb += 1
+                    # Add any leftover text
+                    if self.previous_p:
+                        self.contents[FragmentType.TEXT].extend({self.previous_p})
             else:
                 logger.error('Document not extractable')
 
@@ -173,12 +181,12 @@ class PDFTextExtractor:
         device = PDFPageAggregator(rsrcmgr, laparams=laparams)
         interpreter = PDFPageInterpreter(rsrcmgr, device)
         pages = []
-        for i, page in enumerate(PDFPage.create_pages(doc)):
-            if self.single_page != -1 and i != self.single_page:
+        for page_number, page in enumerate(PDFPage.create_pages(doc)):
+            if self.single_page != -1 and page_number != self.single_page:
                 continue
             if _log_level > 2:
                 logger.debug('\n'+'-'*50)
-                logger.debug('Processing page {i}'.format(i=i))
+                logger.debug('Processing page {i}'.format(i=page_number))
                 logger.debug('-'*50)
             try:
                 interpreter.process_page(page)
@@ -261,9 +269,6 @@ class PDFTextExtractor:
         # ==> then only decide what type of fragment (i.e. annex or participants list... see JT00124770)
         logger.debug('Enter page validation')
 
-        self.pdf_filter.filter_text_tables(page_txt)
-        if page_cells and self.filter_tables:
-            self.pdf_filter.filter_tables(page_txt, page_cells)
         coord = None
 
         while True:
@@ -282,8 +287,7 @@ class PDFTextExtractor:
                 break
 
             # do not report summary found within annex
-            is_summary = False if self.report.annex != 0 else self.pdf_filter.is_summary(page_txt,
-                                                                                         previous_fragment_type)
+            is_summary = False if self.report.annex != 0 else self.pdf_filter.is_summary(page_txt)
             if is_summary:
                 logger.info('\nMATCH - {Summary} found.')
                 current_fragment_type = FragmentType.SUMMARY
@@ -301,18 +305,25 @@ class PDFTextExtractor:
                 current_fragment_type = FragmentType.BIBLIOGRAPHY
                 break
 
-            is_participants_list = self.pdf_filter.is_participants_list(page_txt, previous_fragment_type)
+            is_participants_list, coord = self.pdf_filter.is_participants_list(page_txt, previous_fragment_type)
             if is_participants_list:
                 logger.info('\nMATCH - {Participants List} found.')
                 current_fragment_type = FragmentType.PARTICIPANTS_LIST
                 break
 
-            is_annex = self.pdf_filter.is_annex(page_txt, previous_fragment_type)
+            is_annex = self.pdf_filter.is_annex(page_txt)
             if is_annex:
                 logger.info('\nMATCH - {Annex} found.')
                 current_fragment_type = FragmentType.ANNEX
                 self.annex_found = True
                 break
+
+            # Remove any contents found within tables
+            # TODO: keep text from table to identify potential "section" (e.g. Summary or Annex)
+            # TODO: make the actual definition of what is a "table" clearer!
+            self.pdf_filter.filter_text_tables(page_txt)
+            if page_cells and self.filter_tables:
+                self.pdf_filter.filter_tables(page_txt, page_cells)
 
             # Default: plain simple text
             if self.annex_found:
@@ -341,7 +352,7 @@ class PDFTextExtractor:
     def add_fragment(self, fragment_txt, fragment_type):
         content_list = list()
         ptrn_continued = re.compile('^(?<!\n)([a-zéèçàù]|[A-Z]{2,})', re.UNICODE)
-        ptrn_punct = re.compile('[\.]+|[\?!:]', re.UNICODE)
+        ptrn_punct = re.compile('([\.]+|[\?!:])', re.UNICODE)
         ptrn_useless_crlf = re.compile('(?<!\.)\n(?![A-Z][a-z])', re.UNICODE)
 
         if _log_level > 1:
@@ -370,15 +381,24 @@ class PDFTextExtractor:
                         if _log_level > 2:
                             logger.debug(u'not continued. p[0]:{p}'.format(p=p))
                             logger.debug(u'adding leftover. :{p}'.format(p=self.previous_p))
-                        content_list.append(self.previous_p+'.')
+                        # if self.previous_p[:-1] != '.':
+                        #     self.previous_p += '.'
+                        content_list.append(self.previous_p)
                         self.previous_p = p
                 else:
-                    self.previous_p = p
+                    if _log_level > 2:
+                        logger.debug('p[-1]: '+p[:-1])
+                    if p[-1] == '.':
+                        content_list.append(p)
+                        self.previous_p = None
+                    else:
+                        self.previous_p = p
                     continue
 
-                #Only for last of page and first of next page...(i.e. if there are notes, we're screwed!!!)
-                if i == len(fragment_txt)-1 and not re.match(ptrn_punct, p[len(p) - 1]) \
-                        and not re.match('[0-9]+ \w+.*', p):
+                # Only for last of page and first of next page...(i.e. if there are notes, we're screwed!!!)
+                if i == (len(fragment_txt)-1 and
+                         not re.match(ptrn_punct, p[-1]) and
+                         not re.match('[0-9]+ \w+.*', p)):
                     if _log_level > 1:
                         logger.debug(u'not finished. p[0]:{p}'.format(p=p))
                     self.previous_p = p
@@ -386,8 +406,10 @@ class PDFTextExtractor:
                 else:
                     if _log_level > 2:
                         logger.debug(u'[END] {i}th sentence: {p}'.format(i=i, p=p))
+                    content_list.append(p)
+                    self.previous_p = None
 
-                #content_list.append(p)
+                # content_list.append(p)
         else:
             for p in fragment_txt:
                 p = re.sub('(?<!\.)\n(?![A-Z])', ' ', p)
@@ -439,24 +461,9 @@ def extract_object_text_hash(h, lt_obj):
     return h
 
 
-def old_strip_paragraph_numbers(page_txt):
-    for coord, substring in page_txt.items():
-        # remove paragraph numbers, e.g. "23."
-        # sometimes wrongly inserted within the text from incorrect layout analysis
-        #result = re.sub('(^\s?[0-9]{1,4}\.([0-9]{1,4})?\s?)', ' ', substring)
-        filter_paragraph_lead_numbers = re.compile('(^\W?([0-9]+\.)+[0-9]{0,3}\W?)')
-        filter_paragraph_inserted_numbers = re.compile('(\W?([0-9]+\.)+(?!\s[A-Z]))')
-        result = re.sub(filter_paragraph_lead_numbers, ' ', substring)
-        result = re.sub(filter_paragraph_inserted_numbers, ' ', result)
-        if _log_level > 2:
-            logger.debug(u'regexp on [{substring}]'.format(substring=substring))
-            logger.debug(u'result: [{result}]'.format(result=result))
-        page_txt[coord] = result
-
-
 def strip_paragraph_numbers(fragment_txt):
-    filter_paragraph_lead_numbers = re.compile('(^\W?([0-9]+\.)+[0-9]{0,3}\W?)')
-    filter_paragraph_inserted_numbers = re.compile('(\W?([0-9]+\.)+(?!\s[A-Z]))')
+    filter_paragraph_lead_numbers = re.compile('((^|\n)([0-9]+\.)+[0-9]{0,3}\W?)')
+    filter_paragraph_inserted_numbers = re.compile('((?<=\n)\W?([0-9]+\.)+(?![A-Z]))')
     for i in range(0, len(fragment_txt) - 1):
         txt = fragment_txt[i].strip()
         # remove paragraph numbers, e.g. "23."
@@ -518,7 +525,8 @@ def strip_cote(fragment_txt):
     :param fragment_txt:
     :return:
     """
-    ptrn_cote = re.compile('[\w]+/[[\w/]+]?\(\d{2,4}\)\d*.*|[\w]+\(\d{2,4}\)\d*.*')
+    # ptrn_cote = re.compile('[\w]+/[[\w/]+]?\(\d{2,4}\)\d*.*|[\w]+\(\d{2,4}\)\d*.*')
+    ptrn_cote = re.compile('([\w]+?[\(\)/0-9]+[\w]*?)+')
     cote_idx = None
     for i in range(0, len(fragment_txt)-1):
         txt = fragment_txt[i].strip()
@@ -535,12 +543,17 @@ def strip_cote(fragment_txt):
     return fragment_txt
 
 
-def is_cote(txt):
+def to_be_deleted_is_cote(txt):
     logger.debug('Looking for cote in {txt}'.format(txt=txt))
+    ptrn_cote = re.compile('([\w]+?[\(\)/0-9]+[\w]*?)+')
+    if re.match(ptrn_cote, txt):
+        return True
+    '''
     if re.match('[\w]+/[[\w/]+]?\(\d{2,4}\)\d*.*|[\w]+\(\d{2,4}\)\d*.*', txt):
         return True
     if re.match('C\(\d{2,4}\)\d*.*', txt):
         return True
+    '''
     return False
 
 
@@ -575,17 +588,20 @@ def re_order_text(txt):
 
 
 def get_fragment_text(page_txt):
-    txt = [(round(-coord[1], 0), round(coord[0], 0), str_array) for coord, str_array in page_txt.items()]
+    txt = [(round(-coord[1], 0), round(coord[0], 0), str_array)
+           for coord, str_array in page_txt.items()]
     return re_order_text(txt)
 
 
 def get_previous_fragment_text(page_txt, split_coord):
-    txt = [(round(-coord[1], 0), round(coord[0], 0), str_array) for coord, str_array in page_txt.items() if coord[1] > split_coord[1]]
+    txt = [(round(-coord[1], 0), round(coord[0], 0), str_array)
+           for coord, str_array in page_txt.items() if coord[1] > split_coord[1]]
     return re_order_text(txt)
 
 
 def get_next_fragment_text(page_txt, split_coord):
-    txt = [(round(-coord[1], 0), round(coord[0], 0), str_array) for coord, str_array in page_txt.items() if coord[1] <= split_coord[1]]
+    txt = [(round(-coord[1], 0), round(coord[0], 0), str_array)
+           for coord, str_array in page_txt.items() if coord[1] <= split_coord[1]]
     return re_order_text(txt)
 
 

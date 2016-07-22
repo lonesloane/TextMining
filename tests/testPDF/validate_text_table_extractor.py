@@ -1,8 +1,9 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import sys
 
 import pdfparser.text_table_extractor as extractor
-from pdfparser.text_table_extractor import compare_cells
+#from pdfparser.text_table_extractor import compare_cells
 
 
 def add_rect(x0, y0, x1, y1, color, fill=False):
@@ -67,15 +68,16 @@ def load_cells(definition_file):
     return _min_x, _max_x, _min_y, _max_y, _cells
 
 
-if __name__ == '__main__':
+def main():
     print 'Extracting table from text layout'
     txt_cells = []
 
     rec_def_file = 'text_def.log'
     min_x, max_x, min_y, max_y, cells = load_cells(rec_def_file)
-    cells.sort(key=compare_cells, reverse=True)
-#TODO: write back the cells after sort...
+    cells.sort(key=extractor.compare_cells, reverse=True)
+    # TODO: write back the cells after sort...
     fig = plt.figure()
+    global rec
     rec = fig.add_subplot(111, aspect='equal')
 
     plot_cells(cells, 'black')
@@ -86,3 +88,9 @@ if __name__ == '__main__':
     plot_cells(candidate_cells, 'red')
 
     plt.show()
+
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())

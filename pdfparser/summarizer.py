@@ -5,18 +5,18 @@ from nltk import PunktSentenceTokenizer
 from sumy.nlp.stemmers import Stemmer
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.parsers.plaintext import PlaintextParser
-#from sumy.summarizers.text_rank import TextRankSummarizer as Summarizer
+# from sumy.summarizers.text_rank import TextRankSummarizer as Summarizer
 from sumy.summarizers.lsa import LsaSummarizer as Summarizer
 from sumy.utils import get_stop_words
 
-from pdfparser import logger, _log_level, _config
+from pdfparser import logger, _config
 import indexfiles.loader as loader
 
 
 PROJECT_FOLDER = _config.get('MAIN', 'project_folder')
 PDF_ROOT_FOLDER = os.path.join(PROJECT_FOLDER, 'pdfs')
 LANGUAGE = "english"
-SENTENCES_COUNT = 10  # TODO; extract to config file or base on text length
+SENTENCES_COUNT = _config.getfloat('MAIN', 'SENTENCES_COUNT')
 
 
 class PDFSummarizer:
@@ -39,10 +39,7 @@ class PDFSummarizer:
 
 
 def remove_repetition(summary):
-    results = list()
-    for sentence in summary:
-        if sentence not in results:
-            results.append(sentence)
+    results = set(summary)
     return results
 
 
@@ -56,8 +53,8 @@ def extract_relevant_sentences(pdf_sentences, topics):
     logger.info("Extracting relevant sentences")
     logger.info("-"*40)
     relevant_sentences = []
-    idx = 0
-    for sentence in pdf_sentences:
+    # idx = 0
+    for idx, sentence in enumerate(pdf_sentences):
         logger.info("."*40+"\n")
         logger.info('Sentence {idx}: {sentence}\n'.format(idx=idx, sentence=sentence.encode('utf-8')))
         match = False
@@ -77,7 +74,7 @@ def extract_relevant_sentences(pdf_sentences, topics):
         else:
             logger.debug('\nNo match...')
         logger.info("."*40+"\n")
-        idx += 1
+        # idx += 1
         relevant_sentences = sorted(relevant_sentences, key=lambda item: int(item[0]))
     logger.info("*"*40+"\n")
     return relevant_sentences

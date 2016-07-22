@@ -5,6 +5,20 @@ import pdfparser.table_edges_extractor as extractor
 
 class EdgesExtractorTestCase(unittest.TestCase):
 
+    def test_cell_is_fraction(self):
+        cell = extractor.Cell(10.0, 20.0, 30.5, 40.5)
+        coord = [1.0, 2.0, 3.0, 4.0]
+        self.assertTrue(cell.is_fraction(coord))
+        coord = [10.0, 15.0, 30.5, 35.0]
+        self.assertFalse(cell.is_fraction(coord))
+
+    def test_cell_contains(self):
+        cell = extractor.Cell(1.0, 2.0, 3.5, 4.5)
+        coord = [1.0, 2.0, 3.0, 4.0]
+        self.assertTrue(cell.contains(coord))
+        coord = [1.0, 2.0, 3.5, 5.0]
+        self.assertFalse(cell.contains(coord))
+
     def test_adjacent(self):
         # TODO: fix this! The test depends on the hard coded value of ADJ_DISTANCE!!!
         # extractor.ADJ_DISTANCE

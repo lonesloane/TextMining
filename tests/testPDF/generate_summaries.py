@@ -1,10 +1,11 @@
 import os
 from json.decoder import JSONDecoder
 
+import sys
+
 import pdfparser
 import pdfparser.summarizer as pdfsummarizer
 import pdfparser.text_extractor as text_extractor
-from pdfparser.text_extractor import ExtractMode
 
 PDF_ROOT_FOLDER = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testPDF/pdfs'
 
@@ -18,6 +19,7 @@ def main():
             if os.path.isfile(os.path.join(root, pdf_file)):
                 pdf_path = os.path.join(root, pdf_file)
                 generate_summaries(pdf_file, pdf_path)
+    return 0
 
 
 def generate_summaries(pdf_file, pdf_path):
@@ -26,7 +28,7 @@ def generate_summaries(pdf_file, pdf_path):
         out_file.write('Path: {pdf_path}\n'.format(pdf_path=pdf_path))
 
         generate_raw_summary(out_file, pdf_path)
-        json_pdf_text = generate_summary(out_file, pdf_path)
+        json_pdf_text = generate_summary(out_file, pdf_path, pdf_file)
         print_pdf_summary(json_pdf_text, out_file)
 
 
@@ -40,11 +42,15 @@ def print_pdf_summary(json_pdf_text, out_file):
         out_file.write(pdf_summary.encode('utf-8'))
 
 
-def generate_summary(out_file, pdf_path):
+def generate_summary(out_file, pdf_path, pdf_file):
     # Extract 'JSON based' summary
-    extract_mode = ExtractMode.LAYOUT
+    extract_mode = text_extractor.ExtractMode.LAYOUT
     extractor = text_extractor.PDFTextExtractor()
     json_pdf_text = extract_text(extractor, pdf_path, extract_mode)
+
+    with open(PDF_ROOT_FOLDER + '/Summaries/' + pdf_file + '.json', 'wb') as json_file:
+        json_file.write(json_pdf_text)
+
     pdf_txt = get_text_from_json(json_pdf_text)
     out_file.write("*" * 40 + "\n")
     out_file.write("JSON based summary:\n")
@@ -61,7 +67,7 @@ def generate_summary(out_file, pdf_path):
 
 def generate_raw_summary(out_file, pdf_path):
     # Extract 'Raw' summary
-    extract_mode = ExtractMode.TEXT
+    extract_mode = text_extractor.ExtractMode.TEXT
     extractor = text_extractor.PDFTextExtractor()
     raw_json_pdf_text = extract_text(extractor, pdf_path, extract_mode)
     raw_pdf_text = get_text_from_json(raw_json_pdf_text)
@@ -122,4 +128,4 @@ def extract_sentences(pdf_text):
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

@@ -14,5 +14,3 @@ class FragmentType:
     TABLE_OF_CONTENTS = 'ToC'
     COVER_PAGE = 'CoverPage'
     NOTES = 'Notes'
-
-

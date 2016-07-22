@@ -2,7 +2,6 @@
 import logging
 import unittest
 
-import pdfparser
 import pdfparser.text_extractor as extractor
 from pdfparser.pdf_fragment_type import FragmentType
 
@@ -32,7 +31,7 @@ class TextExtractorTestCase(unittest.TestCase):
         fragment_text.append("C(2014)151 \n")
         fragment_text.append(" \n")
         fragment_text.append(" \n")
-        fragment_text.append(" \nDans un courrier au Directeur du Centre de développement (ci-après désigné l « Centre ») daté du \n21 mai  2013,  M. Emmanuel  Kalou,  Directeur  de  Cabinet  du  ministre  d´État,  ministre  des  Affaires \nétrangères de la Côte d’Ivoire, avait exprimé le souhait de son pays de rejoindre le Centre. Cette demande a \nété suivie par la participation d’une forte délégation ivoirienne conduite par le Premier Ministre, M. Daniel \nKablan Duncan, au 13e Forum économique international sur l’Afrique organisé par le Centre à Paris les 7 et \n8  octobre  2013,  puis  confirmée  par  un  courrier  de  M. Charles  Koffi  Diby,  ministre  d´État,  ministre  des \nAffaires étrangères, daté du 22 novembre 2013, qui réitérait le souhait et la demande de la Côte d’Ivoire de \ndevenir membre du Centre. Le gouvernement ivoirien espère pouvoir compter sur les acquis de l’expérience \nde  l’OCDE  pour  l’aider  à  atteindre  l’objectif  qu’il  s’est  fixé  de  faire  de  la  Côte  d’Ivoire  une  économie \némergente à l’horizon 2020. \n")
+        fragment_text.append(" \nDans un courrier au Directeur du Centre de développement (ci-après désigné le « Centre ») daté du \n21 mai  2013,  M. Emmanuel  Kalou,  Directeur  de  Cabinet  du  ministre  d´État,  ministre  des  Affaires \nétrangères de la Côte d’Ivoire, avait exprimé le souhait de son pays de rejoindre le Centre. Cette demande a \nété suivie par la participation d’une forte délégation ivoirienne conduite par le Premier Ministre, M. Daniel \nKablan Duncan, au 13e Forum économique international sur l’Afrique organisé par le Centre à Paris les 7 et \n8  octobre  2013,  puis  confirmée  par  un  courrier  de  M. Charles  Koffi  Diby,  ministre  d´État,  ministre  des \nAffaires étrangères, daté du 22 novembre 2013, qui réitérait le souhait et la demande de la Côte d’Ivoire de \ndevenir membre du Centre. Le gouvernement ivoirien espère pouvoir compter sur les acquis de l’expérience \nde  l’OCDE  pour  l’aider  à  atteindre  l’objectif  qu’il  s’est  fixé  de  faire  de  la  Côte  d’Ivoire  une  économie \némergente à l’horizon 2020. \n")
 
         self.assertEquals(len(fragment_text), 5)
 
@@ -40,9 +39,10 @@ class TextExtractorTestCase(unittest.TestCase):
 
         self.assertEquals(len(fragment_text), 3)
         self.assertEquals(" \n", fragment_text[1])
-        self.assertEquals(" \nDans un courrier au Directeur du Centre de développement (ci-après désigné l « Centre ») daté du \n21 mai  2013,  M. Emmanuel  Kalou,  Directeur  de  Cabinet  du  ministre  d´État,  ministre  des  Affaires \nétrangères de la Côte d’Ivoire, avait exprimé le souhait de son pays de rejoindre le Centre. Cette demande a \nété suivie par la participation d’une forte délégation ivoirienne conduite par le Premier Ministre, M. Daniel \nKablan Duncan, au 13e Forum économique international sur l’Afrique organisé par le Centre à Paris les 7 et \n8  octobre  2013,  puis  confirmée  par  un  courrier  de  M. Charles  Koffi  Diby,  ministre  d´État,  ministre  des \nAffaires étrangères, daté du 22 novembre 2013, qui réitérait le souhait et la demande de la Côte d’Ivoire de \ndevenir membre du Centre. Le gouvernement ivoirien espère pouvoir compter sur les acquis de l’expérience \nde  l’OCDE  pour  l’aider  à  atteindre  l’objectif  qu’il  s’est  fixé  de  faire  de  la  Côte  d’Ivoire  une  économie \némergente à l’horizon 2020. \n",
+        self.assertEquals(" \nDans un courrier au Directeur du Centre de développement (ci-après désigné le « Centre ») daté du \n21 mai  2013,  M. Emmanuel  Kalou,  Directeur  de  Cabinet  du  ministre  d´État,  ministre  des  Affaires \nétrangères de la Côte d’Ivoire, avait exprimé le souhait de son pays de rejoindre le Centre. Cette demande a \nété suivie par la participation d’une forte délégation ivoirienne conduite par le Premier Ministre, M. Daniel \nKablan Duncan, au 13e Forum économique international sur l’Afrique organisé par le Centre à Paris les 7 et \n8  octobre  2013,  puis  confirmée  par  un  courrier  de  M. Charles  Koffi  Diby,  ministre  d´État,  ministre  des \nAffaires étrangères, daté du 22 novembre 2013, qui réitérait le souhait et la demande de la Côte d’Ivoire de \ndevenir membre du Centre. Le gouvernement ivoirien espère pouvoir compter sur les acquis de l’expérience \nde  l’OCDE  pour  l’aider  à  atteindre  l’objectif  qu’il  s’est  fixé  de  faire  de  la  Côte  d’Ivoire  une  économie \némergente à l’horizon 2020. \n",
                           fragment_text[2])
 
+    @unittest.skip('deprecated method')
     def test_is_cote(self):
         cotes = list()
         cotes.append("C(2014)151 \n")
@@ -65,7 +65,7 @@ class TextExtractorTestCase(unittest.TestCase):
         cotes.append("DAF/INV/CMF/AS/ATFC(2014)6/FINAL \n")
         cotes.append("CES/PE(2014)4 \n")
         cotes.append("DSTI/EAS/STP/NESTI(2014)11 \n")
-        cotes.append("CONFIDENTIAL  CTPA/CFA/BP/M(2013)1/REV1/CONF \n")
+        cotes.append("CTPA/CFA/BP/M(2013)1/REV1/CONF \n")
         cotes.append("DAF/COMP/GF/WD(2014)7 \n")
         cotes.append("TAD/PR/II(2012)5/REV \n")
         cotes.append("DELSA/ELSA(2012)9 \n")
@@ -121,7 +121,7 @@ class TextExtractorTestCase(unittest.TestCase):
         page_txt[(0, 2)] = "0:2"
         page_txt[(1, 2)] = "1:2"
         actual = extractor.get_fragment_text(page_txt)
-        expected = ['2:2', '1:2', '0:2', '2:1', '1:1', '0:1', '2:0', '1:0', '0:0']
+        expected = ['0:2', '1:2', '2:2', '0:1', '1:1', '2:1', '0:0', '1:0', '2:0']
         self.assertListEqual(expected, actual)
 
     def test_get_previous_fragment_text(self):
@@ -136,16 +136,16 @@ class TextExtractorTestCase(unittest.TestCase):
         page_txt[(0, 2)] = "0:2"
         page_txt[(1, 2)] = "1:2"
         actual = extractor.get_previous_fragment_text(page_txt, (2, 0))
-        expected = ['2:2', '1:2', '0:2', '2:1', '1:1', '0:1']
+        expected = ['0:2', '1:2', '2:2', '0:1', '1:1', '2:1']
         self.assertListEqual(expected, actual)
         actual = extractor.get_previous_fragment_text(page_txt, (2, 1))
-        expected = ['2:2', '1:2', '0:2']
+        expected = ['0:2', '1:2', '2:2']
         self.assertListEqual(expected, actual)
         actual = extractor.get_previous_fragment_text(page_txt, (2, 2))
         expected = []
         self.assertListEqual(expected, actual)
         actual = extractor.get_previous_fragment_text(page_txt, (2, -1))
-        expected = ['2:2', '1:2', '0:2', '2:1', '1:1', '0:1', '2:0', '1:0', '0:0']
+        expected = ['0:2', '1:2', '2:2', '0:1', '1:1', '2:1', '0:0', '1:0', '2:0']
         self.assertListEqual(expected, actual)
 
     def test_get_next_fragment_text(self):
@@ -160,13 +160,13 @@ class TextExtractorTestCase(unittest.TestCase):
         page_txt[(0, 2)] = "0:2"
         page_txt[(1, 2)] = "1:2"
         actual = extractor.get_next_fragment_text(page_txt, (2, 0))
-        expected = ['2:0', '1:0', '0:0']
+        expected = ['0:0', '1:0', '2:0']
         self.assertListEqual(expected, actual)
         actual = extractor.get_next_fragment_text(page_txt, (2, 1))
-        expected = ['2:1', '1:1', '0:1', '2:0', '1:0', '0:0']
+        expected = ['0:1', '1:1', '2:1', '0:0', '1:0', '2:0']
         self.assertListEqual(expected, actual)
         actual = extractor.get_next_fragment_text(page_txt, (2, 2))
-        expected = ['2:2', '1:2', '0:2', '2:1', '1:1', '0:1', '2:0', '1:0', '0:0']
+        expected = ['0:2', '1:2', '2:2', '0:1', '1:1', '2:1', '0:0', '1:0', '2:0']
         self.assertListEqual(expected, actual)
         actual = extractor.get_next_fragment_text(page_txt, (2, -1))
         expected = []
@@ -183,9 +183,9 @@ class TextExtractorTestCase(unittest.TestCase):
         text_extractor = extractor.PDFTextExtractor()
         text_extractor.add_fragment(fragment_text, FragmentType.TEXT)
         text = text_extractor.contents[FragmentType.TEXT]
+        print 'text: {t}'.format(t=text)
         self.assertEquals(1, len(text))
         self.assertEquals('Representatives of other international organisations, including UNCTAD, UNESCO and IUCN, were invited to intervene and report about their activities as appropriate during the meeting.', text[0])
-
 
     def test_add_fragment(self):
         fragment_text = list()
@@ -198,6 +198,7 @@ class TextExtractorTestCase(unittest.TestCase):
         text_extractor = extractor.PDFTextExtractor()
         text_extractor.add_fragment(fragment_text, FragmentType.TEXT)
         text = text_extractor.contents[FragmentType.TEXT]
+        print text
         self.assertEquals(4, len(text))
         self.assertEquals('An incomplete sentence continued in the next fragment.', text[1])
         self.assertEquals('Another incomplete sentence also continued. And followed by another complete sentence.', text[2])
@@ -243,6 +244,7 @@ class TextExtractorTestCase(unittest.TestCase):
         text_extractor = extractor.PDFTextExtractor()
         text_extractor.add_fragment(fragment_text, FragmentType.TEXT)
         text = text_extractor.contents[FragmentType.TEXT]
+        print text
         self.assertEquals(3, len(text))
         self.assertEquals('Another incomplete sentence also continued. And followed by another complete sentence.', text[2])
 
@@ -255,6 +257,51 @@ class TextExtractorTestCase(unittest.TestCase):
         self.assertEquals(5, len(text))
         self.assertEquals('And the last sentence is now a complete sentence.', text[3])
 
+    def test_validate_page(self):
+        self.assertTrue(False, 'not yet implemented')
+
+    def test_add_text_content(self):
+        self.assertTrue(False, 'not yet implemented')
+
+    def test_remove_empty_lines(self):
+        self.assertTrue(False, 'not yet implemented')
+
+    def test_strip_paragraph_numbers(self):
+        self.assertTrue(False, 'not yet implemented')
+
+    def test_strip_header(self):
+        fragment_text = list()
+        fragment_text.append("A complete sentence.")
+        fragment_text.append("An incomplete sentence")
+        fragment_text.append("continued in the next fragment.")
+        fragment_text.append("Another incomplete sentence")
+        fragment_text.append("also continued. And followed by another complete sentence.")
+        fragment_text.append("And the last sentence")
+        txt = extractor.strip_header(fragment_txt=fragment_text)
+        print txt
+
+    def test_strip_page_number(self):
+        self.assertTrue(False, 'not yet implemented')
+
+    def test_should_force_raw_extraction(self):
+
+        pdf_extractor = extractor.PDFTextExtractor()
+        expected = True
+        actual = pdf_extractor.should_force_raw_extraction()
+        self.assertEqual(expected, actual)
+
+        pdf_extractor = extractor.PDFTextExtractor(single_page=1)
+        expected = False
+        actual = pdf_extractor.should_force_raw_extraction()
+        self.assertEqual(expected, actual)
+
+        pdf_extractor = extractor.PDFTextExtractor()
+        contents = dict()
+        contents[FragmentType.TEXT] = "This is the text..."
+        pdf_extractor.contents = contents
+        expected = False
+        actual = pdf_extractor.should_force_raw_extraction()
+        self.assertEqual(expected, actual)
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')

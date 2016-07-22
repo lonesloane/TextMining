@@ -1,77 +1,173 @@
-Logging object initialized with log level 2
+Logging object initialized with log level 3
+[add_fragment] Fragment type:Text
+fragment length: 6
+[START] 0th sentence: A complete sentence.
+p[-1]: A complete sentence
+[START] 1th sentence: An incomplete sentence
+p[-1]: An incomplete sentenc
+[START] 2th sentence: continued in the next fragment.
+continued. p[0]:continued in the next fragment.
+adding previous. :An incomplete sentence
+[START] 3th sentence: Another incomplete sentence
+not continued. p[0]:Another incomplete sentence
+adding leftover. :An incomplete sentence continued in the next fragment.
+[END] 3th sentence: Another incomplete sentence
+[START] 4th sentence: also continued. And followed by another complete sentence.
+p[-1]: also continued. And followed by another complete sentence
+[START] 5th sentence: And the final sentence.
+p[-1]: And the final sentence
+[add_fragment] Fragment type:Text
+fragment length: 2
+[START] 0th sentence: Representatives of other international organisations, including UNCTAD, UNESCO and IUCN,
+p[-1]: Representatives of other international organisations, including UNCTAD, UNESCO and IUCN
+[START] 1th sentence: were invited to intervene and report about their activities as appropriate during the meeting.
+continued. p[0]:were invited to intervene and report about their activities as appropriate during the meeting.
+adding previous. :Representatives of other international organisations, including UNCTAD, UNESCO and IUCN,
+[add_fragment] Fragment type:Text
+fragment length: 6
+[START] 0th sentence: A complete sentence.
+p[-1]: A complete sentence
+[START] 1th sentence: An incomplete sentence
+p[-1]: An incomplete sentenc
+[START] 2th sentence: continued in the next fragment.
+continued. p[0]:continued in the next fragment.
+adding previous. :An incomplete sentence
+[START] 3th sentence: Another incomplete sentence
+not continued. p[0]:Another incomplete sentence
+adding leftover. :An incomplete sentence continued in the next fragment.
+[END] 3th sentence: Another incomplete sentence
+[START] 4th sentence: also continued. And followed by another complete sentence.
+p[-1]: also continued. And followed by another complete sentence
+[START] 5th sentence: And the last sentence
+p[-1]: And the last sentenc
 found page number at index: 5
 --------------------
 Sorted page text:
 --------------------
-(-2, -2, '2:2')
-(-2, -1, '1:2')
-(-2, 0, '0:2')
-(-1, -2, '2:1')
-(-1, -1, '1:1')
-(-1, 0, '0:1')
-(0, -2, '2:0')
-(0, -1, '1:0')
-(0, 0, '0:0')
+(-2.0, 0.0, '0:2')
+(-2.0, 1.0, '1:2')
+(-2.0, 2.0, '2:2')
+(-1.0, 0.0, '0:1')
+(-1.0, 1.0, '1:1')
+(-1.0, 2.0, '2:1')
+(0.0, 0.0, '0:0')
+(0.0, 1.0, '1:0')
+(0.0, 2.0, '2:0')
 --------------------
 Sorted page text:
 --------------------
-(0, -2, '2:0')
-(0, -1, '1:0')
-(0, 0, '0:0')
+(0.0, 0.0, '0:0')
+(0.0, 1.0, '1:0')
+(0.0, 2.0, '2:0')
 --------------------
 Sorted page text:
 --------------------
-(-1, -2, '2:1')
-(-1, -1, '1:1')
-(-1, 0, '0:1')
-(0, -2, '2:0')
-(0, -1, '1:0')
-(0, 0, '0:0')
+(-1.0, 0.0, '0:1')
+(-1.0, 1.0, '1:1')
+(-1.0, 2.0, '2:1')
+(0.0, 0.0, '0:0')
+(0.0, 1.0, '1:0')
+(0.0, 2.0, '2:0')
 --------------------
 Sorted page text:
 --------------------
-(-2, -2, '2:2')
-(-2, -1, '1:2')
-(-2, 0, '0:2')
-(-1, -2, '2:1')
-(-1, -1, '1:1')
-(-1, 0, '0:1')
-(0, -2, '2:0')
-(0, -1, '1:0')
-(0, 0, '0:0')
---------------------
-Sorted page text:
---------------------
---------------------
-Sorted page text:
---------------------
-(-2, -2, '2:2')
-(-2, -1, '1:2')
-(-2, 0, '0:2')
-(-1, -2, '2:1')
-(-1, -1, '1:1')
-(-1, 0, '0:1')
---------------------
-Sorted page text:
---------------------
-(-2, -2, '2:2')
-(-2, -1, '1:2')
-(-2, 0, '0:2')
+(-2.0, 0.0, '0:2')
+(-2.0, 1.0, '1:2')
+(-2.0, 2.0, '2:2')
+(-1.0, 0.0, '0:1')
+(-1.0, 1.0, '1:1')
+(-1.0, 2.0, '2:1')
+(0.0, 0.0, '0:0')
+(0.0, 1.0, '1:0')
+(0.0, 2.0, '2:0')
 --------------------
 Sorted page text:
 --------------------
 --------------------
 Sorted page text:
 --------------------
-(-2, -2, '2:2')
-(-2, -1, '1:2')
-(-2, 0, '0:2')
-(-1, -2, '2:1')
-(-1, -1, '1:1')
-(-1, 0, '0:1')
-(0, -2, '2:0')
-(0, -1, '1:0')
-(0, 0, '0:0')
+(-2.0, 0.0, '0:2')
+(-2.0, 1.0, '1:2')
+(-2.0, 2.0, '2:2')
+(-1.0, 0.0, '0:1')
+(-1.0, 1.0, '1:1')
+(-1.0, 2.0, '2:1')
+--------------------
+Sorted page text:
+--------------------
+(-2.0, 0.0, '0:2')
+(-2.0, 1.0, '1:2')
+(-2.0, 2.0, '2:2')
+--------------------
+Sorted page text:
+--------------------
+--------------------
+Sorted page text:
+--------------------
+(-2.0, 0.0, '0:2')
+(-2.0, 1.0, '1:2')
+(-2.0, 2.0, '2:2')
+(-1.0, 0.0, '0:1')
+(-1.0, 1.0, '1:1')
+(-1.0, 2.0, '2:1')
+(0.0, 0.0, '0:0')
+(0.0, 1.0, '1:0')
+(0.0, 2.0, '2:0')
+Looking for cote in C(2014)151 
+
+Looking for cote in EXD/INT/D(2001)30 
+
+Looking for cote in NEA/CRPPH(2001)2 
+
+Looking for cote in AGP/HR/VAC(94)5 
+
+Looking for cote in AGR/CA(94)12 
+
+Looking for cote in AGP/GRD/DOC(95)89 
+
+Looking for cote in AGP/HR/VAC(95)8 
+
+Looking for cote in AGP/CONF/D(96)65 
+
+Looking for cote in AGR/FI(97)2 
+
+Looking for cote in CTPA/CFA/WP6/NOE2(2016)3/REV2 
+
+Looking for cote in DCD/DAC/A(2016)5 
+
+Looking for cote in ENV/EPOC(2016)9 
+
+Looking for cote in ENV/WKP(2016)8 
+
+Looking for cote in CTPA/CFA/TFDE/NOE2(2015)10/REV4/CONF 
+
+Looking for cote in DAF/COMP/LACF(2015)8 
+
+Looking for cote in DAF/INV/STAT/ACS/A(2015)1 
+
+Looking for cote in NEA/NDC(2015)4 
+
+Looking for cote in DAF/INV/CMF/AS/ATFC(2014)6/FINAL 
+
+Looking for cote in CES/PE(2014)4 
+
+Looking for cote in DSTI/EAS/STP/NESTI(2014)11 
+
+Looking for cote in CTPA/CFA/BP/M(2013)1/REV1/CONF 
+
+Looking for cote in DAF/COMP/GF/WD(2014)7 
+
+Looking for cote in TAD/PR/II(2012)5/REV 
+
+Looking for cote in DELSA/ELSA(2012)9 
+
+Looking for cote in NEA/COM(2012)4 
+
+Looking for cote in GOV/TDPC/URB/A(2012)1 
+
+Looking for cote in EXD/OPS/IMSD/DOC(2012)229 
+
+Looking for cote in This is not a cote
 --------------------
 Sorted page text:
 --------------------
@@ -84,7 +180,6 @@ Sorted page text:
 (1, 1, '1:1')
 (2, 0, '2:0')
 (2, 1, '2:1')
-Searching for cote in fragment: 
-Searching for cote in fragment: C(2014)151
+found classification at index: 1
 found cote at index: 1
 Fragment without cote is: [' \n', ' \n', ' \nDans un courrier au Directeur du Centre de d\xc3\xa9veloppement (ci-apr\xc3\xa8s d\xc3\xa9sign\xc3\xa9 l \xc2\xab Centre \xc2\xbb) dat\xc3\xa9 du \n21 mai  2013,  M. Emmanuel  Kalou,  Directeur  de  Cabinet  du  ministre  d\xc2\xb4\xc3\x89tat,  ministre  des  Affaires \n\xc3\xa9trang\xc3\xa8res de la C\xc3\xb4te d\xe2\x80\x99Ivoire, avait exprim\xc3\xa9 le souhait de son pays de rejoindre le Centre. Cette demande a \n\xc3\xa9t\xc3\xa9 suivie par la participation d\xe2\x80\x99une forte d\xc3\xa9l\xc3\xa9gation ivoirienne conduite par le Premier Ministre, M. Daniel \nKablan Duncan, au 13e Forum \xc3\xa9conomique international sur l\xe2\x80\x99Afrique organis\xc3\xa9 par le Centre \xc3\xa0 Paris les 7 et \n8  octobre  2013,  puis  confirm\xc3\xa9e  par  un  courrier  de  M. Charles  Koffi  Diby,  ministre  d\xc2\xb4\xc3\x89tat,  ministre  des \nAffaires \xc3\xa9trang\xc3\xa8res, dat\xc3\xa9 du 22 novembre 2013, qui r\xc3\xa9it\xc3\xa9rait le souhait et la demande de la C\xc3\xb4te d\xe2\x80\x99Ivoire de \ndevenir membre du Centre. Le gouvernement ivoirien esp\xc3\xa8re pouvoir compter sur les acquis de l\xe2\x80\x99exp\xc3\xa9rience \nde  l\xe2\x80\x99OCDE  pour  l\xe2\x80\x99aider  \xc3\xa0  atteindre  l\xe2\x80\x99objectif  qu\xe2\x80\x99il  s\xe2\x80\x99est  fix\xc3\xa9  de  faire  de  la  C\xc3\xb4te  d\xe2\x80\x99Ivoire  une  \xc3\xa9conomie \n\xc3\xa9mergente \xc3\xa0 l\xe2\x80\x99horizon 2020. \n']

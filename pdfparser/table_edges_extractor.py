@@ -2,27 +2,49 @@ from pdfparser import logger, _log_level, _config
 
 MAX_RECURSION = _config.getint('MAIN', 'MAX_RECURSION')
 ADJ_DISTANCE = _config.getfloat('MAIN', 'ADJ_DISTANCE')
+X0, Y0, X1, Y1 = 0, 1, 2, 3
 
 
 class Cell:
 
     _MIN_HEIGHT = _config.getfloat('MAIN', 'CELL_MIN_HEIGHT')
     _MIN_WIDTH = _config.getfloat('MAIN', 'CELL_MIN_WIDTH')
+    _TEXT_MIN_FRACTION_SIZE = _config.getfloat('MAIN', 'TEXT_MIN_FRACTION_SIZE')
 
     def __init__(self, x0, y0, x1, y1, rows=1, columns=1):
         self.x0 = x0
         self.y0 = y0
         self.x1 = x1
         self.y1 = y1
-        height = abs(self.y0 - self.y1)
-        self.rows = rows if height > Cell._MIN_HEIGHT else 0
-        width = abs(self.x0 - self.x1)
-        self.columns = columns if width > Cell._MIN_WIDTH else 0
+        self.height = abs(self.y0 - self.y1)
+        self.rows = rows if self.height > Cell._MIN_HEIGHT else 0
+        self.width = abs(self.x0 - self.x1)
+        self.columns = columns if self.width > Cell._MIN_WIDTH else 0
 
     def __repr__(self):
-        return '[' + 'x0: ' + str(self.x0) + ', y0: ' + str(self.y0) \
-               + ', x1: ' + str(self.x1) + ', y1: ' + str(self.y1) \
-               + ', rows: ' + str(self.rows) + ', columns: ' + str(self.columns) + ']'
+        return ('[' + 'x0: ' + str(self.x0) + ', y0: ' + str(self.y0) +
+                ', x1: ' + str(self.x1) + ', y1: ' + str(self.y1) +
+                ', rows: ' + str(self.rows) + ', columns: ' + str(self.columns) + ']')
+
+    def contains(self, coord):
+        if self.x0 <= coord[X0] and self.y0 <= coord[Y0] and self.x1 >= coord[X1] and self.y1 >= coord[Y1]:
+            return True
+        return False
+
+    def is_fraction(self, coord):
+        text_width = abs(coord[X0] - coord[X1])
+        fraction = text_width / self.width
+
+        if _log_level > 2:
+            logger.debug('table x0: {table.x0} - table x1: {table.x1}'.format(table=self))
+            logger.debug('table width: {cw}'.format(cw=self.width))
+            logger.debug('text x0: {x0} - text x1: {x1}'.format(x0=coord[X0], x1=coord[X1]))
+            logger.debug('text width: {tw}'.format(tw=text_width))
+            logger.debug('Fraction: {fraction}'.format(fraction=fraction))
+
+        if fraction < Cell._TEXT_MIN_FRACTION_SIZE:
+            return True
+        return False
 
 
 def adjacent(pt1, pt2):
@@ -57,7 +79,7 @@ def find_outer_edges(cells, nth_recursion=0):
 
     for cell in cells:
         log('Trying to collapse cell: {cell}'.format(cell=cell))
-        collapsed = False
+        # collapsed = False
         if cell in ignored_cells:
             continue
         collapsed_cell = cell
@@ -71,8 +93,8 @@ def find_outer_edges(cells, nth_recursion=0):
             log('neighbor cell {neighbor_cell}'.format(neighbor_cell=neighbor_cell))
 
             # Collapse adjacent cell on West side
-            if (adjacent(collapsed_cell.x0, neighbor_cell.x1)) and \
-                    (adjacent(neighbor_cell.y0, collapsed_cell.y0) or adjacent(neighbor_cell.y1, collapsed_cell.y1)):
+            if ((adjacent(collapsed_cell.x0, neighbor_cell.x1)) and
+                    (adjacent(neighbor_cell.y0, collapsed_cell.y0) or adjacent(neighbor_cell.y1, collapsed_cell.y1))):
                 log('[W] collapsing cells {cell} and {neighbor_cell}'.format(cell=collapsed_cell,
                                                                              neighbor_cell=neighbor_cell))
                 collapsed_cell = collapse_west(collapsed_cell, neighbor_cell)
@@ -80,8 +102,8 @@ def find_outer_edges(cells, nth_recursion=0):
                 collapsed = True
 
             # Collapse adjacent cell on East side
-            if (adjacent(neighbor_cell.x0, collapsed_cell.x1)) and \
-                    (adjacent(neighbor_cell.y0, collapsed_cell.y0) or adjacent(neighbor_cell.y1, collapsed_cell.y1)):
+            if ((adjacent(neighbor_cell.x0, collapsed_cell.x1)) and
+                    (adjacent(neighbor_cell.y0, collapsed_cell.y0) or adjacent(neighbor_cell.y1, collapsed_cell.y1))):
                 log('[E] collapsing cells {cell} and {neighbor_cell}'.format(cell=collapsed_cell,
                                                                              neighbor_cell=neighbor_cell))
                 collapsed_cell = collapse_east(collapsed_cell, neighbor_cell)
@@ -89,8 +111,8 @@ def find_outer_edges(cells, nth_recursion=0):
                 collapsed = True
 
             # Collapse adjacent cell on South side
-            if (adjacent(collapsed_cell.y0, neighbor_cell.y1)) and \
-                    (adjacent(neighbor_cell.x0, collapsed_cell.x0) or adjacent(neighbor_cell.x1, collapsed_cell.x1)):
+            if ((adjacent(collapsed_cell.y0, neighbor_cell.y1)) and
+                    (adjacent(neighbor_cell.x0, collapsed_cell.x0) or adjacent(neighbor_cell.x1, collapsed_cell.x1))):
                 log('[S] collapsing cells {cell} and {neighbor_cell}'.format(cell=collapsed_cell,
                                                                              neighbor_cell=neighbor_cell))
                 collapsed_cell = collapse_south(collapsed_cell, neighbor_cell)
@@ -98,8 +120,9 @@ def find_outer_edges(cells, nth_recursion=0):
                 collapsed = True
 
             # Collapse adjacent cell on North side
-            if (adjacent(neighbor_cell.y0, collapsed_cell.y1)) and \
-                    (adjacent(neighbor_cell.x0, collapsed_cell.x0) or adjacent(neighbor_cell.x1, collapsed_cell.x1)):
+            if ((adjacent(neighbor_cell.y0, collapsed_cell.y1)) and
+                    (adjacent(neighbor_cell.x0, collapsed_cell.x0) or
+                     adjacent(neighbor_cell.x1, collapsed_cell.x1))):
                 log('[N] collapsing cells {cell} and {neighbor_cell}'.format(cell=collapsed_cell,
                                                                              neighbor_cell=neighbor_cell))
                 collapsed_cell = collapse_north(collapsed_cell, neighbor_cell)
@@ -107,8 +130,8 @@ def find_outer_edges(cells, nth_recursion=0):
                 collapsed = True
 
             # Collapse inner cell
-            if (collapsed_cell.x0 <= neighbor_cell.x0 <= neighbor_cell.x1 <= collapsed_cell.x1) and \
-                    (collapsed_cell.y0 <= neighbor_cell.y0 <= neighbor_cell.y1 <= collapsed_cell.y1):
+            if ((collapsed_cell.x0 <= neighbor_cell.x0 <= neighbor_cell.x1 <= collapsed_cell.x1) and
+                    (collapsed_cell.y0 <= neighbor_cell.y0 <= neighbor_cell.y1 <= collapsed_cell.y1)):
                 log('[INNER] collapsing cells {cell} and {neighbor_cell}'.format(cell=collapsed_cell,
                                                                                  neighbor_cell=neighbor_cell))
                 log('[INNER] resulting cell {cell}'.format(cell=collapsed_cell))
@@ -117,8 +140,8 @@ def find_outer_edges(cells, nth_recursion=0):
                 collapsed = True
 
             # Collapse outer cell
-            if (neighbor_cell.x0 <= collapsed_cell.x0 <= collapsed_cell.x1 <= neighbor_cell.x1) and \
-                    (neighbor_cell.y0 <= collapsed_cell.y0 <= collapsed_cell.y1 <= neighbor_cell.y1):
+            if ((neighbor_cell.x0 <= collapsed_cell.x0 <= collapsed_cell.x1 <= neighbor_cell.x1) and
+                    (neighbor_cell.y0 <= collapsed_cell.y0 <= collapsed_cell.y1 <= neighbor_cell.y1)):
                 log('[OUTER] collapsing cells {cell} and {neighbor_cell}'.format(cell=collapsed_cell,
                                                                                  neighbor_cell=neighbor_cell))
                 log('[OUTER] resulting cell {cell}'.format(cell=neighbor_cell))
@@ -129,8 +152,8 @@ def find_outer_edges(cells, nth_recursion=0):
 
             # Collapse overlapping cell on the right
             if (neighbor_cell.x0 <= collapsed_cell.x1 and
-                                  (collapsed_cell.y0 <= neighbor_cell.y0 <= collapsed_cell.y1 or
-                                               collapsed_cell.y0 <= neighbor_cell.y1 <= collapsed_cell.y1)):
+                    (collapsed_cell.y0 <= neighbor_cell.y0 <= collapsed_cell.y1 or
+                     collapsed_cell.y0 <= neighbor_cell.y1 <= collapsed_cell.y1)):
                 log('[OE] collapsing cells {cell} and {neighbor_cell}'.format(cell=collapsed_cell,
                                                                               neighbor_cell=neighbor_cell))
                 collapsed_cell = collapse_overlapping(collapsed_cell, neighbor_cell)
@@ -139,8 +162,8 @@ def find_outer_edges(cells, nth_recursion=0):
 
             # Collapse overlapping cell on the left
             if (neighbor_cell.x1 >= collapsed_cell.x0 and
-                                  (collapsed_cell.y0 <= neighbor_cell.y0 <= collapsed_cell.y1 or
-                                               collapsed_cell.y0 <= neighbor_cell.y1 <= collapsed_cell.y1)):
+                    (collapsed_cell.y0 <= neighbor_cell.y0 <= collapsed_cell.y1 or
+                     collapsed_cell.y0 <= neighbor_cell.y1 <= collapsed_cell.y1)):
                 log('[OW] collapsing cells {cell} and {neighbor_cell}'.format(cell=collapsed_cell,
                                                                               neighbor_cell=neighbor_cell))
                 collapsed_cell = collapse_overlapping(collapsed_cell, neighbor_cell)
