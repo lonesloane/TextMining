@@ -1,0 +1,348 @@
+For Official Use
+DAF/AS/WD(2014)21
+Organisation de Coopération et de Développement Économiques
+Organisation for Economic Co-operation and Development
+28-Nov-2014
+___________________________________________________________________________________________
+_____________
+English - Or. English
+DIRECTORATE FOR FINANCIAL AND ENTERPRISE AFFAIRS
+INSURANCE AND PRIVATE PENSIONS COMMITTEE
+REVIEW OF THE OECD RECOMMENDATION ON GOOD PRACTICES FOR MITIGATING AND
+FINANCING CATASTROPHIC RISKS: DISCUSSION NOTE
+4-5 December 2014
+For further information, please contact Ms. Mamiko Yokoi-Arai [Tel: +33 1 45 24 75 26; Email:
+mamiko.yokoi-arai@oecd.org] or Mr. Leigh Wolfrom [Tel: +33 1 45 24 81 34; Email:
+leigh.wolfrom@oecd.org]
+JT03367481
+Complete document available on OLIS in its original format
+This document and any map included herein are without prejudice to the status of or sovereignty over any territory, to the delimitation of
+international frontiers and boundaries and to the name of any territory, city or area.DAF/AS/WD(2014)21
+REVIEW OF THE OECD RECOMMENDATION ON
+GOOD PRACTICES FOR MITIGATING AND FINANCING CATASTROPHIC RISKS:
+DISCUSSION NOTE
+Introduction
+1.
+In December 2010, upon the recommendation of the Insurance and Private Pensions Committee
+(IPPC), the OECD Council adopted the OECD Recommendation on Good Practices for Mitigating and
+Financing Catastrophic Risks [C(2010)143/REV1]. The High Level Advisory Board on the Financial
+Management of Large-Scale Catastrophes 1 was instrumental in the conception of this instrument. The
+Recommendation articulates a set of principles that could be considered by governments, and relevant
+public and private institutions, in developing efficient strategies to mitigate and financially manage
+catastrophic risks from large-scale natural and man-made hazards.
+2.
+Upon adopting the Recommendation, the OECD Council mandated the Committee to exchange
+information on progress and experiences with respect to the implementation of the Recommendation,
+review that information and report to the Council within three years of its adoption.
+3.
+The purpose of reviewing OECD recommendations is to: (1) monitor the policy impact of the
+Recommendation and extent of implementation in Member and non-Member jurisdictions; and (2)
+consider whether revisions to the Recommendation may be necessary in light of economic, financial, social
+and/or technological developments and/or the elaboration of relevant international guidance since the
+adoption of the Recommendation. A draft questionnaire [DAF/AS/WD(2014)18] is being circulated for
+discussion during the December meeting, and an overview of country practices [DAF/AS/WD(2014)19],
+based on information that has been provided to the OECD in the past, is also being circulated to assist
+countries when they respond to the questionnaire.
+4.
+The Recommendation, approved in 2010, provides guidance on the main components of disaster
+risk management, from the perspective of the financial management of disaster risks. It outlines an
+approach to the financial management of disaster risks, considering the contribution of risk assessment,
+risk awareness and perception, risk management, disaster response, and risk transfer. A key message in the
+Recommendation is that sound financial management of disaster risk requires a holistic approach that
+provides the risk information and data necessary to identify and manage disaster risks, encourages risk
+reduction behaviour through risk awareness and appropriate incentives, and promotes cost-effective risk
+management through the use of multiple risk reduction tools including land-use planning, building codes,
+mitigation measures, effective disaster response, and financial tools.
+5.
+The Recommendation’s principles for the use of insurance and other financial instruments as
+policy tools provide guidance on how insurance and other risk transfer tools can be used to encourage risk
+reduction across the various segments of society in a cost-effective way. The principles emphasise the
+importance of the availability of financial protection tools and the need to provide incentives to ensure
+sufficient demand for financial protection, the role of risk-based premiums in encouraging risk reduction
+1
+For more information about the Board, please see: www.oecd.org/daf/fin/catrisks
+2DAF/AS/WD(2014)21
+and enhancing the supply of insurance products, and the benefits of using of the existing private sector
+insurance infrastructure for the delivery of financial protection products.
+6.
+The purpose of this note is to provide an overview of the evolution of international guidance
+related to disaster risk management (including recent work under the aegis of the IPPC) and the
+implications of that evolution when considering a possible approach for revising the Recommendation.
+Delegates are invited to provide their views on the proposed approach at the December IPPC meeting.
+Evolution of international guidance
+7.
+The Recommendation was the first agreed international guidance on developing a framework for
+the financial management of catastrophe risks. Other instruments have been developed, before and after
+the approval of the Recommendation, to provide guidance on issues related to disaster risk management
+and reduction. These include, in particular, the OECD Council Recommendation on the Governance of
+Critical Risks [C/MIN(2014)8/FINAL], approved at the 2014 OECD Ministerial Council meeting, the
+Hyogo Framework for Action (2005-2015): Building the Resilience of Nations and Communities to
+Disaster 2 s which is in the process of being replaced by a post-2015 framework on disaster risk reduction,
+the Disaster Risk Management Framework developed by World Bank and the Global Facility for Disaster
+Risk Reduction (GFDRR) 3 and the G20/OECD Methodological Framework on Disaster Risk Assessment
+and Risk Financing. While different in scope and perspective, given the integrated nature of disaster risk
+management issues, these instruments provide guidance on a number of the issues that are covered in the
+Recommendation, including in the areas of risk assessment, risk awareness, risk management, disaster
+response, and in some cases, financial protection.
+8.
+The OECD Recommendation on the Governance of Critical Risks, developed by the OECD
+Public Governance Committee, provides guidance to governments on how to establish a framework for
+managing critical risks, including disaster risks. The guidance encourages: (1) the development of an
+institutional framework for risk governance: development of a national strategy, leadership and stakeholder
+engagement; (2) risk anticipation and assessment: having the capacity for identifying natural and human-
+induced threats, resource allocation to risk management, and establishing frameworks to address fiscal
+impacts; (3) raising of awareness with the aim of fostering risk prevention and mitigation across society:
+communicating risks and risk reduction advice, risk reduction through structural and non-structural
+measures, and encouraging resilience of the private sector; (4) development of crisis management
+capacities: contingency, recovery, and reconstruction planning and testing of emergency response; and (5)
+transparency and accountability in the management of critical risks. It provides guidance on some of the
+same issues covered in the Recommendation (in a consistent way), for example, noting the importance of
+establishing clear rules for government compensation and the need to examine possibilities for risk transfer
+to insurance and capital markets in the context of government exposures.
+9.
+The Hyogo Framework was endorsed by the UN General Assembly following the 2005 World
+Disaster Reduction Conference. It outlines a plan, including five priorities for action, guiding principles,
+and practical advice 4 for substantially reducing disaster losses by building the resilience of nations and
+communities to disasters. Consultations are underway on the development of a post-2015 framework for
+disaster risk reduction, scheduled for finalisation at the Third World Conference on Disaster Risk
+2 The Hyogo Framework is available at: http://www.unisdr.org/files/1037_hyogoframeworkforactionenglish.pdf
+3 The World Bank-GFDRR Disaster Risk Management Framework is described at: http://www.gfdrr.org/who-we-are
+4
+The five priorities for action are: (1) governance and leadership of disaster risk reduction; (2) risk analysis and early
+warning; (3) building a culture of safety through risk awareness, education and innovation; (4) reducing underlying
+disaster risks through planning and mitigation programmes; and (5) strengthening disaster preparedness.
+3DAF/AS/WD(2014)21
+Reduction in Sendai, Japan in March 2015. A “zero draft” 5 has been prepared, which provides some insight
+into how the Hyogo Framework may evolve. The zero draft suggests four priority areas of action: (1)
+understanding disaster risk; (2) strengthening governance and institutions to manage disaster risk; (3)
+investing in economic, social, cultural and environmental resilience; and (4) enhancing preparedness for
+effective response, including building back better in recovery and reconstruction. As in the case of the
+Critical Risks recommendation, the “zero draft” of the renewed Hyogo Framework provides guidance on
+some of the issues covered in the Recommendation, including the need to account for disaster losses and
+social and economic impacts and to promote the scientific contribution to hazard and impact assessment.
+10.
+The World Bank-GFDRR Disaster Risk Management Framework is based on five pillars of
+action: (1) risk identification (risk assessment); (2) risk reduction (through structural and non-structural
+measures); (3) preparedness (early warning and crisis management planning); (4) financial protection
+(assessing contingent liabilities, budget management, and risk transfer tools); and (5) resilient recovery
+(resilient reconstruction policies). The World Bank-GFDRR Framework includes financial protection for
+governments, households, and business although this in the context of World Bank and GFDRR technical
+assistance programs. Specific published guidance on how countries can implement financial protection
+strategies across the various segments of society is not provided in the World Bank-GFDRR Framework.
+11.
+The G20/OECD Methodological Framework [DAF/AS/WD(2013)6], developed by the OECD
+through the IPPC and endorsed by the G20 Finance Ministers and Central Bank Governors in
+November 2012, provides international guidance on disaster risk financing, highlighting the importance of
+building financial resilience against disasters and the link between DRF and broader DRM strategies. The
+Framework provides a step-by-step guide for conducting national risk assessments and using the results of
+risk assessment to develop effective financial strategies. The Methodological Framework is specifically
+targeted towards providing guidance in areas under the particular responsibility of finance ministries,
+including: (1) identifying (and addressing) financial vulnerabilities within the economy, including the
+resilience of the financial sector; and (2) ensuring proper fiscal management, including efficient
+management of compensation programs and public sector risk reduction investments (see Box 1).
+Box 1. Key responsibilities of Finance Ministries in DRM
+Financial policymakers play a central role in disaster risk management (DRM) given their responsibilities for
+economic, financial, fiscal and budget policymaking, planning of public investment, and coordination of public
+expenditures. They play a pivotal role in DRM by:
+ Ensuring that financial vulnerabilities within the economy are addressed through adequate and efficient
+compensation mechanisms, whether public or private
+ Ensuring proper fiscal management of risks by anticipating potential budgetary impacts and planning
+ahead to ensure adequate financial capacity and rapid release of funds
+ Establishing clear rules regarding post-disaster financial compensation to enable rapid compensation,
+demonstrating solidarity and ensuring sound incentives
+ Ensuring the soundness and resilience of the financial sector with respect to disaster risks, including
+through proper regulation, business continuity planning, and stress testing
+ Ensuring the optimal allocation of resources for disaster risk management, including assessment of the
+cost-effectiveness of major public investments in disaster risk reduction
+Finance Ministers thus have a key role in ensuring financial resilience, a critical component of effective
+DRM at all levels of government and society.
+Source: G20/OECD Methodological Framework for Disaster Risk Assessment and Risk Financing
+5
+The “zero draft” is available at: http://www.wcdrr.org/uploads/1419081E.pdf
+4DAF/AS/WD(2014)21
+Possible approach to renewing the Recommendation
+12.
+In considering revisions to the Recommendation, the IPPC should take into account the specific
+relevance and purpose of the Recommendation as well as objectives that the OECD and IPPC may seek to
+achieve in a revised Recommendation.
+13.
+The OECD, under the aegis of the Insurance and Private Pensions Committee (IPPC) and the
+High Level Advisory Board on the Financial Management of Large-Scale Catastrophes, has played a
+leadership role in terms of providing guidance and sharing experiences in the area of disaster risk financing
+for many years. This has included numerous publications on specific disaster risk financing issues
+(e.g. Policy Handbook on Natural Hazard Awareness and Disaster Risk Reduction Education; 6 Risk
+Awareness, Capital Markets and Catastrophic Risks 7 ) as well as number of conferences aimed at sharing
+country experience in addressing challenges related to the financial management of disaster risks.
+14.
+The importance of the OECD’s work on disaster risk financing has been recognised by G20 and
+APEC Finance Ministers who have asked the OECD to elaborate guidance aimed at enhancing the
+financial resilience of economies to disaster risk. G20 Finance Ministers and Central Bank Governors
+encouraged “further efforts by the World Bank and OECD in cooperation with other relevant international
+organizations to leverage the voluntary framework in order to address remaining challenges at their
+November 2012 meeting.” 8 APEC Finance Ministers have asked the OECD and other international
+organisations “to continue working with APEC member economies in providing capacity building,
+introducing good practices and identifying effective approaches that will help address key APEC priorities
+related to DRF” at their October 2014 meeting. 9
+15.
+The Committee has the necessary expertise in terms of the financial aspects of disaster risk
+management, including: (1) markets for catastrophic risk transfer, including insurance, for individuals and
+business as well as governments; (2) the risk-bearing capacity and resilience of the insurance sector (and
+possibly the broader financial sector); and (3) given the presence of Finance Ministries among its
+membership, various issues related to fiscal management (such as the identification of implicit and explicit
+fiscal exposures, cost-efficiency in public investment decisions, and the design of compensation programs,
+tax incentives and subsidies). The international guidance found in the Critical Risks Recommendation and
+the Hyogo Framework does not comprehensively address these issues.
+16.
+The G20/OECD Methodological Framework does address these elements although it does not
+provide a comprehensive framework for guiding the development of disaster risk financing strategies – in
+many respects, there is a need to update the Recommendation to incorporate guidance from the Framework.
+Moreover, it would seem timely and appropriate to align the Recommendation with the recent Critical
+Risks Recommendation, so as to ensure their consistency and complementarity while allowing some
+elements of the current Recommendation to be de-emphasised (e.g., emergency response preparedness).
+6
+The Policy Handbook is available at: http://www.oecd.org/pensions/insurance/42221773.pdf
+7
+Risk Awareness, Capital Markets and Catastrophic Risks is available at:
+http://browse.oecdbookshop.org/oecd/pdfs/product/2110051e.pdf
+8
+Communiqué of Ministers of Finance and Central Bank Governors of the G20, Mexico City, 4-5 November 2012,
+see: http://www.treasury.gov/resource-center/international/g7-
+g20/Documents/G20%20Ministerial%20Communique%20November%204-5-2012-Mexico%20City.pdf
+9
+21st APEC Finance Ministers’ Meeting: Joint Ministerial Statement, see: http://www.apec.org/Meeting-
+Papers/Ministerial-Statements/Finance/2014_finance.aspx
+5DAF/AS/WD(2014)21
+17.
+A revised Recommendation could provide a point of departure for the development of effective
+approaches for the financial management of disaster risk, an area of interest for APEC Finance Ministers.
+The development of effective approaches has provided the means by which the OECD has been able to
+offer implementation guidance in other areas of OECD work mandated by the G20, such as on institutional
+investors and long-term financing and financial consumer protection. The identification of effective
+approaches would build on OECD survey work (Disaster Risk Financing in APEC Economies: Practices
+and Challenges [DAF/AS/WD(2013)15] and the forthcoming report on Global Practices and Challenges
+in Disaster Risk Financing [DAF/AS/WD(2013)21/REV2]) and provide more practical guidance.
+18.
+It could also support an OECD response to the growing demand for guidance on disaster risk
+financing among Member and non-Member countries. Given interest from non-Members in OECD work in
+disaster risk financing, it would be important to ensure that the Recommendation can adequately address
+the agenda and challenges of non-Members. This could be done by including guidance for the specific
+circumstances of less developed countries, such as lower insurance penetration. When combined with the
+OECD Recommendation on the Governance of the Critical Risks, a renewed Recommendation would
+provide a comprehensive OECD framework for managing disaster risks and building economic and
+financial resilience, consistent with broader OECD focus on rethinking policy solutions around stronger,
+more resilient, and more inclusive growth.
+19.
+Consistent with the approach taken in the Critical Risks Recommendation, it is proposed that the
+Recommendation take on a more “action-oriented” approach, yet still outlining relevant key principles.
+Moreover, it is proposed that it focus on providing guidance for Finance ministries and financial authorities
+on the development of disaster risk financing strategies in support of financial resilience against disasters.
+This could include a set of overarching principles and objectives for the development of such a strategy, as
+well as specific guidance on the main components of a disaster risk financing strategy (which is not the
+focus of other existing instruments).
+20.
+The revisions could maintain the key elements of the current Recommendation (such as the need
+for integrated approach to disaster risk financing and the importance of considering the impact of measures
+on incentives for risk reduction) while re-orienting the guidance towards the development of a specific
+strategy and the elements that should be included in that strategy, including the need to undertake a
+comprehensive assessment of risk and financial vulnerabilities; the importance of supporting the
+availability of financial protection options; and plans for disaster aid assistance and compensation and the
+management of sovereign exposures to disaster risks.
+21.
+Possible elements that could form the basis of a revised Recommendation are provided in the
+Annex, which are intended to provide the basis for a preliminary discussion on possible revisions to the
+Recommendation. The OECD’s High-Level Advisory Board, which was responsible for the development
+of the current Recommendation, will be consulted as the Committee proceeds with its review. Proposed
+draft revisions to the Recommendations will be presented next June alongside a monitoring report.
+For discussion:
+- Do delegates have views on the suggested approach for revisions of the Recommendation?
+6DAF/AS/WD(2014)21
+ANNEX: POSSIBLE ELEMENTS OF A REVISED RECOMMENDATION
+Possible preamble: Reference would be made to the need for a holistic approach, along the lines
+outlined in the current Recommendation (need for comprehensive risk assessment, risk awareness and
+education, and a risk management approach that seeks to reduce financial vulnerabilities through risk
+reduction measures (prevention, adaptation, mitigation), emergency response, and financial tools).
+[Development of a disaster risk financing strategy / financial management strategy]
+
+Establishing a strategy for managing the financial impacts of disasters
+ Assign national leadership [to Ministries of finance/financial authorities] to develop and
+implement an integrated disaster risk financing strategy (built on a foundation of
+comprehensive risk assessment, risk awareness and education, and effective and efficient risk
+and financial management)
+ Ensure consistency and integration of this strategy with the national disaster risk management
+strategy and (as relevant) linkage with regional and local strategies, both DRM and DRF
+ Ensure sufficiency of resources and expertise across levels of government, the private sector,
+and non-governmental organisations, including the scientific and academic community (and
+where insufficient, invest in enhancing resources and expertise) and promote the
+advancement of research and exchange of information
+ Include the following elements in the strategy:
+ assessment of risks and related financial vulnerabilities
+ support for availability of financial protection options for all segments of society, both
+private and public
+ ensuring adequate public compensation and financial assistance arrangements, and
+develop an effective sovereign risk financing strategy
+ Take into account the following principles:
+ identifies clear responsibilities and accountabilities for disaster risk reduction and
+management
+ creates incentives that encourage disaster risk reduction by all stakeholders and
+strengthen financial coverage against disaster risks
+[Assessment of risks, financial vulnerabilities, post-disaster financial needs]
+
+Establishing comprehensive processes and foundations for assessing risks, identifying
+financial vulnerabilities, and assessing post-disaster losses
+ Support the development of a national disaster risk assessment process
+ Evaluate the financial impacts of disasters, considering direct and indirect impacts and both
+regular and extreme scenarios, and identify financial vulnerabilities within the economy
+7DAF/AS/WD(2014)21
+ Ensure the establishment of relevant hazard, exposure, and loss databases, capable of
+supporting the development of disaster risk transfer through insurance and capital markets
+and disaster risk financing strategies
+ Support the development of internationally consistent methodologies for disaster impact
+assessment (pre- and post-disaster) and ensure the tracking of disaster losses
+[Support for financial protection options]
+
+Supporting the availability of financial tools for all segments of society
+ Supporting the development of effective disaster insurance markets for all material risks, and
+capital market capacities for disaster risk financing by:
+ establishing regulatory frameworks that support the private provision of disaster
+insurance and reinsurance, and the capacity of capital markets to provide risk financing
+ ensuring the resilience of financial institutions and infrastructures to disaster risk,
+including the capacity to make timely claims payments and maintain the supply of
+financing
+ raising citizens’ and businesses’ awareness of disaster risks, their responsibility for
+managing those risks, and the use of financial protection options and mitigation
+ promoting investment in disaster risk reduction at the national, regional, and local level,
+to mitigate risks and improve the availability of insurance
+ Where the availability or affordability of private financial tools does not allow for acceptable
+levels of protection, consider public support through:
+ regulatory approaches
+ subsidies, tax incentives, or other financial assistance measures to support the
+affordability of disaster insurance; or
+ establishment of public disaster (re)insurance and other financial schemes
+(e.g., guarantees, backstops) to cover uninsurable risks or peak exposures.
+
+Where there is public intervention in disaster insurance markets, ensure that such support is:
+ delivered efficiently
+ does not discourage risk reduction efforts
+ does not impede the development of private insurance markets
+[Compensation and financial assistance programmes and management of sovereign exposures]
+
+Ensuring adequate public compensation and financial assistance arrangements, and
+develop an effective sovereign risk financing strategy
+ Develop public compensation and financial assistance programmes, taking into account:
+ the need for government assistance to be targeted and timely, and delivered in an
+efficient, fair and transparent manner
+ the need to ensure that government assistance does not discourage private risk
+reduction or the use of financial tools
+8DAF/AS/WD(2014)21
+ fiscal constraints and roles of different levels of government in post-disaster response
+ Assess the scale of potential government exposure to disaster risks, taking into account:
+ the expected costs of relief, recovery, and reconstruction of public infrastructure
+ the expected payments and assistance to be provided through public compensation and
+financial assistance programmes, and possible ad hoc payments or assistance
+ Develop an effective risk financing strategy to manage government exposures considering:
+ the use of ex ante financial arrangements such as reserves, insurance, and capital
+market instruments, and ex post measures such as budget reallocations and sovereign
+debt financing, taking into account the cost, timing and availability of funding sources
+ the relationship of any such strategy with national investments in risk reduction
+9
+

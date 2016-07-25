@@ -542,20 +542,20 @@ def strip_cote(fragment_txt):
             logger.debug('Fragment without cote is: {frag}'.format(frag=fragment_txt))
     return fragment_txt
 
-
+'''
 def to_be_deleted_is_cote(txt):
     logger.debug('Looking for cote in {txt}'.format(txt=txt))
     ptrn_cote = re.compile('([\w]+?[\(\)/0-9]+[\w]*?)+')
     if re.match(ptrn_cote, txt):
         return True
-    '''
+    """
     if re.match('[\w]+/[[\w/]+]?\(\d{2,4}\)\d*.*|[\w]+\(\d{2,4}\)\d*.*', txt):
         return True
     if re.match('C\(\d{2,4}\)\d*.*', txt):
         return True
-    '''
+    """
     return False
-
+'''
 
 def strip_page_number(fragment_txt):
     """

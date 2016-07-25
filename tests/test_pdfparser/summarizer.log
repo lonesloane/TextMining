@@ -1,1 +1,452 @@
 Logging object initialized with log level 3
+[add_fragment] Fragment type:Text
+fragment length: 6
+[START] 0th sentence: A complete sentence.
+p[-1]: A complete sentence
+[START] 1th sentence: An incomplete sentence
+p[-1]: An incomplete sentenc
+[START] 2th sentence: continued in the next fragment.
+continued. p[0]:continued in the next fragment.
+adding previous. :An incomplete sentence
+[START] 3th sentence: Another incomplete sentence
+not continued. p[0]:Another incomplete sentence
+adding leftover. :An incomplete sentence continued in the next fragment.
+[END] 3th sentence: Another incomplete sentence
+[START] 4th sentence: also continued. And followed by another complete sentence.
+p[-1]: also continued. And followed by another complete sentence
+[START] 5th sentence: And the final sentence.
+p[-1]: And the final sentence
+[add_fragment] Fragment type:Text
+fragment length: 2
+[START] 0th sentence: Representatives of other international organisations, including UNCTAD, UNESCO and IUCN,
+p[-1]: Representatives of other international organisations, including UNCTAD, UNESCO and IUCN
+[START] 1th sentence: were invited to intervene and report about their activities as appropriate during the meeting.
+continued. p[0]:were invited to intervene and report about their activities as appropriate during the meeting.
+adding previous. :Representatives of other international organisations, including UNCTAD, UNESCO and IUCN,
+[add_fragment] Fragment type:Text
+fragment length: 6
+[START] 0th sentence: A complete sentence.
+p[-1]: A complete sentence
+[START] 1th sentence: An incomplete sentence
+p[-1]: An incomplete sentenc
+[START] 2th sentence: continued in the next fragment.
+continued. p[0]:continued in the next fragment.
+adding previous. :An incomplete sentence
+[START] 3th sentence: Another incomplete sentence
+not continued. p[0]:Another incomplete sentence
+adding leftover. :An incomplete sentence continued in the next fragment.
+[END] 3th sentence: Another incomplete sentence
+[START] 4th sentence: also continued. And followed by another complete sentence.
+p[-1]: also continued. And followed by another complete sentence
+[START] 5th sentence: And the last sentence
+p[-1]: And the last sentenc
+found page number at index: 5
+--------------------
+Sorted page text:
+--------------------
+(-2.0, 0.0, '0:2')
+(-2.0, 1.0, '1:2')
+(-2.0, 2.0, '2:2')
+(-1.0, 0.0, '0:1')
+(-1.0, 1.0, '1:1')
+(-1.0, 2.0, '2:1')
+(0.0, 0.0, '0:0')
+(0.0, 1.0, '1:0')
+(0.0, 2.0, '2:0')
+--------------------
+Sorted page text:
+--------------------
+(0.0, 0.0, '0:0')
+(0.0, 1.0, '1:0')
+(0.0, 2.0, '2:0')
+--------------------
+Sorted page text:
+--------------------
+(-1.0, 0.0, '0:1')
+(-1.0, 1.0, '1:1')
+(-1.0, 2.0, '2:1')
+(0.0, 0.0, '0:0')
+(0.0, 1.0, '1:0')
+(0.0, 2.0, '2:0')
+--------------------
+Sorted page text:
+--------------------
+(-2.0, 0.0, '0:2')
+(-2.0, 1.0, '1:2')
+(-2.0, 2.0, '2:2')
+(-1.0, 0.0, '0:1')
+(-1.0, 1.0, '1:1')
+(-1.0, 2.0, '2:1')
+(0.0, 0.0, '0:0')
+(0.0, 1.0, '1:0')
+(0.0, 2.0, '2:0')
+--------------------
+Sorted page text:
+--------------------
+--------------------
+Sorted page text:
+--------------------
+(-2.0, 0.0, '0:2')
+(-2.0, 1.0, '1:2')
+(-2.0, 2.0, '2:2')
+(-1.0, 0.0, '0:1')
+(-1.0, 1.0, '1:1')
+(-1.0, 2.0, '2:1')
+--------------------
+Sorted page text:
+--------------------
+(-2.0, 0.0, '0:2')
+(-2.0, 1.0, '1:2')
+(-2.0, 2.0, '2:2')
+--------------------
+Sorted page text:
+--------------------
+--------------------
+Sorted page text:
+--------------------
+(-2.0, 0.0, '0:2')
+(-2.0, 1.0, '1:2')
+(-2.0, 2.0, '2:2')
+(-1.0, 0.0, '0:1')
+(-1.0, 1.0, '1:1')
+(-1.0, 2.0, '2:1')
+(0.0, 0.0, '0:0')
+(0.0, 1.0, '1:0')
+(0.0, 2.0, '2:0')
+--------------------
+Sorted page text:
+--------------------
+(-2, 2, '-2:2')
+(0, 0, '0:0')
+(0, 1, '0:1')
+(0, 2, '0:2')
+(1, -2, '1:-2')
+(1, 0, '1:0')
+(1, 1, '1:1')
+(2, 0, '2:0')
+(2, 1, '2:1')
+found classification at index: 1
+found cote at index: 1
+Fragment without cote is: [' \n', ' \n', ' \nDans un courrier au Directeur du Centre de d\xc3\xa9veloppement (ci-apr\xc3\xa8s d\xc3\xa9sign\xc3\xa9 le \xc2\xab Centre \xc2\xbb) dat\xc3\xa9 du \n21 mai  2013,  M. Emmanuel  Kalou,  Directeur  de  Cabinet  du  ministre  d\xc2\xb4\xc3\x89tat,  ministre  des  Affaires \n\xc3\xa9trang\xc3\xa8res de la C\xc3\xb4te d\xe2\x80\x99Ivoire, avait exprim\xc3\xa9 le souhait de son pays de rejoindre le Centre. Cette demande a \n\xc3\xa9t\xc3\xa9 suivie par la participation d\xe2\x80\x99une forte d\xc3\xa9l\xc3\xa9gation ivoirienne conduite par le Premier Ministre, M. Daniel \nKablan Duncan, au 13e Forum \xc3\xa9conomique international sur l\xe2\x80\x99Afrique organis\xc3\xa9 par le Centre \xc3\xa0 Paris les 7 et \n8  octobre  2013,  puis  confirm\xc3\xa9e  par  un  courrier  de  M. Charles  Koffi  Diby,  ministre  d\xc2\xb4\xc3\x89tat,  ministre  des \nAffaires \xc3\xa9trang\xc3\xa8res, dat\xc3\xa9 du 22 novembre 2013, qui r\xc3\xa9it\xc3\xa9rait le souhait et la demande de la C\xc3\xb4te d\xe2\x80\x99Ivoire de \ndevenir membre du Centre. Le gouvernement ivoirien esp\xc3\xa8re pouvoir compter sur les acquis de l\xe2\x80\x99exp\xc3\xa9rience \nde  l\xe2\x80\x99OCDE  pour  l\xe2\x80\x99aider  \xc3\xa0  atteindre  l\xe2\x80\x99objectif  qu\xe2\x80\x99il  s\xe2\x80\x99est  fix\xc3\xa9  de  faire  de  la  C\xc3\xb4te  d\xe2\x80\x99Ivoire  une  \xc3\xa9conomie \n\xc3\xa9mergente \xc3\xa0 l\xe2\x80\x99horizon 2020. \n']
+table x0: 10.0 - table x1: 30.5
+table width: 20.5
+text x0: 1.0 - text x1: 3.0
+text width: 2.0
+Fraction: 0.0975609756098
+table x0: 10.0 - table x1: 30.5
+table width: 20.5
+text x0: 10.0 - text x1: 30.5
+text width: 20.5
+Fraction: 1.0
+Bibliography "Title" found: bibliography
+Bibliography "pattern" found.
+Cote found: CTPA/CFA/WP10(2011)39/CONF
+Classification found: For Official Use
+Cote found: CTPA/CFA/WP10(2011)39/CONF
+Classification found: For Official Use
+OECD found: Organisation for Economic Co-operation and Development
+Cote found: CTPA/CFA/WP10(2011)39/CONF
+Classification found: For Official Use
+OCDE found: Organisation de Coopération et de Développement économiques
+Cote found: CTPA/CFA/WP10(2011)39/CONF
+Classification found: For Official Use
+OCDE found: Organisation de Coopération et de Développement économiques
+Glossary "Title" found: LIST OF ABBREVIATIONS
+Glossary "Title" found: GLOSSARY
+Glossary "Title" found: LIST OF ACRONYMS
+Glossary "Title" found: Abbreviations
+Glossary continuation found.
+participants section title found. Match:ptrn_part_exact_2
+participants title found. PRESENT
+continued participants found. nb: 3
+continued participants found. nb: 3
+Summary "Title" found: SUMMARY
+Summary "Title" found: ABSTRACT
+Summary "Title" found: RÉSUMÉ
+Summary "Title" found: EXECUTIVE SUMMARY
+T.O.C. "Title" found: TABLE OF CONTENTS
+T.O.C. "Title" found: Table des matières
+T.O.C. continuation found
+Bibliography "Title" found: 
+	  bibliography  
+
+Bibliography "Title" found: 
+	  bibliographie  
+
+Bibliography "Title" found: 
+	  référence  
+
+Bibliography "Title" found: 
+	  références  
+
+Bibliography "Title" found: 
+	  litterature  
+
+Classification found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ For Official Use
+ Consulares nobilitarunt et praefecturae.
+Classification found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ Confidential
+ Consulares nobilitarunt et praefecturae.
+Classification found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ Unclassified
+ Consulares nobilitarunt et praefecturae.
+Classification found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ A Usage Officiel
+ Consulares nobilitarunt et praefecturae.
+Classification found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ Confidentiel
+ Consulares nobilitarunt et praefecturae.
+Classification found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ Non classifié
+ Consulares nobilitarunt et praefecturae.
+Classification found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ Diffusion Restreinte
+ Consulares nobilitarunt et praefecturae.
+Classification found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ Restricted Diffusion
+ Consulares nobilitarunt et praefecturae.
+Classification found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ Restricted
+ Consulares nobilitarunt et praefecturae.
+Classification found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ general distribution
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ C(2014)151 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ EXD/INT/D(2001)30 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ NEA/CRPPH(2001)2 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ AGP/HR/VAC(94)5 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ AGR/CA(94)12 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ AGP/GRD/DOC(95)89 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ AGP/HR/VAC(95)8 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ AGP/CONF/D(96)65 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ AGR/FI(97)2 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ CTPA/CFA/WP6/NOE2(2016)3/REV2 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ DCD/DAC/A(2016)5 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ ENV/EPOC(2016)9 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ ENV/WKP(2016)8 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ CTPA/CFA/TFDE/NOE2(2015)10/REV4/CONF 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ DAF/COMP/LACF(2015)8 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ DAF/INV/STAT/ACS/A(2015)1 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ NEA/NDC(2015)4 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ DAF/INV/CMF/AS/ATFC(2014)6/FINAL 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ CES/PE(2014)4 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ DSTI/EAS/STP/NESTI(2014)11 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ CTPA/CFA/BP/M(2013)1/REV1/CONF 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ DAF/COMP/GF/WD(2014)7 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ TAD/PR/II(2012)5/REV 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ DELSA/ELSA(2012)9 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ NEA/COM(2012)4 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ GOV/TDPC/URB/A(2012)1 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ EXD/OPS/IMSD/DOC(2012)229 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ ITF/TMB/TR/M(2009)3 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ CTPA/CFA/WP10(2011)39/CONF 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ DCD(2000)7 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ DAFFE/CFA/WP1(98)9/REV5/CONF 
+
+ Consulares nobilitarunt et praefecturae.
+Cote found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ DAFFE/CFA/WP1/REV5/CONF 
+
+ Consulares nobilitarunt et praefecturae.
+Glossary "Title" found: 
+	  LIST OF ABBREVIATIONS  
+
+ Consulares nobilitarunt et praefecturae.
+Glossary "Title" found: 
+	  GLOSSARY  
+
+ Consulares nobilitarunt et praefecturae.
+Glossary "Title" found: 
+	  Glossary  
+
+Glossary "Title" found: 
+	  LIST OF ACRONYMS  
+
+ Consulares nobilitarunt et praefecturae.
+Glossary "Title" found: 
+	  Abbreviations  
+
+Glossary "Title" found: 
+	  SIGLES ET ACRONYMES  
+
+OCDE found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ Organisation de Coopération et de Développement économiques
+ Consulares nobilitarunt et praefecturae.
+OCDE found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ Forum International des Transports
+ Consulares nobilitarunt et praefecturae.
+OCDE found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ Conférence Européenne des Ministres des Transports
+ Consulares nobilitarunt et praefecturae.
+OCDE found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ Organisations Coordonnées
+ Consulares nobilitarunt et praefecturae.
+OCDE part found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ ORGANISATION DE COOPÉRATION
+ Consulares nobilitarunt et praefecturae.
+OCDE part found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ ET DE DÉVELOPPEMENT ÉCONOMIQUES
+ Consulares nobilitarunt et praefecturae.
+OCDE found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ ORGANISATION DE COOPÉRATION ET DE DÉVELOPPEMENT ÉCONOMIQUES
+ Consulares nobilitarunt et praefecturae.
+OECD found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ Organisation for Economic Co-operation and Development
+ Consulares nobilitarunt et praefecturae.
+OECD found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ International Transport Forum
+ Consulares nobilitarunt et praefecturae.
+OECD found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ European Conference of Ministers of Transport
+ Consulares nobilitarunt et praefecturae.
+OECD found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ Co-ordinated Organisations
+ Consulares nobilitarunt et praefecturae.
+OECD part found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ ORGANISATION FOR ECONOMIC
+ Consulares nobilitarunt et praefecturae.
+OECD part found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ COOPERATION AND DEVELOPMENT
+ Consulares nobilitarunt et praefecturae.
+OECD found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ ORGANISATION FOR ECONOMIC COOPERATION AND DEVELOPMENT
+ Consulares nobilitarunt et praefecturae.
+participants section title found. Match:ptrn_part_exact_2
+participants section title found. Match:ptrn_part_find_2
+participants section title found. Match:ptrn_part_find_2
+participants section title found. Match:ptrn_part_find_1
+participants section title found. Match:ptrn_part_exact_1
+participants section title found. Match:ptrn_part_exact_1
+Summary "Title" found: 
+	  SUMMARY  
+
+Summary "Title" found: 
+	  ABSTRACT  
+
+Summary "Title" found: 
+	  RÉSUMÉ  
+
+Summary "Title" found: 
+	  EXECUTIVE SUMMARY  
+
+T.O.C. "Title" found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ Table des matières
+ Consulares nobilitarunt et praefecturae.
+T.O.C. "Title" found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ TABLE OF CONTENTS
+ Consulares nobilitarunt et praefecturae.
+T.O.C. "Title" found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ TABLE DES MATIERES
+ Consulares nobilitarunt et praefecturae.
+T.O.C. "Title" found: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ SOMMAIRE
+ Consulares nobilitarunt et praefecturae.
+table x0: 0.0 - table x1: 20.5
+table width: 20.5
+text x0: 1.0 - text x1: 3.0
+text width: 2.0
+Fraction: 0.0975609756098
+Text cell [1.0, 2.0, 3.0, 4.0] inside table.
+table x0: 30.0 - table x1: 60.5
+table width: 30.5
+text x0: 31.0 - text x1: 40.0
+text width: 9.0
+Fraction: 0.295081967213
+Text cell [31.0, 52.0, 40.0, 70.0] inside table.
+table x0: 30.0 - table x1: 60.5
+table width: 30.5
+text x0: 31.0 - text x1: 55.0
+text width: 24.0
+Fraction: 0.786885245902

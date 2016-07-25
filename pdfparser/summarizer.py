@@ -27,7 +27,7 @@ class PDFSummarizer:
 
     def generate_summary(self, pdf_sentences):
         pdf_string = '\n'.join([sentence.encode('utf-8') for sentence in pdf_sentences])
-        parser = PlaintextParser.from_string(pdf_string, Tokenizer(LANGUAGE))
+        parser = PlaintextParser.from_string(pdf_string, Tokenizer(LANGUAGE))  # TODO: identify pdf language
         stemmer = Stemmer(LANGUAGE)
 
         summarizer = Summarizer(stemmer)
@@ -43,6 +43,15 @@ def remove_repetition(summary):
     return results
 
 
+def load_indexes():
+    files_index_filename = os.path.join(PROJECT_FOLDER, 'output/Files_Index')
+    file_index = loader.FilesIndex(files_index_filename)
+    topics_index_filename = os.path.join(PROJECT_FOLDER, 'output/Topics_Index')
+    topic_index = loader.TopicsIndex(topics_index_filename)
+    return file_index, topic_index
+
+
+'''
 def extract_sentences(pdf_text):
     pdf_sentences = PunktSentenceTokenizer().tokenize(pdf_text)
     return pdf_sentences
@@ -92,14 +101,6 @@ def get_topics_for_file(enrichment_file, file_index, topic_index):
     return topics
 
 
-def load_indexes():
-    files_index_filename = os.path.join(PROJECT_FOLDER, 'output/Files_Index')
-    file_index = loader.FilesIndex(files_index_filename)
-    topics_index_filename = os.path.join(PROJECT_FOLDER, 'output/Topics_Index')
-    topic_index = loader.TopicsIndex(topics_index_filename)
-    return file_index, topic_index
-
-
 def get_score(relevance):
     if relevance == 'N':
         return 1
@@ -119,7 +120,7 @@ def report(relevant_sentences):
     for score, nb in _report.iteritems():
         logger.info("Score %s - Nb occurrences: %s", score, nb)
     logger.info("-"*40)
-
+'''
 
 if __name__ == '__main__':
     pass

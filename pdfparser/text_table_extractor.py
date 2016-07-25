@@ -142,10 +142,15 @@ def find_table_cells(cells):
     cells = [cell for table in tables for cell in table.candidate_cells(global_cell.get_width())]
     return cells
 
-'''
+
 def compare_cells(cell):
+    """
+    Filter function used to compare cells
+    :param cell:
+    :return:
+    """
     return cell.y0, cell.x0, cell.x1, cell.y1
-'''
+
 
 if __name__ == '__main__':
     pass
