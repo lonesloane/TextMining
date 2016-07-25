@@ -15,8 +15,8 @@ import indexfiles.loader as loader
 
 PROJECT_FOLDER = _config.get('MAIN', 'project_folder')
 PDF_ROOT_FOLDER = os.path.join(PROJECT_FOLDER, 'pdfs')
-LANGUAGE = "english"
-SENTENCES_COUNT = _config.getfloat('MAIN', 'SENTENCES_COUNT')
+LANGUAGE = "english"  # TODO: identify pdf language
+SENTENCES_COUNT = _config.getfloat('MAIN', 'SENTENCES_COUNT') # TODO: make parameter based on length of submitted text
 
 
 class PDFSummarizer:
@@ -27,7 +27,7 @@ class PDFSummarizer:
 
     def generate_summary(self, pdf_sentences):
         pdf_string = '\n'.join([sentence.encode('utf-8') for sentence in pdf_sentences])
-        parser = PlaintextParser.from_string(pdf_string, Tokenizer(LANGUAGE))  # TODO: identify pdf language
+        parser = PlaintextParser.from_string(pdf_string, Tokenizer(LANGUAGE))
         stemmer = Stemmer(LANGUAGE)
 
         summarizer = Summarizer(stemmer)
@@ -51,12 +51,12 @@ def load_indexes():
     return file_index, topic_index
 
 
-'''
 def extract_sentences(pdf_text):
     pdf_sentences = PunktSentenceTokenizer().tokenize(pdf_text)
     return pdf_sentences
 
 
+'''
 def extract_relevant_sentences(pdf_sentences, topics):
     logger.info("-"*40)
     logger.info("Extracting relevant sentences")

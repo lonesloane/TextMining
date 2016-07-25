@@ -366,6 +366,7 @@ class PDFTextExtractor:
                     logger.debug(u'[START] {i}th sentence: {p}'.format(i=i, p=p))
                 p = re.sub(ptrn_useless_crlf, ' ', p)
                 p = re.sub(' +', ' ', p)
+                p = re.sub('^[\W]*', '', string=p)
                 p = p.strip()
                 if not len(p):
                     logger.debug('nothing left...')

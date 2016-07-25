@@ -103,23 +103,24 @@ def get_summary_or_toc(json_content):
 
 
 def get_text_from_json(json_content):
-    ptrn_punct = '[.!?]'
     decoder = JSONDecoder()
     json_pdf = decoder.decode(json_content)
     pdf_txt = ''
 
     if text_extractor.FragmentType.SUMMARY in json_pdf.keys():
         for frag in json_pdf[text_extractor.FragmentType.SUMMARY]:
-            pdf_txt += add_text(frag, pdf_txt, ptrn_punct)
+            pdf_txt += concat_with_punctuation(frag)
 
     if text_extractor.FragmentType.TEXT in json_pdf.keys():
         for frag in json_pdf[text_extractor.FragmentType.TEXT]:
-            pdf_txt += add_text(frag, pdf_txt, ptrn_punct)
+            pdf_txt += concat_with_punctuation(frag)
 
     return pdf_txt
 
 
-def add_text(frag, pdf_txt, ptrn_punct):
+def concat_with_punctuation(frag):
+#    frag = re.sub('^[\W]*','', string=frag)
+    ptrn_punct = '[.!?:]'
     frag = frag.strip()
     if not re.match(ptrn_punct, frag[-1]):
         frag += '.'
