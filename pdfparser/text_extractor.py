@@ -51,6 +51,8 @@ class PDFTextExtractor:
         self.previous_p = None
         self.annex_found = False
         self.single_page = int(single_page) if single_page else -1
+        self.minx0 = None
+        self.maxx1 = None
 
     def extract_text(self, pdf_file_path, mode=None, format=None):
         # TODO: See if possible to detect that page is in landscape mode instead of regular portrait mode
@@ -152,16 +154,19 @@ class PDFTextExtractor:
 
                 page_nb = 0
                 fragment_type = FragmentType.UNKNOWN
-                if self.single_page == -1:
-                    for page_text, page_cells in pages:
-                        logger.info('='*20)
-                        logger.info('Validating page {page_nb}'.format(page_nb=page_nb))
-                        logger.info('='*20)
-                        fragment_type = self.validate_page(page_text, page_cells, fragment_type, page_nb)
-                        page_nb += 1
-                    # Add any leftover text
-                    if self.previous_p:
-                        self.contents[FragmentType.TEXT].extend({self.previous_p})
+                if self.single_page != -1:  # TODO: figure out why I had implemented this condition???
+                    fragment_type = FragmentType.TEXT
+                for page_text, page_cells in pages:
+                    if self.single_page != -1:
+                        page_nb = self.single_page+1
+                    logger.info('='*20)
+                    logger.info('Processing page {page_nb}'.format(page_nb=page_nb))
+                    logger.info('='*20)
+                    fragment_type = self.process_page(page_text, page_cells, fragment_type, page_nb)
+                    page_nb += 1
+                # Add any leftover text
+                if self.previous_p:
+                    self.contents[FragmentType.TEXT].extend({self.previous_p})
             else:
                 logger.error('Document not extractable')
 
@@ -201,6 +206,9 @@ class PDFTextExtractor:
 
     def parse_page_layout(self, lt_objs):
         """Iterate through the list of LT* objects and capture the text data contained in each"""
+
+        self.minx0 = None
+
         global rec_def, text_def
         if _log_level > 2:
             rec_def = open('rec_def.log', mode='w')
@@ -213,12 +221,16 @@ class PDFTextExtractor:
                 if _log_level > 1:
                     logger.debug('LTTextBox or LTTextLine')
                 # text container, extract...
-                page_text = extract_object_text_hash(page_text, lt_obj)
+                page_text = extract_object_text_hash(page_text, lt_obj)  # TODO: change this into page_text.add()
+                txt_x0 = lt_obj.bbox[0]
+                txt_x1 = lt_obj.bbox[2]
             elif isinstance(lt_obj, LTChar):
                 if _log_level > 1:
                     logger.debug('LTChar')
                 # text container, extract...
                 page_text = extract_object_text_hash(page_text, lt_obj)
+                txt_x0 = lt_obj.bbox[0]
+                txt_x1 = lt_obj.bbox[2]
             elif isinstance(lt_obj, LTRect):
                 # store cell coordinates used to identify table boundaries
                 x0 = lt_obj.bbox[0]
@@ -243,6 +255,11 @@ class PDFTextExtractor:
                 if _log_level > 1:
                     logger.debug('Unknown object type: ' + str(type(lt_obj)))
 
+            if not self.minx0 or txt_x0 < self.minx0:
+                self.minx0 = txt_x0
+            if not self.maxx1 or txt_x1 > self.maxx1:
+                self.maxx1 = txt_x1
+
         if _log_level > 2:
             rec_def.close()
             text_def.close()
@@ -261,7 +278,7 @@ class PDFTextExtractor:
 
         return page_text, page_cells
 
-    def validate_page(self, page_txt, page_cells, previous_fragment_type, page_nb):
+    def process_page(self, page_txt, page_cells, previous_fragment_type, page_nb):
         # TODO: Do some systematic tests to compare the quality of the text extracted from layout
         #       with that of text extracted with "regular" text extraction.
         # TODO: what about very special cases like statistical reports with no text at all? See JT00021419
@@ -323,6 +340,7 @@ class PDFTextExtractor:
             # TODO: make the actual definition of what is a "table" clearer!
             self.pdf_filter.filter_text_tables(page_txt)
             if page_cells and self.filter_tables:
+                self.pdf_filter.filter_notes(page_txt, page_cells, self.minx0, self.maxx1)
                 self.pdf_filter.filter_tables(page_txt, page_cells)
 
             # Default: plain simple text
@@ -351,7 +369,7 @@ class PDFTextExtractor:
 
     def add_fragment(self, fragment_txt, fragment_type):
         content_list = list()
-        ptrn_continued = re.compile('^(?<!\n)([a-zéèçàù]|[A-Z]{2,})', re.UNICODE)
+        ptrn_continued = re.compile('^(?<!\n)([a-zéèçàù]|[A-Z]{2,})', re.UNICODE)  # TODO: add all french capitalized accentuated
         ptrn_punct = re.compile('([\.]+|[\?!:])', re.UNICODE)
         ptrn_useless_crlf = re.compile('(?<!\.)\n(?![A-Z][a-z])', re.UNICODE)
 
@@ -366,7 +384,7 @@ class PDFTextExtractor:
                     logger.debug(u'[START] {i}th sentence: {p}'.format(i=i, p=p))
                 p = re.sub(ptrn_useless_crlf, ' ', p)
                 p = re.sub(' +', ' ', p)
-                p = re.sub('^[\W]*', '', string=p)
+                p = re.sub('^\s*', '', string=p)
                 p = p.strip()
                 if not len(p):
                     logger.debug('nothing left...')
@@ -389,7 +407,7 @@ class PDFTextExtractor:
                 else:
                     if _log_level > 2:
                         logger.debug('p[-1]: '+p[:-1])
-                    if p[-1] == '.':
+                    if re.match('[.!?]]', p[-1]):
                         content_list.append(p)
                         self.previous_p = None
                     else:
@@ -397,15 +415,17 @@ class PDFTextExtractor:
                     continue
 
                 # Only for last of page and first of next page...(i.e. if there are notes, we're screwed!!!)
-                if i == (len(fragment_txt)-1 and
-                         not re.match(ptrn_punct, p[-1]) and
-                         not re.match('[0-9]+ \w+.*', p)):
+                if i == (len(fragment_txt)-1) and not re.match(ptrn_punct, p[-1]) and not re.match('[0-9]+ \w+.*', p):
                     if _log_level > 1:
                         logger.debug(u'not finished. p[0]:{p}'.format(p=p))
                     self.previous_p = p
                     continue
                 else:
                     if _log_level > 2:
+                        logger.debug(u'[END] i != len(fragment_txt)-1 ? ==> {i} != {l} ?'.format(i=i,
+                                                                                                 l=len(fragment_txt)-1))
+                        logger.debug(u'[END] match(ptrn_punct): {m}'.format(m=re.match(ptrn_punct, p[-1])))
+                        logger.debug(u'[END] match(ptrn_start_with_number): {m}'.format(m=re.match('[0-9]+ \w+.*', p)))
                         logger.debug(u'[END] {i}th sentence: {p}'.format(i=i, p=p))
                     content_list.append(p)
                     self.previous_p = None
@@ -465,7 +485,7 @@ def extract_object_text_hash(h, lt_obj):
 def strip_paragraph_numbers(fragment_txt):
     filter_paragraph_lead_numbers = re.compile('((^|\n)([0-9]+\.)+[0-9]{0,3}\W?)')
     filter_paragraph_inserted_numbers = re.compile('((?<=\n)\W?([0-9]+\.)+(?![A-Z]))')
-    for i in range(0, len(fragment_txt) - 1):
+    for i in range(0, len(fragment_txt)):
         txt = fragment_txt[i].strip()
         # remove paragraph numbers, e.g. "23."
         # sometimes wrongly inserted within the text from incorrect layout analysis
@@ -479,21 +499,41 @@ def strip_paragraph_numbers(fragment_txt):
 
 
 def strip_header(fragment_txt):
+    '''
     ptrn_classif = re.compile('For Official Use|Confidential|Unclassified|A Usage Officiel|'
                               'Confidentiel|Non classifié', re.IGNORECASE)
     ptrn_cote = re.compile('^\W*([\w]+?[\(\)/0-9]+[\w]*?)+\W*$')
+    '''
+    ptrn_classif = re.compile('^\W*For Official Use\W*$|'
+                              '^\W*Confidential\W*$|'
+                              '^\W*Unclassified\W*$|'
+                              '^\W*A Usage Officiel\W*$|'
+                              '^\W*Confidentiel\W*$|'
+                              '^\W*Non classifi.{1,2}\W*$|'
+                              '^\W*Diffusion Restreinte\W*$|'
+                              '^\W*Restricted Diffusion\W*$|'
+                              '^\W*Restricted\W*$|'
+                              '^\W*general distribution\W*$', re.IGNORECASE)
+    ptrn_cote = re.compile('^\W*([A-Z]+?[\(\)/0-9]+[A-Z]*?)+\W*$')
+
     classif_idx = None
-    for i in range(0, len(fragment_txt) - 1):
-        txt = fragment_txt[i].strip()
+    for i, txt in enumerate(fragment_txt):
+        txt = txt.strip()
         if len(txt) == 0:
             continue
-        if re.search(ptrn_cote, txt) or re.search(ptrn_classif, txt):
+        # if re.search(ptrn_cote, txt) or re.search(ptrn_classif, txt):
+        if re.search(ptrn_cote, txt):
             logger.debug(u'found header {txt} at index: {i}'.format(txt=txt, i=i))
+            logger.debug(u'cote pattern match: {m}'.format(m=re.search(ptrn_cote, txt).string))
+            continue
+        elif re.search(ptrn_classif, txt):
+            logger.debug(u'found header {txt} at index: {i}'.format(txt=txt, i=i))
+            logger.debug(u'classif pattern match: {m}'.format(m=re.search(ptrn_classif, txt).string))
             continue
         else:
             classif_idx = i
             break
-    if classif_idx is not None:
+    if classif_idx:
         fragment_txt = fragment_txt[classif_idx:]
     return fragment_txt
 
@@ -568,7 +608,7 @@ def strip_page_number(fragment_txt):
     for i in range(len(fragment_txt)-1, 0, -1):
         txt = fragment_txt[i].strip()
         if re.match('\s*?\d+\s*?', txt):
-            logger.debug('found page number at index: {i}'.format(i=i))
+            logger.debug(u'found page number at index: {i} text:{t}'.format(i=i, t=txt))
             page_number_idx = i
             break
         if len(txt) > 0:

@@ -119,7 +119,7 @@ def main():
     for cell in outer_edges:
         print 'Collapsed cell built from {nrows} inner rows and {ncolumns} inner columns'.format(nrows=cell.rows,
                                                                                                  ncolumns=cell.columns)
-    plot_cells(outer_edges, 'red')
+    #plot_cells(outer_edges, 'red')
 
     plt.show()
 

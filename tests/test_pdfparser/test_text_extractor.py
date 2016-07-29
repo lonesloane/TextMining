@@ -271,14 +271,19 @@ class TextExtractorTestCase(unittest.TestCase):
 
     def test_strip_header(self):
         fragment_text = list()
-        fragment_text.append("A complete sentence.")
-        fragment_text.append("An incomplete sentence")
-        fragment_text.append("continued in the next fragment.")
-        fragment_text.append("Another incomplete sentence")
-        fragment_text.append("also continued. And followed by another complete sentence.")
-        fragment_text.append("And the last sentence")
+        fragment_text.append(u'CONFIDENTIAL \n')
+        fragment_text.append(u'CTPA/CFA/WP1/NOE2(2014)36/CONF \n')
+        fragment_text.append(u'any disclosure of taxpayer information by a competent authority to the members of the arbitration \npanel  would  be  made  pursuant  to  the  authority  of  the  Convention  and  subject  to  confidentiality \nrequirements  that  are  at  least  as  strong  as  those  applicable  to  the  competent  authorities.  An \nexpress provision in the text of the Convention itself, with a cross-reference to Article 26, would \nensure the legal status of the arbitrators. \n')
+        fragment_text.append(u'\uf02d  The Commentary on Article 25 could provide additional relevant guidance, noting the practice of \nsome  competent  authorities  (i)  to  request  that  taxpayers  authorise  the  disclosure  of  relevant \ninformation to the arbitrators and (ii) to require that the arbitrators and their staffs agree in writing \nto  maintain  the  confidentiality  of  the  information  they  receive  in  the  course  of  the  arbitration \nprocess  (subject  only  to  further  disclosure  in  accordance  with  the  requirements  and  further \nauthorisation of the competent authorities and the affected taxpayers). \n')
+        fragment_text.append(u'\uf02d  The Commentary on Article 25 could also note the practice of some countries to oblige taxpayers \nand their representatives to maintain confidentiality regarding arbitration in a MAP case,  subject \nto  any  necessary  disclosures  such  as  for  financial  reporting  purposes,  with  a  view  to  avoiding \npotential taxpayer manipulation of the MAP arbitration process. \n')
+        fragment_text.append(u'\uf0b7  Form  of  process  for  decision.  There  are  two  principal  approaches  to  decision-making  in  the \narbitration process. The format most commonly used in commercial matters is the \u201cconventional\u201d \nor  \u201cindependent  opinion\u201d  approach,  in  which  the  arbitrators  are  presented  with  the  facts  and \narguments of the parties based on applicable law and then reach an independent decision, typically \nin the form of a written, reasoned analysis. This approach strongly resembles a judicial proceeding \nand is the model for the EU Arbitration Convention as well as the default approach reflected in the \nSample Mutual Agreement on Arbitration (the Sample Agreement) included in the Commentary on \nArticle  25  of  the  OECD  Model.  The  other  main  format  is  the  \u201clast  best  offer\u201d  or  \u201cFinal  Offer\u201d \napproach  (often  informally  referred  to  as  \u201cbaseball  arbitration\u201d).  This  approach  is  reflected  in  a \nnumber  of  bilateral  tax  treaties  signed  by  OECD  member  countries.  Under  this  approach,  in \ngeneral,  each  of  the  competent  authorities  submits  to  the  arbitration  panel  a  proposed  resolution \n(i.e. its proposed disposition of the specific amounts of income, expense or taxation at issue in the \nMAP case), together with a position paper that explains the rationale for the proposed resolution. \nThe  arbitration  panel  is  required  to  adopt  as  its  determination  one  of  the  proposed  resolutions \nsubmitted by the competent authorities. The determination by the arbitration panel does not state a \nrationale and has no precedential value. Based on experience with both approaches to arbitration, it \nappears  that  the  time  and  resources  required  to  set  up,  organise  and  use  Final  Offer  MAP \narbitration  may  be  significantly  less  than  with  the  independent  opinion  MAP  arbitration.  In \naddition, it is also not apparent that the reasoned opinions developed in the MAP cases dealt with \nusing the independent opinion approach would have any particular utility (e.g. as precedent for the \nresolution of future MAP cases). \n')
         txt = extractor.strip_header(fragment_txt=fragment_text)
-        print txt
+        self.assertEqual(4, len(txt))
+
+        fragment_text = list()
+        fragment_text.append(u'Le  projet  utilisera  aussi  largement  des  données  quantitatives  issues  de  sources  internationales (Regards sur l’éducation, NESLI, PIAAC, PISA, TALIS ou d’autres sources provenant de pays non membres de l’OCDE), de sources nationales tirées des rapports de base, et de données issues du projet ITEL.')
+        txt = extractor.strip_header(fragment_txt=fragment_text)
+        self.assertEqual(1, len(txt))
 
     def test_strip_page_number(self):
         self.assertTrue(False, 'not yet implemented')

@@ -239,7 +239,8 @@ def collapse_west(cell, neighbor_cell):
 
 def log(log_text):
     if _log_level > 2:
-        logger.debug(log_text)
+        pass
+        #logger.debug(log_text)
 
 if __name__ == '__main__':
     pass

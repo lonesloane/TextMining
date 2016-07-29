@@ -121,7 +121,8 @@ class PDFPageFilter:
         ptrn_summary = re.compile('^\s*?SUMMARY\s*?$|'
                                   '^\s*?ABSTRACT\s*?$|'
                                   '^\s*?R.{1,2}SUM.{1,2}\s*?$|'
-                                  '^\s*?EXECUTIVE SUMMARY\s*?$', re.IGNORECASE)
+                                  '^\s*?EXECUTIVE SUMMARY\s*?$|'
+                                  '^\s*?SUMMARY\s{0,2}/\s{0,2}ACTION REQUIRED\s*?$', re.IGNORECASE)
 
         if re.search(ptrn_summary, txt):
             logger.debug(u'Summary "Title" found: {frag}'.format(frag=txt))
@@ -424,6 +425,47 @@ class PDFPageFilter:
         if _log_level > 1:
             logger.debug('[Exit filter_tables]')
 
+    def filter_notes(self, page_txt, cells, min_text_x0, max_text_x1):
+        """
+        Filter out the text found "below" the notes separator
+        :param page_txt:
+        :param cells:
+        :param min_text_x0:
+        :param max_text_x1:
+        :return:
+        """
+        if _log_level > 1:
+            logger.debug('[Enter filter_notes]')
+            logger.debug(u'nb cells: {nb}'.format(nb=len(cells)))
+
+        # Figure out if one of the cells is the "notes separator"
+        separator = None
+        text_width = abs(max_text_x1 - min_text_x0)
+        for cell in sorted(cells, cmp=lambda c1,c2: int(c1.y0 - c2.y0), reverse=False):
+            leftmost_cell_found = False
+            logger.debug('[Searching separator] '
+                         'cell: {c} - '
+                         'minx0: {min} - '
+                         'cell width: {w} - '
+                         'text_width: {tw} - '
+                         'width percentage: {p}'.format(c=cell, w=cell.width, min=min_text_x0, tw=text_width,
+                                                        p=cell.width/text_width))
+            if cell.x0 <= min_text_x0:
+                if leftmost_cell_found:
+                    break  # expect notes separator to be first occurrence of cell left aligned with the text
+                if text_width * 0.10 < cell.width < text_width * 0.33:
+                    # TODO: extract separator "minimum" and maximum width to config file
+                    # TODO: include a "maximum" position in the page for the separator
+                    # TODO: TEST!!! Make sure to avoid false positives
+                    logger.debug(u'Notes separator found: {c}'.format(c=cell))
+                    separator = cell
+                    break
+        if separator:
+            for coord, _ in page_txt.items():
+                if self.text_below_notes_separator(coord, separator):
+                    logger.debug(u'Stripping out note: {n}'.format(n=page_txt[coord]))
+                    page_txt.pop(coord)
+
     def filter_repetition(self, cell_content):
         cell_content = cell_content.strip()
         # remove inner line breaks
@@ -461,3 +503,12 @@ class PDFPageFilter:
                 return True
         else:
             return False
+
+    def text_below_notes_separator(self, coord, separator):
+        if coord[Y0] < separator.y0:
+            logger.debug('cell below sepratator - [{x0}|{y0}|{x1}|{y1}]'.format(x0=coord[X0],
+                                                                                y0=coord[Y0],
+                                                                                x1=coord[X1],
+                                                                                y1=coord[Y1]))
+            return True
+        return False
