@@ -17,6 +17,8 @@ class PDFPageFilter:
         self.__TEXT_MIN_FRACTION_SIZE = _config.getfloat('MAIN', 'TEXT_MIN_FRACTION_SIZE')
         self.__MIN_NUMBER_ROWS = _config.getfloat('MAIN', 'MIN_NUMBER_ROWS')
         self.__MIN_NUMBER_COLS = _config.getfloat('MAIN', 'MIN_NUMBER_COLS')
+        self.__PAGE_Y_MIN = _config.getfloat('MAIN', 'PAGE_Y_MIN')
+        self.__PAGE_Y_MAX = _config.getfloat('MAIN', 'PAGE_Y_MAX')
 
         self.report = report if report else Report()
         self.tables_text = list()
@@ -441,8 +443,8 @@ class PDFPageFilter:
         # Figure out if one of the cells is the "notes separator"
         separator = None
         text_width = abs(max_text_x1 - min_text_x0)
+        leftmost_cell_found = False
         for cell in sorted(cells, cmp=lambda c1,c2: int(c1.y0 - c2.y0), reverse=False):
-            leftmost_cell_found = False
             logger.debug('[Searching separator] '
                          'cell: {c} - '
                          'minx0: {min} - '
@@ -451,15 +453,18 @@ class PDFPageFilter:
                          'width percentage: {p}'.format(c=cell, w=cell.width, min=min_text_x0, tw=text_width,
                                                         p=cell.width/text_width))
             if cell.x0 <= min_text_x0:
-                if leftmost_cell_found:
-                    break  # expect notes separator to be first occurrence of cell left aligned with the text
-                if text_width * 0.10 < cell.width < text_width * 0.33:
-                    # TODO: extract separator "minimum" and maximum width to config file
+                leftmost_cell_found = True
+                if text_width * 0.10 < cell.width < text_width * 0.33 \
+                        and cell.y1 < (self.__PAGE_Y_MAX - self.__PAGE_Y_MIN) * .33:
+                        # TODO: extract separator "minimum" and maximum width to config file
                     # TODO: include a "maximum" position in the page for the separator
                     # TODO: TEST!!! Make sure to avoid false positives
                     logger.debug(u'Notes separator found: {c}'.format(c=cell))
                     separator = cell
                     break
+            if leftmost_cell_found :
+                break
+
         if separator:
             for coord, _ in page_txt.items():
                 if self.text_below_notes_separator(coord, separator):
@@ -502,6 +507,7 @@ class PDFPageFilter:
                     logger.debug(u'Text cell {text_cell} inside table.'.format(text_cell=coord))
                 return True
         else:
+            logger.debug(u'Text cell not contained in table, or not a fraction of table')
             return False
 
     def text_below_notes_separator(self, coord, separator):

@@ -23,3 +23,9 @@ documentation/source/_static/
 documentation/source/_templates/
 local_py_env/
 summarizer.log
+/pdf_text.json
+/rec_def.log
+/text_def.log
+/tests/testPDF/pdf_text.json
+/tests/testPDF/rec_def.log
+/tests/testPDF/text_def.log

@@ -107,7 +107,7 @@ class Table:
 
 def find_table_cells(cells):
     # TODO: ensure cells are sorted correctly, do not assume caller has done it already !
-
+    # TODO: implement logic based on columns in addition to rows !!!
     global_cell = None
     tables = list()
     table = Table()
