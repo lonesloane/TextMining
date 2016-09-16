@@ -17,11 +17,11 @@ tests/testOutput
 /tests/testPDF/JT03365805.pdf
 /tests/testPDF/JT03365818.pdf
 /tests/testPDF/pdfs
-/local_py_env/
+/env/
 bin/
 documentation/source/_static/
 documentation/source/_templates/
-local_py_env/
+env/
 summarizer.log
 /pdf_text.json
 /rec_def.log

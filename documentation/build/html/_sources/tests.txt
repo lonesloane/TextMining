@@ -6,9 +6,11 @@ Subpackages
 
 .. toctree::
 
+    tests.testPDF
     tests.test_analysis
     tests.test_gui
     tests.test_index
+    tests.test_pdfparser
     tests.test_search
 
 Submodules

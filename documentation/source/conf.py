@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Semantic Search documentation build configuration file, created by
-# sphinx-quickstart on Tue Feb 16 23:35:19 2016.
+# Text Mining Tools documentation build configuration file, created by
+# sphinx-quickstart on Thu Aug  4 18:01:10 2016.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -30,7 +30,6 @@ sys.path.insert(0, os.path.abspath('../..'))
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.coverage',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -46,7 +45,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Semantic Search'
+project = u'Text Mining Tools'
 copyright = u'2016, S. Varin'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -70,7 +69,7 @@ release = '1.0'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = []
+exclude_patterns = ['../../tests/*.*']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -88,7 +87,7 @@ exclude_patterns = []
 #show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = 'Sphynx'
 
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
@@ -179,7 +178,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'SemanticSearchdoc'
+htmlhelp_basename = 'TextMiningToolsdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -199,7 +198,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'SemanticSearch.tex', u'Semantic Search Documentation',
+  ('index', 'TextMiningTools.tex', u'Text Mining Tools Documentation',
    u'S. Varin', 'manual'),
 ]
 
@@ -229,7 +228,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'semanticsearch', u'Semantic Search Documentation',
+    ('index', 'textminingtools', u'Text Mining Tools Documentation',
      [u'S. Varin'], 1)
 ]
 
@@ -243,8 +242,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'SemanticSearch', u'Semantic Search Documentation',
-   u'S. Varin', 'SemanticSearch', 'One line description of project.',
+  ('index', 'TextMiningTools', u'Text Mining Tools Documentation',
+   u'S. Varin', 'TextMiningTools', 'One line description of project.',
    'Miscellaneous'),
 ]
 
@@ -259,3 +258,73 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+
+# -- Options for Epub output ----------------------------------------------
+
+# Bibliographic Dublin Core info.
+epub_title = u'Text Mining Tools'
+epub_author = u'S. Varin'
+epub_publisher = u'S. Varin'
+epub_copyright = u'2016, S. Varin'
+
+# The basename for the epub file. It defaults to the project name.
+#epub_basename = u'Text Mining Tools'
+
+# The HTML theme for the epub output. Since the default themes are not optimized
+# for small screen space, using the same theme for HTML and epub output is
+# usually not wise. This defaults to 'epub', a theme designed to save visual
+# space.
+#epub_theme = 'epub'
+
+# The language of the text. It defaults to the language option
+# or en if the language is not set.
+#epub_language = ''
+
+# The scheme of the identifier. Typical schemes are ISBN or URL.
+#epub_scheme = ''
+
+# The unique identifier of the text. This can be a ISBN number
+# or the project homepage.
+#epub_identifier = ''
+
+# A unique identification for the text.
+#epub_uid = ''
+
+# A tuple containing the cover image and cover page html template filenames.
+#epub_cover = ()
+
+# A sequence of (type, uri, title) tuples for the guide element of content.opf.
+#epub_guide = ()
+
+# HTML files that should be inserted before the pages created by sphinx.
+# The format is a list of tuples containing the path and title.
+#epub_pre_files = []
+
+# HTML files shat should be inserted after the pages created by sphinx.
+# The format is a list of tuples containing the path and title.
+#epub_post_files = []
+
+# A list of files that should not be packed into the epub file.
+epub_exclude_files = ['search.html']
+
+# The depth of the table of contents in toc.ncx.
+#epub_tocdepth = 3
+
+# Allow duplicate toc entries.
+#epub_tocdup = True
+
+# Choose between 'default' and 'includehidden'.
+#epub_tocscope = 'default'
+
+# Fix unsupported image types using the PIL.
+#epub_fix_images = False
+
+# Scale large images.
+#epub_max_image_width = 0
+
+# How to display URL addresses: 'footnote', 'no', or 'inline'.
+#epub_show_urls = 'inline'
+
+# If false, no index is generated.
+#epub_use_index = True

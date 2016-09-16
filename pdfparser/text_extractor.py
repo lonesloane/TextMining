@@ -94,9 +94,13 @@ class PDFTextExtractor:
         return output
 
     def should_force_raw_extraction(self):
+        """
+
+        :return: True if extracting multiple pages and resulting TEXT is empty
+        """
         if self.single_page != -1:
             return False
-        elif (FragmentType.TEXT not in self.contents or len(self.contents[FragmentType.TEXT]) == 0):
+        elif FragmentType.TEXT not in self.contents or len(self.contents[FragmentType.TEXT]) == 0:
             return True
         else:
             return False
@@ -369,7 +373,9 @@ class PDFTextExtractor:
 
     def add_fragment(self, fragment_txt, fragment_type):
         content_list = list()
-        ptrn_continued = re.compile('^(?<!\n)([a-zéèçàù]|[A-Z]{2,})', re.UNICODE)  # TODO: add all french capitalized accentuated
+        # TODO: investigate problematic page continuation (i.e. page 10) for french document: JT03366982
+        ptrn_continued = re.compile('^(?<!\n)([a-zéèêçàù]|[A-Z]{2,})', re.UNICODE)
+        # TODO: add all french capitalized accentuated
         ptrn_punct = re.compile('([\.]+|[\?!:])', re.UNICODE)
         ptrn_useless_crlf = re.compile('(?<!\.)\n(?![A-Z][a-z])', re.UNICODE)
 
@@ -499,11 +505,6 @@ def strip_paragraph_numbers(fragment_txt):
 
 
 def strip_header(fragment_txt):
-    '''
-    ptrn_classif = re.compile('For Official Use|Confidential|Unclassified|A Usage Officiel|'
-                              'Confidentiel|Non classifié', re.IGNORECASE)
-    ptrn_cote = re.compile('^\W*([\w]+?[\(\)/0-9]+[\w]*?)+\W*$')
-    '''
     ptrn_classif = re.compile('^\W*For Official Use\W*$|'
                               '^\W*Confidential\W*$|'
                               '^\W*Unclassified\W*$|'
@@ -597,6 +598,7 @@ def to_be_deleted_is_cote(txt):
     """
     return False
 '''
+
 
 def strip_page_number(fragment_txt):
     """

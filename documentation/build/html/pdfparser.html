@@ -1,0 +1,1052 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pdfparser package &mdash; Text Mining Tools 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="Text Mining Tools 1.0 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Text Mining Tools 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="pdfparser-package">
+<h1>pdfparser package<a class="headerlink" href="#pdfparser-package" title="Permalink to this headline">¶</a></h1>
+<p>This module contains scripts used to extract text from pdf files and generate a summary based on the extracted text.</p>
+<ul>
+<li><p class="first">To extract text, use the script:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">run_text_extractor</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">To generate a summary, use the script:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">run_summarizer</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pdfparser.pdf_fragment_type">
+<span id="pdfparser-pdf-fragment-type-module"></span><h2>pdfparser.pdf_fragment_type module<a class="headerlink" href="#module-pdfparser.pdf_fragment_type" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pdfparser.pdf_fragment_type.FragmentType">
+<em class="property">class </em><tt class="descclassname">pdfparser.pdf_fragment_type.</tt><tt class="descname">FragmentType</tt><a class="headerlink" href="#pdfparser.pdf_fragment_type.FragmentType" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="pdfparser.pdf_fragment_type.FragmentType.ANNEX">
+<tt class="descname">ANNEX</tt><em class="property"> = 'Annex'</em><a class="headerlink" href="#pdfparser.pdf_fragment_type.FragmentType.ANNEX" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pdfparser.pdf_fragment_type.FragmentType.BIBLIOGRAPHY">
+<tt class="descname">BIBLIOGRAPHY</tt><em class="property"> = 'Bibliography'</em><a class="headerlink" href="#pdfparser.pdf_fragment_type.FragmentType.BIBLIOGRAPHY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pdfparser.pdf_fragment_type.FragmentType.COVER_PAGE">
+<tt class="descname">COVER_PAGE</tt><em class="property"> = 'CoverPage'</em><a class="headerlink" href="#pdfparser.pdf_fragment_type.FragmentType.COVER_PAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pdfparser.pdf_fragment_type.FragmentType.FILTERED_TABLES">
+<tt class="descname">FILTERED_TABLES</tt><em class="property"> = 'TextWithoutTables'</em><a class="headerlink" href="#pdfparser.pdf_fragment_type.FragmentType.FILTERED_TABLES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pdfparser.pdf_fragment_type.FragmentType.GLOSSARY">
+<tt class="descname">GLOSSARY</tt><em class="property"> = 'Glossary'</em><a class="headerlink" href="#pdfparser.pdf_fragment_type.FragmentType.GLOSSARY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pdfparser.pdf_fragment_type.FragmentType.NOTES">
+<tt class="descname">NOTES</tt><em class="property"> = 'Notes'</em><a class="headerlink" href="#pdfparser.pdf_fragment_type.FragmentType.NOTES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pdfparser.pdf_fragment_type.FragmentType.PARTICIPANTS_LIST">
+<tt class="descname">PARTICIPANTS_LIST</tt><em class="property"> = 'ParticipantsList'</em><a class="headerlink" href="#pdfparser.pdf_fragment_type.FragmentType.PARTICIPANTS_LIST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pdfparser.pdf_fragment_type.FragmentType.SUMMARY">
+<tt class="descname">SUMMARY</tt><em class="property"> = 'Summary'</em><a class="headerlink" href="#pdfparser.pdf_fragment_type.FragmentType.SUMMARY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pdfparser.pdf_fragment_type.FragmentType.TABLE_OF_CONTENTS">
+<tt class="descname">TABLE_OF_CONTENTS</tt><em class="property"> = 'ToC'</em><a class="headerlink" href="#pdfparser.pdf_fragment_type.FragmentType.TABLE_OF_CONTENTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pdfparser.pdf_fragment_type.FragmentType.TEXT">
+<tt class="descname">TEXT</tt><em class="property"> = 'Text'</em><a class="headerlink" href="#pdfparser.pdf_fragment_type.FragmentType.TEXT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pdfparser.pdf_fragment_type.FragmentType.UNKNOWN">
+<tt class="descname">UNKNOWN</tt><em class="property"> = 'undetermined'</em><a class="headerlink" href="#pdfparser.pdf_fragment_type.FragmentType.UNKNOWN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pdfparser.pdf_page_filter">
+<span id="pdfparser-pdf-page-filter-module"></span><h2>pdfparser.pdf_page_filter module<a class="headerlink" href="#module-pdfparser.pdf_page_filter" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter">
+<em class="property">class </em><tt class="descclassname">pdfparser.pdf_page_filter.</tt><tt class="descname">PDFPageFilter</tt><big>(</big><em>report=None</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.filter_notes">
+<tt class="descname">filter_notes</tt><big>(</big><em>page_txt</em>, <em>cells</em>, <em>min_text_x0</em>, <em>max_text_x1</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.filter_notes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter out the text found &#8220;below&#8221; the notes separator
+:param page_txt:
+:param cells:
+:param min_text_x0:
+:param max_text_x1:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.filter_number">
+<tt class="descname">filter_number</tt><big>(</big><em>cell_content</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.filter_number" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cell_content</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.filter_repetition">
+<tt class="descname">filter_repetition</tt><big>(</big><em>cell_content</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.filter_repetition" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cell_content</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.filter_tables">
+<tt class="descname">filter_tables</tt><big>(</big><em>page_txt</em>, <em>page_cells</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.filter_tables" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>page_txt</strong> &#8211; </li>
+<li><strong>page_cells</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.filter_text_tables">
+<tt class="descname">filter_text_tables</tt><big>(</big><em>page_txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.filter_text_tables" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>page_txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.is_annex">
+<tt class="descname">is_annex</tt><big>(</big><em>page_txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.is_annex" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>page_txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.is_bibliography">
+<tt class="descname">is_bibliography</tt><big>(</big><em>page_txt</em>, <em>current_fragment_type</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.is_bibliography" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>page_txt</strong> &#8211; </li>
+<li><strong>current_fragment_type</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.is_cover">
+<tt class="descname">is_cover</tt><big>(</big><em>page_txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.is_cover" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>page_txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.is_glossary">
+<tt class="descname">is_glossary</tt><big>(</big><em>page_txt</em>, <em>current_fragment_type</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.is_glossary" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>page_txt</strong> &#8211; </li>
+<li><strong>current_fragment_type</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.is_participants_list">
+<tt class="descname">is_participants_list</tt><big>(</big><em>page_txt</em>, <em>current_fragment_type</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.is_participants_list" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>page_txt</strong> &#8211; </li>
+<li><strong>current_fragment_type</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.is_summary">
+<tt class="descname">is_summary</tt><big>(</big><em>page_txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.is_summary" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Sample documents:</dt>
+<dd><ul class="first last simple">
+<li>&#8216;2014/11/03/JT03365426.pdf&#8217;</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>page_txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.is_toc">
+<tt class="descname">is_toc</tt><big>(</big><em>page_txt</em>, <em>current_fragment_type</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.is_toc" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>page_txt</strong> &#8211; </li>
+<li><strong>current_fragment_type</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.match_annex_title">
+<em class="property">classmethod </em><tt class="descname">match_annex_title</tt><big>(</big><em>txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.match_annex_title" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.match_bibliography_structure">
+<em class="property">classmethod </em><tt class="descname">match_bibliography_structure</tt><big>(</big><em>txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.match_bibliography_structure" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.match_bibliography_title">
+<em class="property">classmethod </em><tt class="descname">match_bibliography_title</tt><big>(</big><em>txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.match_bibliography_title" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.match_classification">
+<em class="property">classmethod </em><tt class="descname">match_classification</tt><big>(</big><em>txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.match_classification" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.match_cote">
+<em class="property">classmethod </em><tt class="descname">match_cote</tt><big>(</big><em>txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.match_cote" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.match_glossary_structure">
+<em class="property">classmethod </em><tt class="descname">match_glossary_structure</tt><big>(</big><em>txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.match_glossary_structure" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.match_glossary_title">
+<em class="property">classmethod </em><tt class="descname">match_glossary_title</tt><big>(</big><em>txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.match_glossary_title" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.match_ocde">
+<em class="property">classmethod </em><tt class="descname">match_ocde</tt><big>(</big><em>txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.match_ocde" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.match_oecd">
+<em class="property">classmethod </em><tt class="descname">match_oecd</tt><big>(</big><em>txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.match_oecd" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.match_participants_emails">
+<em class="property">classmethod </em><tt class="descname">match_participants_emails</tt><big>(</big><em>txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.match_participants_emails" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.match_participants_names">
+<em class="property">classmethod </em><tt class="descname">match_participants_names</tt><big>(</big><em>txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.match_participants_names" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.match_participants_title">
+<em class="property">classmethod </em><tt class="descname">match_participants_title</tt><big>(</big><em>txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.match_participants_title" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.match_summary">
+<em class="property">classmethod </em><tt class="descname">match_summary</tt><big>(</big><em>txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.match_summary" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.match_toc_continued">
+<em class="property">classmethod </em><tt class="descname">match_toc_continued</tt><big>(</big><em>txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.match_toc_continued" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.match_toc_exact">
+<em class="property">classmethod </em><tt class="descname">match_toc_exact</tt><big>(</big><em>txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.match_toc_exact" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.match_toc_title">
+<em class="property">classmethod </em><tt class="descname">match_toc_title</tt><big>(</big><em>txt</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.match_toc_title" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>txt</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.text_below_notes_separator">
+<tt class="descname">text_below_notes_separator</tt><big>(</big><em>coord</em>, <em>separator</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.text_below_notes_separator" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>coord</strong> &#8211; </li>
+<li><strong>separator</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.pdf_page_filter.PDFPageFilter.text_is_within_table">
+<tt class="descname">text_is_within_table</tt><big>(</big><em>coord</em>, <em>outer_edges</em><big>)</big><a class="headerlink" href="#pdfparser.pdf_page_filter.PDFPageFilter.text_is_within_table" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>coord</strong> &#8211; </li>
+<li><strong>outer_edges</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pdfparser.report">
+<span id="pdfparser-report-module"></span><h2>pdfparser.report module<a class="headerlink" href="#module-pdfparser.report" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pdfparser.report.Report">
+<em class="property">class </em><tt class="descclassname">pdfparser.report.</tt><tt class="descname">Report</tt><a class="headerlink" href="#pdfparser.report.Report" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pdfparser.summarizer">
+<span id="pdfparser-summarizer-module"></span><h2>pdfparser.summarizer module<a class="headerlink" href="#module-pdfparser.summarizer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pdfparser.summarizer.PDFSummarizer">
+<em class="property">class </em><tt class="descclassname">pdfparser.summarizer.</tt><tt class="descname">PDFSummarizer</tt><big>(</big><em>semantic=False</em><big>)</big><a class="headerlink" href="#pdfparser.summarizer.PDFSummarizer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pdfparser.summarizer.PDFSummarizer.generate_summary">
+<tt class="descname">generate_summary</tt><big>(</big><em>pdf_sentences</em><big>)</big><a class="headerlink" href="#pdfparser.summarizer.PDFSummarizer.generate_summary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.summarizer.extract_sentences">
+<tt class="descclassname">pdfparser.summarizer.</tt><tt class="descname">extract_sentences</tt><big>(</big><em>pdf_text</em><big>)</big><a class="headerlink" href="#pdfparser.summarizer.extract_sentences" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.summarizer.load_indexes">
+<tt class="descclassname">pdfparser.summarizer.</tt><tt class="descname">load_indexes</tt><big>(</big><big>)</big><a class="headerlink" href="#pdfparser.summarizer.load_indexes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.summarizer.remove_repetition">
+<tt class="descclassname">pdfparser.summarizer.</tt><tt class="descname">remove_repetition</tt><big>(</big><em>summary</em><big>)</big><a class="headerlink" href="#pdfparser.summarizer.remove_repetition" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pdfparser.table_edges_extractor">
+<span id="pdfparser-table-edges-extractor-module"></span><h2>pdfparser.table_edges_extractor module<a class="headerlink" href="#module-pdfparser.table_edges_extractor" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pdfparser.table_edges_extractor.Cell">
+<em class="property">class </em><tt class="descclassname">pdfparser.table_edges_extractor.</tt><tt class="descname">Cell</tt><big>(</big><em>x0</em>, <em>y0</em>, <em>x1</em>, <em>y1</em>, <em>rows=1</em>, <em>columns=1</em><big>)</big><a class="headerlink" href="#pdfparser.table_edges_extractor.Cell" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pdfparser.table_edges_extractor.Cell.contains">
+<tt class="descname">contains</tt><big>(</big><em>coord</em><big>)</big><a class="headerlink" href="#pdfparser.table_edges_extractor.Cell.contains" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.table_edges_extractor.Cell.is_fraction">
+<tt class="descname">is_fraction</tt><big>(</big><em>coord</em><big>)</big><a class="headerlink" href="#pdfparser.table_edges_extractor.Cell.is_fraction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.table_edges_extractor.adjacent">
+<tt class="descclassname">pdfparser.table_edges_extractor.</tt><tt class="descname">adjacent</tt><big>(</big><em>pt1</em>, <em>pt2</em><big>)</big><a class="headerlink" href="#pdfparser.table_edges_extractor.adjacent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.table_edges_extractor.collapse_east">
+<tt class="descclassname">pdfparser.table_edges_extractor.</tt><tt class="descname">collapse_east</tt><big>(</big><em>cell</em>, <em>neighbor_cell</em><big>)</big><a class="headerlink" href="#pdfparser.table_edges_extractor.collapse_east" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.table_edges_extractor.collapse_north">
+<tt class="descclassname">pdfparser.table_edges_extractor.</tt><tt class="descname">collapse_north</tt><big>(</big><em>cell</em>, <em>neighbor_cell</em><big>)</big><a class="headerlink" href="#pdfparser.table_edges_extractor.collapse_north" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.table_edges_extractor.collapse_overlapping">
+<tt class="descclassname">pdfparser.table_edges_extractor.</tt><tt class="descname">collapse_overlapping</tt><big>(</big><em>cell</em>, <em>neighbor_cell</em><big>)</big><a class="headerlink" href="#pdfparser.table_edges_extractor.collapse_overlapping" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.table_edges_extractor.collapse_south">
+<tt class="descclassname">pdfparser.table_edges_extractor.</tt><tt class="descname">collapse_south</tt><big>(</big><em>cell</em>, <em>neighbor_cell</em><big>)</big><a class="headerlink" href="#pdfparser.table_edges_extractor.collapse_south" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.table_edges_extractor.collapse_west">
+<tt class="descclassname">pdfparser.table_edges_extractor.</tt><tt class="descname">collapse_west</tt><big>(</big><em>cell</em>, <em>neighbor_cell</em><big>)</big><a class="headerlink" href="#pdfparser.table_edges_extractor.collapse_west" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.table_edges_extractor.find_outer_edges">
+<tt class="descclassname">pdfparser.table_edges_extractor.</tt><tt class="descname">find_outer_edges</tt><big>(</big><em>cells</em>, <em>nth_recursion=0</em><big>)</big><a class="headerlink" href="#pdfparser.table_edges_extractor.find_outer_edges" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.table_edges_extractor.log">
+<tt class="descclassname">pdfparser.table_edges_extractor.</tt><tt class="descname">log</tt><big>(</big><em>log_text</em><big>)</big><a class="headerlink" href="#pdfparser.table_edges_extractor.log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.table_edges_extractor.same_cell">
+<tt class="descclassname">pdfparser.table_edges_extractor.</tt><tt class="descname">same_cell</tt><big>(</big><em>cell</em>, <em>neighbor_cell</em><big>)</big><a class="headerlink" href="#pdfparser.table_edges_extractor.same_cell" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pdfparser.text_extractor">
+<span id="pdfparser-text-extractor-module"></span><h2>pdfparser.text_extractor module<a class="headerlink" href="#module-pdfparser.text_extractor" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pdfparser.text_extractor.ExtractMode">
+<em class="property">class </em><tt class="descclassname">pdfparser.text_extractor.</tt><tt class="descname">ExtractMode</tt><a class="headerlink" href="#pdfparser.text_extractor.ExtractMode" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="pdfparser.text_extractor.ExtractMode.LAYOUT">
+<tt class="descname">LAYOUT</tt><em class="property"> = 'layout'</em><a class="headerlink" href="#pdfparser.text_extractor.ExtractMode.LAYOUT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pdfparser.text_extractor.ExtractMode.TEXT">
+<tt class="descname">TEXT</tt><em class="property"> = 'text'</em><a class="headerlink" href="#pdfparser.text_extractor.ExtractMode.TEXT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pdfparser.text_extractor.OutputFormat">
+<em class="property">class </em><tt class="descclassname">pdfparser.text_extractor.</tt><tt class="descname">OutputFormat</tt><a class="headerlink" href="#pdfparser.text_extractor.OutputFormat" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="pdfparser.text_extractor.OutputFormat.JSON">
+<tt class="descname">JSON</tt><em class="property"> = 'json'</em><a class="headerlink" href="#pdfparser.text_extractor.OutputFormat.JSON" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pdfparser.text_extractor.OutputFormat.TEXT">
+<tt class="descname">TEXT</tt><em class="property"> = 'text'</em><a class="headerlink" href="#pdfparser.text_extractor.OutputFormat.TEXT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pdfparser.text_extractor.OutputFormat.XML">
+<tt class="descname">XML</tt><em class="property"> = 'xml'</em><a class="headerlink" href="#pdfparser.text_extractor.OutputFormat.XML" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pdfparser.text_extractor.PDFTextExtractor">
+<em class="property">class </em><tt class="descclassname">pdfparser.text_extractor.</tt><tt class="descname">PDFTextExtractor</tt><big>(</big><em>report=None</em>, <em>single_page=None</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.PDFTextExtractor" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pdfparser.text_extractor.PDFTextExtractor.add_fragment">
+<tt class="descname">add_fragment</tt><big>(</big><em>fragment_txt</em>, <em>fragment_type</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.PDFTextExtractor.add_fragment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.text_extractor.PDFTextExtractor.add_text_content">
+<tt class="descname">add_text_content</tt><big>(</big><em>fragment_txt</em>, <em>fragment_type</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.PDFTextExtractor.add_text_content" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.text_extractor.PDFTextExtractor.convert_pdf_layout_to_text">
+<tt class="descname">convert_pdf_layout_to_text</tt><big>(</big><em>pdf_doc</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.PDFTextExtractor.convert_pdf_layout_to_text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.text_extractor.PDFTextExtractor.convert_pdf_to_txt">
+<tt class="descname">convert_pdf_to_txt</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.PDFTextExtractor.convert_pdf_to_txt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.text_extractor.PDFTextExtractor.extract_text">
+<tt class="descname">extract_text</tt><big>(</big><em>pdf_file_path</em>, <em>mode=None</em>, <em>format=None</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.PDFTextExtractor.extract_text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.text_extractor.PDFTextExtractor.parse_figure">
+<tt class="descname">parse_figure</tt><big>(</big><em>lt_objs</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.PDFTextExtractor.parse_figure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.text_extractor.PDFTextExtractor.parse_page_layout">
+<tt class="descname">parse_page_layout</tt><big>(</big><em>lt_objs</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.PDFTextExtractor.parse_page_layout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate through the list of LT* objects and capture the text data contained in each</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.text_extractor.PDFTextExtractor.parse_pages">
+<tt class="descname">parse_pages</tt><big>(</big><em>doc</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.PDFTextExtractor.parse_pages" title="Permalink to this definition">¶</a></dt>
+<dd><p>With an open PDFDocument object, get the pages and parse each one</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.text_extractor.PDFTextExtractor.process_page">
+<tt class="descname">process_page</tt><big>(</big><em>page_txt</em>, <em>page_cells</em>, <em>previous_fragment_type</em>, <em>page_nb</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.PDFTextExtractor.process_page" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.text_extractor.PDFTextExtractor.should_force_raw_extraction">
+<tt class="descname">should_force_raw_extraction</tt><big>(</big><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.PDFTextExtractor.should_force_raw_extraction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.text_extractor.extract_object_text_hash">
+<tt class="descclassname">pdfparser.text_extractor.</tt><tt class="descname">extract_object_text_hash</tt><big>(</big><em>h</em>, <em>lt_obj</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.extract_object_text_hash" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.text_extractor.get_fragment_text">
+<tt class="descclassname">pdfparser.text_extractor.</tt><tt class="descname">get_fragment_text</tt><big>(</big><em>page_txt</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.get_fragment_text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.text_extractor.get_next_fragment_text">
+<tt class="descclassname">pdfparser.text_extractor.</tt><tt class="descname">get_next_fragment_text</tt><big>(</big><em>page_txt</em>, <em>split_coord</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.get_next_fragment_text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.text_extractor.get_previous_fragment_text">
+<tt class="descclassname">pdfparser.text_extractor.</tt><tt class="descname">get_previous_fragment_text</tt><big>(</big><em>page_txt</em>, <em>split_coord</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.get_previous_fragment_text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.text_extractor.re_order_text">
+<tt class="descclassname">pdfparser.text_extractor.</tt><tt class="descname">re_order_text</tt><big>(</big><em>txt</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.re_order_text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.text_extractor.remove_empty_lines">
+<tt class="descclassname">pdfparser.text_extractor.</tt><tt class="descname">remove_empty_lines</tt><big>(</big><em>fragment_txt</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.remove_empty_lines" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.text_extractor.strip_classification">
+<tt class="descclassname">pdfparser.text_extractor.</tt><tt class="descname">strip_classification</tt><big>(</big><em>fragment_txt</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.strip_classification" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove classification
+:param fragment_txt:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.text_extractor.strip_cote">
+<tt class="descclassname">pdfparser.text_extractor.</tt><tt class="descname">strip_cote</tt><big>(</big><em>fragment_txt</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.strip_cote" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove cote and any preceding empty strings
+:param fragment_txt:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.text_extractor.strip_header">
+<tt class="descclassname">pdfparser.text_extractor.</tt><tt class="descname">strip_header</tt><big>(</big><em>fragment_txt</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.strip_header" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>ptrn_classif = re.compile(&#8216;For Official Use|Confidential|Unclassified|A Usage Officiel|&#8217;</dt>
+<dd>&#8216;Confidentiel|Non classifié&#8217;, re.IGNORECASE)</dd>
+</dl>
+<p>ptrn_cote = re.compile(&#8216;^W*([w]+?[()/0-9]+[w]*?)+W*$&#8217;)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.text_extractor.strip_page_number">
+<tt class="descclassname">pdfparser.text_extractor.</tt><tt class="descname">strip_page_number</tt><big>(</big><em>fragment_txt</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.strip_page_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove page number and any trailing empty strings
+:param fragment_txt:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.text_extractor.strip_paragraph_numbers">
+<tt class="descclassname">pdfparser.text_extractor.</tt><tt class="descname">strip_paragraph_numbers</tt><big>(</big><em>fragment_txt</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.strip_paragraph_numbers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.text_extractor.to_bytestring">
+<tt class="descclassname">pdfparser.text_extractor.</tt><tt class="descname">to_bytestring</tt><big>(</big><em>s</em>, <em>enc='utf-8'</em><big>)</big><a class="headerlink" href="#pdfparser.text_extractor.to_bytestring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the given unicode string to a bytestring, using the standard encoding,
+unless it&#8217;s already a bytestring</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pdfparser.text_table_extractor">
+<span id="pdfparser-text-table-extractor-module"></span><h2>pdfparser.text_table_extractor module<a class="headerlink" href="#module-pdfparser.text_table_extractor" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pdfparser.text_table_extractor.Cell">
+<em class="property">class </em><tt class="descclassname">pdfparser.text_table_extractor.</tt><tt class="descname">Cell</tt><big>(</big><em>x0</em>, <em>y0</em>, <em>x1</em>, <em>y1</em>, <em>rows=1</em>, <em>columns=1</em><big>)</big><a class="headerlink" href="#pdfparser.text_table_extractor.Cell" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pdfparser.text_table_extractor.Cell.absorb">
+<tt class="descname">absorb</tt><big>(</big><em>cell</em><big>)</big><a class="headerlink" href="#pdfparser.text_table_extractor.Cell.absorb" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.text_table_extractor.Cell.get_height">
+<tt class="descname">get_height</tt><big>(</big><big>)</big><a class="headerlink" href="#pdfparser.text_table_extractor.Cell.get_height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.text_table_extractor.Cell.get_width">
+<tt class="descname">get_width</tt><big>(</big><big>)</big><a class="headerlink" href="#pdfparser.text_table_extractor.Cell.get_width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pdfparser.text_table_extractor.Row">
+<em class="property">class </em><tt class="descclassname">pdfparser.text_table_extractor.</tt><tt class="descname">Row</tt><a class="headerlink" href="#pdfparser.text_table_extractor.Row" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pdfparser.text_table_extractor.Row.add_cell">
+<tt class="descname">add_cell</tt><big>(</big><em>cell</em><big>)</big><a class="headerlink" href="#pdfparser.text_table_extractor.Row.add_cell" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.text_table_extractor.Row.aligned">
+<tt class="descname">aligned</tt><big>(</big><em>cell</em><big>)</big><a class="headerlink" href="#pdfparser.text_table_extractor.Row.aligned" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.text_table_extractor.Row.included">
+<tt class="descname">included</tt><big>(</big><em>cell</em><big>)</big><a class="headerlink" href="#pdfparser.text_table_extractor.Row.included" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.text_table_extractor.Row.update_boundaries">
+<tt class="descname">update_boundaries</tt><big>(</big><em>cell</em><big>)</big><a class="headerlink" href="#pdfparser.text_table_extractor.Row.update_boundaries" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pdfparser.text_table_extractor.Table">
+<em class="property">class </em><tt class="descclassname">pdfparser.text_table_extractor.</tt><tt class="descname">Table</tt><a class="headerlink" href="#pdfparser.text_table_extractor.Table" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pdfparser.text_table_extractor.Table.add_cells">
+<tt class="descname">add_cells</tt><big>(</big><em>row</em><big>)</big><a class="headerlink" href="#pdfparser.text_table_extractor.Table.add_cells" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.text_table_extractor.Table.add_row">
+<tt class="descname">add_row</tt><big>(</big><em>row</em><big>)</big><a class="headerlink" href="#pdfparser.text_table_extractor.Table.add_row" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.text_table_extractor.Table.candidate_cells">
+<tt class="descname">candidate_cells</tt><big>(</big><em>page_width</em><big>)</big><a class="headerlink" href="#pdfparser.text_table_extractor.Table.candidate_cells" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.text_table_extractor.Table.included">
+<tt class="descname">included</tt><big>(</big><em>cell</em><big>)</big><a class="headerlink" href="#pdfparser.text_table_extractor.Table.included" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pdfparser.text_table_extractor.Table.update_boundaries">
+<tt class="descname">update_boundaries</tt><big>(</big><em>cell</em><big>)</big><a class="headerlink" href="#pdfparser.text_table_extractor.Table.update_boundaries" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.text_table_extractor.compare_cells">
+<tt class="descclassname">pdfparser.text_table_extractor.</tt><tt class="descname">compare_cells</tt><big>(</big><em>cell</em><big>)</big><a class="headerlink" href="#pdfparser.text_table_extractor.compare_cells" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter function used to compare cells
+:param cell:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pdfparser.text_table_extractor.find_table_cells">
+<tt class="descclassname">pdfparser.text_table_extractor.</tt><tt class="descname">find_table_cells</tt><big>(</big><em>cells</em><big>)</big><a class="headerlink" href="#pdfparser.text_table_extractor.find_table_cells" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pdfparser">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pdfparser" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pdfparser package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pdfparser.pdf_fragment_type">pdfparser.pdf_fragment_type module</a></li>
+<li><a class="reference internal" href="#module-pdfparser.pdf_page_filter">pdfparser.pdf_page_filter module</a></li>
+<li><a class="reference internal" href="#module-pdfparser.report">pdfparser.report module</a></li>
+<li><a class="reference internal" href="#module-pdfparser.summarizer">pdfparser.summarizer module</a></li>
+<li><a class="reference internal" href="#module-pdfparser.table_edges_extractor">pdfparser.table_edges_extractor module</a></li>
+<li><a class="reference internal" href="#module-pdfparser.text_extractor">pdfparser.text_extractor module</a></li>
+<li><a class="reference internal" href="#module-pdfparser.text_table_extractor">pdfparser.text_table_extractor module</a></li>
+<li><a class="reference internal" href="#module-pdfparser">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/pdfparser.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Text Mining Tools 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2016, S. Varin.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

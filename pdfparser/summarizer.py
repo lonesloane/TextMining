@@ -16,7 +16,8 @@ import indexfiles.loader as loader
 PROJECT_FOLDER = _config.get('MAIN', 'project_folder')
 PDF_ROOT_FOLDER = os.path.join(PROJECT_FOLDER, 'pdfs')
 LANGUAGE = "english"  # TODO: identify pdf language
-SENTENCES_COUNT = _config.getfloat('MAIN', 'SENTENCES_COUNT') # TODO: make parameter based on length of submitted text
+# TODO: make parameter based on length of submitted text
+SENTENCES_COUNT = _config.getfloat('MAIN', 'SENTENCES_COUNT')
 
 
 class PDFSummarizer:

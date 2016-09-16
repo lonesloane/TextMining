@@ -606,8 +606,8 @@ class PdfPageFilterTestCase(unittest.TestCase):
         self.assertEqual(expected, actual)
 
         # TODO: need to fix this! Looks like we will never be able to identify glossary continuation!
-        txt = u'\nSome random text\n'
-        txt += u'\nATM – Agriculture Trade and Markets division of TAD\n'
+        txt = '\nSome random text\n'
+        txt += '\nCOAG – Committee for Agriculture of the OECD\n'
         expected = 1
         actual = len(filter.PDFPageFilter.match_glossary_structure(txt))
         self.assertEqual(expected, actual)
@@ -924,9 +924,11 @@ class PdfPageFilterTestCase(unittest.TestCase):
         actual = len(filter.PDFPageFilter.match_participants_names(txt))
         self.assertEqual(expected, actual)
 
+#        txt += '\nMr. Christian HEDERER, Counsellor for Energy, Trade, Industry and Science\n'
         txt += '\nMs. Maria-Antoinetta SIMONS, Permanent Delegation of Belgium to the OECD\n'
         expected = 9
         actual = len(filter.PDFPageFilter.match_participants_names(txt))
+        print filter.PDFPageFilter.match_participants_names(txt)
         self.assertEqual(expected, actual)
 
     def test_match_participants_emails(self):

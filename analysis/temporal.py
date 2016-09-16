@@ -160,4 +160,5 @@ def main():
     frequency_extractor.export_as_csv(csv_filename=csv_file)
 
 if __name__ == '__main__':
-    main()
+    pass
+    #main()

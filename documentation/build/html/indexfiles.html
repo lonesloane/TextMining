@@ -1,0 +1,443 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>indexfiles package &mdash; Text Mining Tools 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="Text Mining Tools 1.0 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Text Mining Tools 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="indexfiles-package">
+<h1>indexfiles package<a class="headerlink" href="#indexfiles-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-indexfiles.loader">
+<span id="indexfiles-loader-module"></span><h2>indexfiles.loader module<a class="headerlink" href="#module-indexfiles.loader" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="indexfiles.loader.FilesDatesIndex">
+<em class="property">class </em><tt class="descclassname">indexfiles.loader.</tt><tt class="descname">FilesDatesIndex</tt><big>(</big><em>index_filename=None</em><big>)</big><a class="headerlink" href="#indexfiles.loader.FilesDatesIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#indexfiles.loader.Index" title="indexfiles.loader.Index"><tt class="xref py py-class docutils literal"><span class="pre">indexfiles.loader.Index</span></tt></a></p>
+<dl class="attribute">
+<dt id="indexfiles.loader.FilesDatesIndex.default_index_filename">
+<tt class="descname">default_index_filename</tt><em class="property"> = '../output/Files_Dates_Index'</em><a class="headerlink" href="#indexfiles.loader.FilesDatesIndex.default_index_filename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="indexfiles.loader.FilesDatesIndex.get_date_for_file">
+<tt class="descname">get_date_for_file</tt><big>(</big><em>target_file</em><big>)</big><a class="headerlink" href="#indexfiles.loader.FilesDatesIndex.get_date_for_file" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>target_file</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">sorted list of topics</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="indexfiles.loader.FilesIndex">
+<em class="property">class </em><tt class="descclassname">indexfiles.loader.</tt><tt class="descname">FilesIndex</tt><big>(</big><em>index_filename=None</em><big>)</big><a class="headerlink" href="#indexfiles.loader.FilesIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#indexfiles.loader.Index" title="indexfiles.loader.Index"><tt class="xref py py-class docutils literal"><span class="pre">indexfiles.loader.Index</span></tt></a></p>
+<dl class="attribute">
+<dt id="indexfiles.loader.FilesIndex.default_index_filename">
+<tt class="descname">default_index_filename</tt><em class="property"> = '../output/Files_Index'</em><a class="headerlink" href="#indexfiles.loader.FilesIndex.default_index_filename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="indexfiles.loader.FilesIndex.get_enrichment_for_files">
+<tt class="descname">get_enrichment_for_files</tt><big>(</big><em>target_file</em><big>)</big><a class="headerlink" href="#indexfiles.loader.FilesIndex.get_enrichment_for_files" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>target_file</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="indexfiles.loader.FilesIndex.get_topics_for_files">
+<tt class="descname">get_topics_for_files</tt><big>(</big><em>target_file</em><big>)</big><a class="headerlink" href="#indexfiles.loader.FilesIndex.get_topics_for_files" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>target_file</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">sorted list of topics</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="indexfiles.loader.Index">
+<em class="property">class </em><tt class="descclassname">indexfiles.loader.</tt><tt class="descname">Index</tt><big>(</big><em>index_filename</em><big>)</big><a class="headerlink" href="#indexfiles.loader.Index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for all index objects.</p>
+<dl class="attribute">
+<dt id="indexfiles.loader.Index.index">
+<tt class="descname">index</tt><a class="headerlink" href="#indexfiles.loader.Index.index" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="indexfiles.loader.TopicsIndex">
+<em class="property">class </em><tt class="descclassname">indexfiles.loader.</tt><tt class="descname">TopicsIndex</tt><big>(</big><em>index_filename=None</em><big>)</big><a class="headerlink" href="#indexfiles.loader.TopicsIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#indexfiles.loader.Index" title="indexfiles.loader.Index"><tt class="xref py py-class docutils literal"><span class="pre">indexfiles.loader.Index</span></tt></a></p>
+<dl class="attribute">
+<dt id="indexfiles.loader.TopicsIndex.default_index_filename">
+<tt class="descname">default_index_filename</tt><em class="property"> = '../output/Topics_Index'</em><a class="headerlink" href="#indexfiles.loader.TopicsIndex.default_index_filename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="indexfiles.loader.TopicsIndex.get_labels_for_topic_id">
+<tt class="descname">get_labels_for_topic_id</tt><big>(</big><em>topic_id</em><big>)</big><a class="headerlink" href="#indexfiles.loader.TopicsIndex.get_labels_for_topic_id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topic_id</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="indexfiles.loader.TopicsIndex.get_topic_for_topic_id">
+<tt class="descname">get_topic_for_topic_id</tt><big>(</big><em>topic_id</em><big>)</big><a class="headerlink" href="#indexfiles.loader.TopicsIndex.get_topic_for_topic_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="indexfiles.loader.TopicsLabelsIndex">
+<em class="property">class </em><tt class="descclassname">indexfiles.loader.</tt><tt class="descname">TopicsLabelsIndex</tt><big>(</big><em>index_filename=None</em><big>)</big><a class="headerlink" href="#indexfiles.loader.TopicsLabelsIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#indexfiles.loader.Index" title="indexfiles.loader.Index"><tt class="xref py py-class docutils literal"><span class="pre">indexfiles.loader.Index</span></tt></a></p>
+<dl class="attribute">
+<dt id="indexfiles.loader.TopicsLabelsIndex.default_index_filename">
+<tt class="descname">default_index_filename</tt><em class="property"> = '../output/Topics_Labels_Index'</em><a class="headerlink" href="#indexfiles.loader.TopicsLabelsIndex.default_index_filename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="indexfiles.loader.TopicsLabelsIndex.get_topic_id_for_label">
+<tt class="descname">get_topic_id_for_label</tt><big>(</big><em>target_topic</em><big>)</big><a class="headerlink" href="#indexfiles.loader.TopicsLabelsIndex.get_topic_id_for_label" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>target_topic</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="indexfiles.loader.TopicsOccurrencesIndex">
+<em class="property">class </em><tt class="descclassname">indexfiles.loader.</tt><tt class="descname">TopicsOccurrencesIndex</tt><big>(</big><em>index_filename=None</em><big>)</big><a class="headerlink" href="#indexfiles.loader.TopicsOccurrencesIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#indexfiles.loader.Index" title="indexfiles.loader.Index"><tt class="xref py py-class docutils literal"><span class="pre">indexfiles.loader.Index</span></tt></a></p>
+<dl class="attribute">
+<dt id="indexfiles.loader.TopicsOccurrencesIndex.default_index_filename">
+<tt class="descname">default_index_filename</tt><em class="property"> = '../output/Topics_Occurrences_Index'</em><a class="headerlink" href="#indexfiles.loader.TopicsOccurrencesIndex.default_index_filename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="indexfiles.loader.TopicsOccurrencesIndex.get_files_for_topic">
+<tt class="descname">get_files_for_topic</tt><big>(</big><em>topic</em><big>)</big><a class="headerlink" href="#indexfiles.loader.TopicsOccurrencesIndex.get_files_for_topic" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topic</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="indexfiles.loader.TopicsTypeAheadIndex">
+<em class="property">class </em><tt class="descclassname">indexfiles.loader.</tt><tt class="descname">TopicsTypeAheadIndex</tt><big>(</big><em>index_filename=None</em><big>)</big><a class="headerlink" href="#indexfiles.loader.TopicsTypeAheadIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#indexfiles.loader.Index" title="indexfiles.loader.Index"><tt class="xref py py-class docutils literal"><span class="pre">indexfiles.loader.Index</span></tt></a></p>
+<dl class="method">
+<dt id="indexfiles.loader.TopicsTypeAheadIndex.auto_complete">
+<tt class="descname">auto_complete</tt><big>(</big><em>root</em><big>)</big><a class="headerlink" href="#indexfiles.loader.TopicsTypeAheadIndex.auto_complete" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>root</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="indexfiles.loader.TopicsTypeAheadIndex.default_index_filename">
+<tt class="descname">default_index_filename</tt><em class="property"> = '../output/Topics_Typeahead_Index'</em><a class="headerlink" href="#indexfiles.loader.TopicsTypeAheadIndex.default_index_filename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="indexfiles.loader.main">
+<tt class="descclassname">indexfiles.loader.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="headerlink" href="#indexfiles.loader.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-indexfiles.validator">
+<span id="indexfiles-validator-module"></span><h2>indexfiles.validator module<a class="headerlink" href="#module-indexfiles.validator" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="indexfiles.validator.main">
+<tt class="descclassname">indexfiles.validator.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="headerlink" href="#indexfiles.validator.main" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="indexfiles.validator.validate_files_dates_index">
+<tt class="descclassname">indexfiles.validator.</tt><tt class="descname">validate_files_dates_index</tt><big>(</big><em>files_dates_index</em><big>)</big><a class="headerlink" href="#indexfiles.validator.validate_files_dates_index" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>files_dates_index</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="indexfiles.validator.validate_files_index">
+<tt class="descclassname">indexfiles.validator.</tt><tt class="descname">validate_files_index</tt><big>(</big><em>files_index</em><big>)</big><a class="headerlink" href="#indexfiles.validator.validate_files_index" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>files_index</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="indexfiles.validator.validate_topics_index">
+<tt class="descclassname">indexfiles.validator.</tt><tt class="descname">validate_topics_index</tt><big>(</big><em>topics_index</em><big>)</big><a class="headerlink" href="#indexfiles.validator.validate_topics_index" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topics_index</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="indexfiles.validator.validate_topics_index_highly">
+<tt class="descclassname">indexfiles.validator.</tt><tt class="descname">validate_topics_index_highly</tt><big>(</big><em>topics_index</em><big>)</big><a class="headerlink" href="#indexfiles.validator.validate_topics_index_highly" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topics_index</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="indexfiles.validator.validate_topics_labels_index">
+<tt class="descclassname">indexfiles.validator.</tt><tt class="descname">validate_topics_labels_index</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#indexfiles.validator.validate_topics_labels_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="indexfiles.validator.validate_topics_occurrences_index">
+<tt class="descclassname">indexfiles.validator.</tt><tt class="descname">validate_topics_occurrences_index</tt><big>(</big><em>topics_occurrences_index</em><big>)</big><a class="headerlink" href="#indexfiles.validator.validate_topics_occurrences_index" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topics_occurrences_index</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="indexfiles.validator.validate_typeahead_index">
+<tt class="descclassname">indexfiles.validator.</tt><tt class="descname">validate_typeahead_index</tt><big>(</big><em>typeahead_index</em><big>)</big><a class="headerlink" href="#indexfiles.validator.validate_typeahead_index" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>typeahead_index</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="indexfiles.validator.validate_typeahead_index_highly">
+<tt class="descclassname">indexfiles.validator.</tt><tt class="descname">validate_typeahead_index_highly</tt><big>(</big><em>typeahead_index</em><big>)</big><a class="headerlink" href="#indexfiles.validator.validate_typeahead_index_highly" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>typeahead_index</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-indexfiles">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-indexfiles" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">indexfiles package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-indexfiles.loader">indexfiles.loader module</a></li>
+<li><a class="reference internal" href="#module-indexfiles.validator">indexfiles.validator module</a></li>
+<li><a class="reference internal" href="#module-indexfiles">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/indexfiles.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Text Mining Tools 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2016, S. Varin.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

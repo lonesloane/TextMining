@@ -1,0 +1,643 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>analysis package &mdash; Text Mining Tools 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="Text Mining Tools 1.0 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Text Mining Tools 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="analysis-package">
+<h1>analysis package<a class="headerlink" href="#analysis-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-analysis.cooccurrence_extractor">
+<span id="analysis-cooccurrence-extractor-module"></span><h2>analysis.cooccurrence_extractor module<a class="headerlink" href="#module-analysis.cooccurrence_extractor" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="analysis.cooccurrence_extractor.CoOccurrenceExtractor">
+<em class="property">class </em><tt class="descclassname">analysis.cooccurrence_extractor.</tt><tt class="descname">CoOccurrenceExtractor</tt><big>(</big><em>topics_occurrences_index_filename=None</em>, <em>files_index_filename=None</em>, <em>depth=15</em><big>)</big><a class="headerlink" href="#analysis.cooccurrence_extractor.CoOccurrenceExtractor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use this class to extract all co-occurrences of topics in the corpus, using the index of occurrences.</p>
+<p>Updates the index of topics and creates the co-occurrence index.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>topics_occurrences_index_filename</strong> &#8211; name of the file containing the index of files per topic</li>
+<li><strong>files_index_filename</strong> &#8211; name of the file containing the index of topics per file</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="staticmethod">
+<dt id="analysis.cooccurrence_extractor.CoOccurrenceExtractor.build_composite_key">
+<em class="property">static </em><tt class="descname">build_composite_key</tt><big>(</big><em>root_topic</em>, <em>cooccurrence_topic</em><big>)</big><a class="headerlink" href="#analysis.cooccurrence_extractor.CoOccurrenceExtractor.build_composite_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds a new composite index key from a root and a cooccurrence topic</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>root_topic</strong> &#8211; nb1-nb2-(...)-nbn</li>
+<li><strong>cooccurrence_topic</strong> &#8211; nbx</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">nb1-nb2-(...-nbx-...)-nbn</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis.cooccurrence_extractor.CoOccurrenceExtractor.extract">
+<tt class="descname">extract</tt><big>(</big><big>)</big><a class="headerlink" href="#analysis.cooccurrence_extractor.CoOccurrenceExtractor.extract" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis.cooccurrence_extractor.CoOccurrenceExtractor.extract_cooccurrences">
+<tt class="descname">extract_cooccurrences</tt><big>(</big><em>root_topic</em>, <em>map_file</em><big>)</big><a class="headerlink" href="#analysis.cooccurrence_extractor.CoOccurrenceExtractor.extract_cooccurrences" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>root_topic</strong> &#8211; </li>
+<li><strong>map_file</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis.cooccurrence_extractor.CoOccurrenceExtractor.find_cooccurrences">
+<tt class="descname">find_cooccurrences</tt><big>(</big><em>target</em><big>)</big><a class="headerlink" href="#analysis.cooccurrence_extractor.CoOccurrenceExtractor.find_cooccurrences" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>target</strong> &#8211; topic for which to find co_occurrences</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="analysis.cooccurrence_extractor.CoOccurrenceExtractor.is_used_topic">
+<em class="property">static </em><tt class="descname">is_used_topic</tt><big>(</big><em>target_topic</em>, <em>topic</em><big>)</big><a class="headerlink" href="#analysis.cooccurrence_extractor.CoOccurrenceExtractor.is_used_topic" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>target_topic</strong> &#8211; </li>
+<li><strong>topic</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.cooccurrence_extractor.CoOccurrenceExtractor.topics_occurrences_table">
+<tt class="descname">topics_occurrences_table</tt><a class="headerlink" href="#analysis.cooccurrence_extractor.CoOccurrenceExtractor.topics_occurrences_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="analysis.cooccurrence_extractor.main">
+<tt class="descclassname">analysis.cooccurrence_extractor.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="headerlink" href="#analysis.cooccurrence_extractor.main" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-analysis.corpus">
+<span id="analysis-corpus-module"></span><h2>analysis.corpus module<a class="headerlink" href="#module-analysis.corpus" title="Permalink to this headline">¶</a></h2>
+<p>Use this module to process Temis semantic enrichment files and generate
+the various index files which are used by the Rest API and the web-client applications</p>
+<dl class="class">
+<dt id="analysis.corpus.Analyzer">
+<em class="property">class </em><tt class="descclassname">analysis.corpus.</tt><tt class="descname">Analyzer</tt><big>(</big><em>corpus_root_folder=None</em><big>)</big><a class="headerlink" href="#analysis.corpus.Analyzer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use this class to analyze the topics repartition across the given corpus.</p>
+<p>Builds the various dictionaries for the files and their associated topics</p>
+<dl class="attribute">
+<dt id="analysis.corpus.Analyzer.CORPUS_ROOT_FOLDER_DEFAULT">
+<tt class="descname">CORPUS_ROOT_FOLDER_DEFAULT</tt><em class="property"> = '~/Corpus'</em><a class="headerlink" href="#analysis.corpus.Analyzer.CORPUS_ROOT_FOLDER_DEFAULT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.corpus.Analyzer.LOG_LEVEL_DEFAULT">
+<tt class="descname">LOG_LEVEL_DEFAULT</tt><em class="property"> = 10</em><a class="headerlink" href="#analysis.corpus.Analyzer.LOG_LEVEL_DEFAULT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="analysis.corpus.Analyzer.duplicates_finder">
+<em class="property">static </em><tt class="descname">duplicates_finder</tt><big>(</big><big>)</big><a class="headerlink" href="#analysis.corpus.Analyzer.duplicates_finder" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis.corpus.Analyzer.extract_indexes">
+<tt class="descname">extract_indexes</tt><big>(</big><em>files_index_filename=None</em>, <em>files_dates_index_filename=None</em>, <em>topics_occurrences_index_filename=None</em>, <em>topics_index_filename=None</em>, <em>only_highly_relevant=False</em><big>)</big><a class="headerlink" href="#analysis.corpus.Analyzer.extract_indexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyze the corpus, builds and saves index files</p>
+<p>This function saves the following indexes:</p>
+<ul class="simple">
+<li>files index: for each file (i.e. JT000XXX.xml), list of (topic, relevance)</li>
+<li>topics occurrences index: for each topic, list of (file, relevance)</li>
+<li>topics index: for each topic, (english label, french label)</li>
+<li>file dates index: for each file, the date of publication</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>only_highly_relevant</strong> (<em>bool</em>) &#8211; set to true to extract only highly relevant topics</li>
+<li><strong>topics_index_filename</strong> (<em>str</em>) &#8211; name of the file for the topics index</li>
+<li><strong>topics_occurrences_index_filename</strong> (<em>str</em>) &#8211; name of the file for the topics occurrences index</li>
+<li><strong>files_dates_index_filename</strong> (<em>str</em>) &#8211; name of the file for the file dates index</li>
+<li><strong>files_index_filename</strong> (<em>str</em>) &#8211; name of the file for the files index</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">self</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="analysis.corpus.Analyzer.extract_topics_labels_index">
+<em class="property">static </em><tt class="descname">extract_topics_labels_index</tt><big>(</big><em>topics_index_filename</em>, <em>topics_labels_index_filename</em><big>)</big><a class="headerlink" href="#analysis.corpus.Analyzer.extract_topics_labels_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds an index of (label_english, label_french) for all topics from the data found in topics_index_filename</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>topics_index_filename</strong> &#8211; file containing the index of topics ids</li>
+<li><strong>topics_labels_index_filename</strong> &#8211; file where the topics labels index will be saved</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="analysis.corpus.Analyzer.load_topics_index">
+<em class="property">static </em><tt class="descname">load_topics_index</tt><big>(</big><em>topics_index_filename</em><big>)</big><a class="headerlink" href="#analysis.corpus.Analyzer.load_topics_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads index from file system</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topics_index_filename</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="analysis.corpus.Analyzer.shelve_index">
+<em class="property">static </em><tt class="descname">shelve_index</tt><big>(</big><em>index_filename</em>, <em>index_data</em><big>)</big><a class="headerlink" href="#analysis.corpus.Analyzer.shelve_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the index to the file system.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>index_filename</strong> &#8211; </li>
+<li><strong>index_data</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="analysis.corpus.extract_indexes">
+<tt class="descclassname">analysis.corpus.</tt><tt class="descname">extract_indexes</tt><big>(</big><em>corpus_root</em>, <em>topics_occurrences_index</em>, <em>topics_index</em>, <em>files_index</em>, <em>files_dates_index</em><big>)</big><a class="headerlink" href="#analysis.corpus.extract_indexes" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="analysis.corpus.extract_topics_labels_index">
+<tt class="descclassname">analysis.corpus.</tt><tt class="descname">extract_topics_labels_index</tt><big>(</big><em>topics_index</em>, <em>topics_labels_index</em><big>)</big><a class="headerlink" href="#analysis.corpus.extract_topics_labels_index" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="analysis.corpus.get_date_from_folder">
+<tt class="descclassname">analysis.corpus.</tt><tt class="descname">get_date_from_folder</tt><big>(</big><em>folder</em><big>)</big><a class="headerlink" href="#analysis.corpus.get_date_from_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract date from folder name.</p>
+<p>Assumes folder ends with xxx/year/month/day</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>folder</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">date (YYYY-MM-DD)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="analysis.corpus.main">
+<tt class="descclassname">analysis.corpus.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="headerlink" href="#analysis.corpus.main" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-analysis.temporal">
+<span id="analysis-temporal-module"></span><h2>analysis.temporal module<a class="headerlink" href="#module-analysis.temporal" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="analysis.temporal.Frequency">
+<em class="property">class </em><tt class="descclassname">analysis.temporal.</tt><tt class="descname">Frequency</tt><a class="headerlink" href="#analysis.temporal.Frequency" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="analysis.temporal.Frequency.ANNUAL">
+<tt class="descname">ANNUAL</tt><em class="property"> = 'annual'</em><a class="headerlink" href="#analysis.temporal.Frequency.ANNUAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.temporal.Frequency.MONTHLY">
+<tt class="descname">MONTHLY</tt><em class="property"> = 'monthly'</em><a class="headerlink" href="#analysis.temporal.Frequency.MONTHLY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="analysis.temporal.TopicsFrequencyExtractor">
+<em class="property">class </em><tt class="descclassname">analysis.temporal.</tt><tt class="descname">TopicsFrequencyExtractor</tt><big>(</big><em>topics_occurrences_index_filename</em>, <em>files_dates_index_filename</em>, <em>topics_index_filename</em>, <em>highly_relevant_only=True</em><big>)</big><a class="headerlink" href="#analysis.temporal.TopicsFrequencyExtractor" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="analysis.temporal.TopicsFrequencyExtractor.build_index">
+<tt class="descname">build_index</tt><big>(</big><em>target_frequency</em><big>)</big><a class="headerlink" href="#analysis.temporal.TopicsFrequencyExtractor.build_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.temporal.TopicsFrequencyExtractor.export_as_csv">
+<tt class="descname">export_as_csv</tt><big>(</big><em>csv_filename</em>, <em>frequency='annual'</em><big>)</big><a class="headerlink" href="#analysis.temporal.TopicsFrequencyExtractor.export_as_csv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.temporal.TopicsFrequencyExtractor.extract_dates_for_topics">
+<tt class="descname">extract_dates_for_topics</tt><big>(</big><big>)</big><a class="headerlink" href="#analysis.temporal.TopicsFrequencyExtractor.extract_dates_for_topics" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.temporal.TopicsFrequencyExtractor.fill_annual_frequencies">
+<tt class="descname">fill_annual_frequencies</tt><big>(</big><big>)</big><a class="headerlink" href="#analysis.temporal.TopicsFrequencyExtractor.fill_annual_frequencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.temporal.TopicsFrequencyExtractor.fill_monthly_frequencies">
+<tt class="descname">fill_monthly_frequencies</tt><big>(</big><big>)</big><a class="headerlink" href="#analysis.temporal.TopicsFrequencyExtractor.fill_monthly_frequencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.temporal.TopicsFrequencyExtractor.shelve_index">
+<tt class="descname">shelve_index</tt><big>(</big><em>output_index_filename</em><big>)</big><a class="headerlink" href="#analysis.temporal.TopicsFrequencyExtractor.shelve_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the index on the file system.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>output_index_filename</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis.temporal.TopicsFrequencyExtractor.update_min_max_year">
+<tt class="descname">update_min_max_year</tt><big>(</big><em>occurrence_date</em><big>)</big><a class="headerlink" href="#analysis.temporal.TopicsFrequencyExtractor.update_min_max_year" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="analysis.temporal.average">
+<tt class="descclassname">analysis.temporal.</tt><tt class="descname">average</tt><big>(</big><em>_list</em><big>)</big><a class="headerlink" href="#analysis.temporal.average" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="analysis.temporal.main">
+<tt class="descclassname">analysis.temporal.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="headerlink" href="#analysis.temporal.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-analysis.topics_typeahead">
+<span id="analysis-topics-typeahead-module"></span><h2>analysis.topics_typeahead module<a class="headerlink" href="#module-analysis.topics_typeahead" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="analysis.topics_typeahead.TopicsTypeaheadBuilder">
+<em class="property">class </em><tt class="descclassname">analysis.topics_typeahead.</tt><tt class="descname">TopicsTypeaheadBuilder</tt><big>(</big><em>input_index_filename=None</em><big>)</big><a class="headerlink" href="#analysis.topics_typeahead.TopicsTypeaheadBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="analysis.topics_typeahead.TopicsTypeaheadBuilder.LOG_LEVEL_DEFAULT">
+<tt class="descname">LOG_LEVEL_DEFAULT</tt><em class="property"> = 20</em><a class="headerlink" href="#analysis.topics_typeahead.TopicsTypeaheadBuilder.LOG_LEVEL_DEFAULT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.topics_typeahead.TopicsTypeaheadBuilder.build">
+<tt class="descname">build</tt><big>(</big><big>)</big><a class="headerlink" href="#analysis.topics_typeahead.TopicsTypeaheadBuilder.build" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis.topics_typeahead.TopicsTypeaheadBuilder.save_index">
+<tt class="descname">save_index</tt><big>(</big><em>topics_typeahead_json_filename</em><big>)</big><a class="headerlink" href="#analysis.topics_typeahead.TopicsTypeaheadBuilder.save_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="analysis.topics_typeahead.main">
+<tt class="descclassname">analysis.topics_typeahead.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="headerlink" href="#analysis.topics_typeahead.main" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="analysis.topics_typeahead.tokenize">
+<tt class="descclassname">analysis.topics_typeahead.</tt><tt class="descname">tokenize</tt><big>(</big><em>sentence</em><big>)</big><a class="headerlink" href="#analysis.topics_typeahead.tokenize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simplistic tokenize function (to be improved later...)
+:param sentence:
+:return:</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-analysis.typeahead">
+<span id="analysis-typeahead-module"></span><h2>analysis.typeahead module<a class="headerlink" href="#module-analysis.typeahead" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="analysis.typeahead.IndexBuilder">
+<em class="property">class </em><tt class="descclassname">analysis.typeahead.</tt><tt class="descname">IndexBuilder</tt><big>(</big><em>input_index_filename=None</em><big>)</big><a class="headerlink" href="#analysis.typeahead.IndexBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class used to build an index of N-grams required to provide type-ahead functionality</p>
+<dl class="attribute">
+<dt id="analysis.typeahead.IndexBuilder.LOG_LEVEL_DEFAULT">
+<tt class="descname">LOG_LEVEL_DEFAULT</tt><em class="property"> = 20</em><a class="headerlink" href="#analysis.typeahead.IndexBuilder.LOG_LEVEL_DEFAULT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.typeahead.IndexBuilder.build">
+<tt class="descname">build</tt><big>(</big><em>topics_index=None</em>, <em>ignored_topics_ids=None</em><big>)</big><a class="headerlink" href="#analysis.typeahead.IndexBuilder.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processes all english topic labels found in the index.</p>
+<p>Splits compound terms. Parses all individual letters and builds the index
+of all N-grams associated with the topic label</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>topics_index</strong> &#8211; </li>
+<li><strong>ignored_topics_ids</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="analysis.typeahead.IndexBuilder.extract_n_grams">
+<em class="property">static </em><tt class="descname">extract_n_grams</tt><big>(</big><em>labels</em>, <em>ignored_labels=None</em><big>)</big><a class="headerlink" href="#analysis.typeahead.IndexBuilder.extract_n_grams" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>labels</strong> &#8211; </li>
+<li><strong>ignored_labels</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis.typeahead.IndexBuilder.shelve_index">
+<tt class="descname">shelve_index</tt><big>(</big><em>output_index_filename</em><big>)</big><a class="headerlink" href="#analysis.typeahead.IndexBuilder.shelve_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the index on the file system.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>output_index_filename</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="analysis.typeahead.main">
+<tt class="descclassname">analysis.typeahead.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="headerlink" href="#analysis.typeahead.main" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-analysis">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-analysis" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">analysis package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-analysis.cooccurrence_extractor">analysis.cooccurrence_extractor module</a></li>
+<li><a class="reference internal" href="#module-analysis.corpus">analysis.corpus module</a></li>
+<li><a class="reference internal" href="#module-analysis.temporal">analysis.temporal module</a></li>
+<li><a class="reference internal" href="#module-analysis.topics_typeahead">analysis.topics_typeahead module</a></li>
+<li><a class="reference internal" href="#module-analysis.typeahead">analysis.typeahead module</a></li>
+<li><a class="reference internal" href="#module-analysis">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/analysis.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Text Mining Tools 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2016, S. Varin.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

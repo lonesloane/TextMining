@@ -1,6 +1,13 @@
+
 class FragmentType:
+    """
+
+    """
 
     def __init__(self):
+        """
+
+        """
         pass
 
     UNKNOWN = 'undetermined'

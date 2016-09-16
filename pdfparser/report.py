@@ -1,5 +1,13 @@
+
 class Report:
+    """
+
+    """
+
     def __init__(self):
+        """
+
+        """
         self.tables = 0
         self.toc = 0
         self.cover_page = 0

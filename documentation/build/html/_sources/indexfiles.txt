@@ -4,16 +4,16 @@ indexfiles package
 Submodules
 ----------
 
-index.loader module
--------------------
+indexfiles.loader module
+------------------------
 
 .. automodule:: indexfiles.loader
     :members:
     :undoc-members:
     :show-inheritance:
 
-index.validator module
-----------------------
+indexfiles.validator module
+---------------------------
 
 .. automodule:: indexfiles.validator
     :members:

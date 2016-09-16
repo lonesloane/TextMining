@@ -1,4 +1,4 @@
-#!local_py_env/bin/python2.7
+#!env/bin/python2.7
 import os
 import re
 
@@ -7,7 +7,7 @@ import sys
 import pdfparser.report
 import pdfparser.text_extractor as text_extractor
 
-PDF_ROOT_FOLDER = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testPDF/pdfs'
+PDF_ROOT_FOLDER = '/home/stephane/Playground/PycharmProjects/TextMining/tests/testPDF/pdfs' # TODO: config file
 
 
 def main():
@@ -84,7 +84,7 @@ def extract_sentences(pdf_text):
     print("*" * 40 + "\n")
     isentence = 0
     for isentence, sentence in enumerate(pdf_sentences):
-        #isentence += 1
+        # isentence += 1
         sentence = sentence.strip()
         print("\n[sentence {isentence}]:\n{sentence}".format(isentence=isentence,
                                                              sentence=sentence.encode('utf-8')))
@@ -93,5 +93,3 @@ def extract_sentences(pdf_text):
 
 if __name__ == '__main__':
     sys.exit(main())
-
-

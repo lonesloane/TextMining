@@ -60,6 +60,6 @@ gulp.task('watch', function () {
   gulp.watch('./sass/**/*.scss', ['sass']);
 });
 
-//gulp.task('default', ['build', 'serve', 'sass', 'watch']);
-gulp.task('default', ['build', 'sass', 'watch']);
+gulp.task('default', ['build', 'serve', 'sass', 'watch']);
+//  gulp.task('default', ['build', 'sass', 'watch']);
 

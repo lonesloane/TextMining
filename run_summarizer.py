@@ -1,4 +1,4 @@
-#!local_py_env/bin/python2.7
+#!env/bin/python2.7
 import re
 import sys
 import os
@@ -79,7 +79,7 @@ def generate_summary(out_file, pdf_path):
     summarizer = pdfsummarizer.PDFSummarizer()
     results = summarizer.generate_summary(sentences)
     for sentence in results:
-        out_file.write(sentence._text.encode('utf-8') + '\n')
+        out_file.write(sentence._text.encode('utf-8') + '\n\n')
     out_file.write("*" * 40 + "\n")
     return json_pdf_text
 
@@ -119,7 +119,6 @@ def get_text_from_json(json_content):
 
 
 def concat_with_punctuation(frag):
-#    frag = re.sub('^[\W]*','', string=frag)
     ptrn_punct = '[.!?:]'
     frag = frag.strip()
     if not re.match(ptrn_punct, frag[-1]):

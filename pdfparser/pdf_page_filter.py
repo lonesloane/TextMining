@@ -12,8 +12,15 @@ X0, Y0, X1, Y1 = 0, 1, 2, 3
 
 
 class PDFPageFilter:
+    """
+
+    """
 
     def __init__(self, report=None):
+        """
+
+        :param report:
+        """
         self.__TEXT_MIN_FRACTION_SIZE = _config.getfloat('MAIN', 'TEXT_MIN_FRACTION_SIZE')
         self.__MIN_NUMBER_ROWS = _config.getfloat('MAIN', 'MIN_NUMBER_ROWS')
         self.__MIN_NUMBER_COLS = _config.getfloat('MAIN', 'MIN_NUMBER_COLS')
@@ -24,6 +31,11 @@ class PDFPageFilter:
         self.tables_text = list()
 
     def is_cover(self, page_txt):
+        """
+
+        :param page_txt:
+        :return:
+        """
         nb_match = 0
         for _, fragment in page_txt.items():
             txt = fragment.strip()
@@ -43,6 +55,11 @@ class PDFPageFilter:
 
     @classmethod
     def match_ocde(cls, txt):
+        """
+
+        :param txt:
+        :return:
+        """
         ptrn_ocde = re.compile('Organisation de Coop.{1,2}ration et de D.{1,2}veloppement .{1,2}conomiques'
                                '|Forum International des Transports|'
                                'Conf.{1,2}rence Europ.{1,2}enne des Ministres des Transports|'
@@ -63,6 +80,11 @@ class PDFPageFilter:
 
     @classmethod
     def match_oecd(cls, txt):
+        """
+
+        :param txt:
+        :return:
+        """
         ptrn_oecd = re.compile('Organisation for Economic Co-operation and Development'
                                '|International Transport Forum|'
                                'European Conference of Ministers of Transport|'
@@ -82,6 +104,11 @@ class PDFPageFilter:
 
     @classmethod
     def match_classification(cls, txt):
+        """
+
+        :param txt:
+        :return:
+        """
         ptrn_classif = re.compile('For Official Use|Confidential|Unclassified|A Usage Officiel'
                                   '|Confidentiel|Non classifi.{1,2}|Diffusion Restreinte|Restricted Diffusion'
                                   '|Restricted|general distribution', re.IGNORECASE)
@@ -93,8 +120,12 @@ class PDFPageFilter:
 
     @classmethod
     def match_cote(cls, txt):
-        # ptrn_cote = re.compile('[\w]+/[[\w/]+]?\(\d{2,4}\)\d*.*|[\w]+\(\d{2,4}\)\d*.*')
-        ptrn_cote = re.compile('([A-Z]+?[\(\)/0-9]+[A-Z]*?)+')
+        """
+
+        :param txt:
+        :return:
+        """
+        ptrn_cote = re.compile('([A-Z]+?[\(\)/0-9]+[A-Z]*?)+  # e.g. AGP/HR/VAC(94)5', re.VERBOSE)
 
         if re.search(ptrn_cote, txt):
             logger.debug(u'Cote found: {frag}'.format(frag=txt))
@@ -120,6 +151,11 @@ class PDFPageFilter:
 
     @classmethod
     def match_summary(cls, txt):
+        """
+
+        :param txt:
+        :return:
+        """
         ptrn_summary = re.compile('^\s*?SUMMARY\s*?$|'
                                   '^\s*?ABSTRACT\s*?$|'
                                   '^\s*?R.{1,2}SUM.{1,2}\s*?$|'
@@ -133,6 +169,12 @@ class PDFPageFilter:
             return 0
 
     def is_toc(self, page_txt, current_fragment_type):
+        """
+
+        :param page_txt:
+        :param current_fragment_type:
+        :return:
+        """
         # TODO: improve to handle situation where text follows toc on same page (see IMP19901498FRE)
         nb = 0
         for coord, fragment in page_txt.items():
@@ -159,6 +201,11 @@ class PDFPageFilter:
 
     @classmethod
     def match_toc_title(cls, txt):
+        """
+
+        :param txt:
+        :return:
+        """
         ptrn_toc_title = re.compile('TABLE OF CONTENTS|TABLE DES MATI.{1,2}RES|SOMMAIRE')  # Expected text in uppercase
         if re.search(ptrn_toc_title, txt):
             logger.debug(u'T.O.C. "Title" found: {frag}'.format(frag=txt))
@@ -168,6 +215,11 @@ class PDFPageFilter:
 
     @classmethod
     def match_toc_exact(cls, txt):
+        """
+
+        :param txt:
+        :return:
+        """
         ptrn_toc_exact = re.compile('Table des mati.{1,2}res')  # Expected text in lowercase
         if re.search(ptrn_toc_exact, txt):
             logger.debug(u'T.O.C. "Title" found: {frag}'.format(frag=txt))
@@ -177,10 +229,21 @@ class PDFPageFilter:
 
     @classmethod
     def match_toc_continued(cls, txt):
+        """
+
+        :param txt:
+        :return:
+        """
         ptrn_toc_cont = re.compile('([\.]{10,}?\s[0-9]{1,4})')
         return re.findall(ptrn_toc_cont, txt)
 
     def is_glossary(self, page_txt, current_fragment_type):
+        """
+
+        :param page_txt:
+        :param current_fragment_type:
+        :return:
+        """
         nb = 0
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
@@ -204,6 +267,11 @@ class PDFPageFilter:
 
     @classmethod
     def match_glossary_title(cls, txt):
+        """
+
+        :param txt:
+        :return:
+        """
         ptrn_glossary_title = re.compile('^\W*?LIST OF ABBREVIATIONS|'
                                          '^\W*?GLOSSARY|'
                                          '^\W*?Glossary\W*?$|'
@@ -218,6 +286,11 @@ class PDFPageFilter:
 
     @classmethod
     def match_glossary_structure(cls, txt):
+        """
+
+        :param txt:
+        :return:
+        """
         # Some examples of patterns usually found in glossaries:
         # "ATM – Agriculture Trade and Markets division of TAD"
         # "COAG – Committee for Agriculture of the OECD"
@@ -225,6 +298,12 @@ class PDFPageFilter:
         return re.findall(ptrn_glossary_struct, txt)
 
     def is_bibliography(self, page_txt, current_fragment_type):
+        """
+
+        :param page_txt:
+        :param current_fragment_type:
+        :return:
+        """
         # TODO: either improve regexp (case sensitive?)
         # or detect that text initially came from a table (see JT03366941 page 49)
         nb = 0
@@ -248,6 +327,11 @@ class PDFPageFilter:
 
     @classmethod
     def match_bibliography_title(cls, txt):
+        """
+
+        :param txt:
+        :return:
+        """
         ptrn_biblio = re.compile('^\s*?bibliograph(y|ie)\s*?$|'
                                  '^\s*?r.{1,2}f.{1,2}rence(?:s)?\s*?$|'
                                  '^\s*?lit(?:t)?erature\s*?$', re.IGNORECASE)
@@ -259,6 +343,11 @@ class PDFPageFilter:
 
     @classmethod
     def match_bibliography_structure(cls, txt):
+        """
+
+        :param txt:
+        :return:
+        """
         # Some examples of patterns usually found in bibliographies:
         # "Baumol, W. (1967), “Macroeconomics of unbalanced growth: the anatomy of urban crisis”, American"
         # "OECD (2010c), The OECD Innovation Strategy: Getting a Head Start on Tomorrow, Paris: OECD."
@@ -266,6 +355,12 @@ class PDFPageFilter:
         return re.findall(ptrn_biblio_cont, txt)
 
     def is_participants_list(self, page_txt, current_fragment_type):
+        """
+
+        :param page_txt:
+        :param current_fragment_type:
+        :return:
+        """
         nb_names, nb_emails = 0, 0
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
@@ -296,6 +391,11 @@ class PDFPageFilter:
 
     @classmethod
     def match_participants_title(cls, txt):
+        """
+
+        :param txt:
+        :return:
+        """
         ptrn_part_exact_1 = re.compile('Participants list|LIST OF PARTICIPANTS|Liste des participants',
                                        re.IGNORECASE)
         ptrn_part_exact_2 = re.compile('^\W*?PRESENT(S)?\W*?$')
@@ -319,13 +419,26 @@ class PDFPageFilter:
 
     @classmethod
     def match_participants_names(cls, txt):
+        """
+
+        :param txt:
+        :return:
+        """
         # "Mr. Christian HEDERER, Counsellor for Energy, Trade, Industry and Science"
         # "Ms. Maria-Antoinetta SIMONS, Permanent Delegation of Belgium to the OECD"
-        ptrn_participants_names = re.compile('(?:M[r]?|Mme|M[i|r]?s[s]?|Dr)\.?(?: [[A-Z][a-z\s]*?]*? [A-Z ]+)')
+#        ptrn_participants_names = re.compile('(?:M[r]?|Mme|M[i|r]?s[s]?|Dr)\.?(?: [[A-Z][a-z\s]*?]*? [A-Z ]+)')
+        ptrn_participants_names = re.compile('(?:M[r]?|Mme|M[i|r]?s[s]?|Dr)'
+                                             '\.?'
+                                             '(?: [A-Z][a-z\s]*?[- ]?[[A-Z][a-z\s]*?]? ?[A-Z ]+)')
         return re.findall(ptrn_participants_names, txt)
 
     @classmethod
     def match_participants_emails(cls, txt):
+        """
+
+        :param txt:
+        :return:
+        """
         # "j.a.f.vandewijnboom@minez.nl\n"
         # "skowalczyk@ijhars.gov.pl \n"
         # "dkrzyzanowska@ijhars.gov.pl \n"
@@ -336,6 +449,11 @@ class PDFPageFilter:
         return re.findall(ptrn_participants_emails, txt)
 
     def is_annex(self, page_txt):
+        """
+
+        :param page_txt:
+        :return:
+        """
         for coord, fragment in page_txt.items():
             fragment = fragment.strip()
             if self.match_annex_title(fragment):
@@ -346,6 +464,11 @@ class PDFPageFilter:
 
     @classmethod
     def match_annex_title(cls, txt):
+        """
+
+        :param txt:
+        :return:
+        """
         ptrn_annex = re.compile('^\W*ANNEX(E)?\s*[0-9]?[A-Z]?\.?\s*$|'
                                 '^\W*ANNEX(E)?\s*[0-9]?[A-Z]?\.?\s*?-?\s*?:?[\W\w]*?$|'
                                 '^\W*Annex(e)?\s{1,2}[0-9]?[a-z]?\s*$|'
@@ -358,6 +481,11 @@ class PDFPageFilter:
             return False
 
     def filter_text_tables(self, page_txt):
+        """
+
+        :param page_txt:
+        :return:
+        """
         if _log_level > 1:
             logger.debug('[Enter filter_text_tables]')
 
@@ -388,6 +516,12 @@ class PDFPageFilter:
             logger.debug('[Exit filter_text_tables]')
 
     def filter_tables(self, page_txt, page_cells):
+        """
+
+        :param page_txt:
+        :param page_cells:
+        :return:
+        """
         if _log_level > 1:
             logger.debug('[Enter filter_tables]')
             logger.debug(u'nb cells: {nb}'.format(nb=len(page_cells)))
@@ -472,6 +606,11 @@ class PDFPageFilter:
                     page_txt.pop(coord)
 
     def filter_repetition(self, cell_content):
+        """
+
+        :param cell_content:
+        :return:
+        """
         cell_content = cell_content.strip()
         # remove inner line breaks
         cell_content = cell_content.replace('\n', ' ')
@@ -487,6 +626,11 @@ class PDFPageFilter:
             return cell_content
 
     def filter_number(self, cell_content):
+        """
+
+        :param cell_content:
+        :return:
+        """
         cell_content = cell_content.strip()
         if _log_level > 2:
             logger.debug(u'Looking if {txt} is a number'.format(txt=cell_content))
@@ -501,6 +645,12 @@ class PDFPageFilter:
             return cell_content
 
     def text_is_within_table(self, coord, outer_edges):
+        """
+
+        :param coord:
+        :param outer_edges:
+        :return:
+        """
         for cell in outer_edges:
             if cell.contains(coord) and cell.is_fraction(coord):
                 if _log_level > 1:
@@ -511,6 +661,12 @@ class PDFPageFilter:
             return False
 
     def text_below_notes_separator(self, coord, separator):
+        """
+
+        :param coord:
+        :param separator:
+        :return:
+        """
         if coord[Y0] < separator.y0:
             logger.debug('cell below sepratator - [{x0}|{y0}|{x1}|{y1}]'.format(x0=coord[X0],
                                                                                 y0=coord[Y0],
@@ -518,3 +674,6 @@ class PDFPageFilter:
                                                                                 y1=coord[Y1]))
             return True
         return False
+
+if __name__ == '__main__':
+    pass

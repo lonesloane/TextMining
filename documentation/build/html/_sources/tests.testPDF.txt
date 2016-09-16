@@ -1,0 +1,78 @@
+tests.testPDF package
+=====================
+
+Submodules
+----------
+
+tests.testPDF.generate_expected_results module
+----------------------------------------------
+
+.. automodule:: tests.testPDF.generate_expected_results
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tests.testPDF.generate_summaries module
+---------------------------------------
+
+.. automodule:: tests.testPDF.generate_summaries
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tests.testPDF.single_text_extractor module
+------------------------------------------
+
+.. automodule:: tests.testPDF.single_text_extractor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tests.testPDF.validate_layout_scanner module
+--------------------------------------------
+
+.. automodule:: tests.testPDF.validate_layout_scanner
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tests.testPDF.validate_summarizer module
+----------------------------------------
+
+.. automodule:: tests.testPDF.validate_summarizer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tests.testPDF.validate_table_extractor module
+---------------------------------------------
+
+.. automodule:: tests.testPDF.validate_table_extractor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tests.testPDF.validate_text_extractor module
+--------------------------------------------
+
+.. automodule:: tests.testPDF.validate_text_extractor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tests.testPDF.validate_text_table_extractor module
+--------------------------------------------------
+
+.. automodule:: tests.testPDF.validate_text_table_extractor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: tests.testPDF
+    :members:
+    :undoc-members:
+    :show-inheritance:

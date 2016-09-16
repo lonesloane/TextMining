@@ -1,0 +1,54 @@
+tests.test_pdfparser package
+============================
+
+Submodules
+----------
+
+tests.test_pdfparser.test_pdf_page_filter module
+------------------------------------------------
+
+.. automodule:: tests.test_pdfparser.test_pdf_page_filter
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tests.test_pdfparser.test_summarizer module
+-------------------------------------------
+
+.. automodule:: tests.test_pdfparser.test_summarizer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tests.test_pdfparser.test_table_edges_extractor module
+------------------------------------------------------
+
+.. automodule:: tests.test_pdfparser.test_table_edges_extractor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tests.test_pdfparser.test_text_extractor module
+-----------------------------------------------
+
+.. automodule:: tests.test_pdfparser.test_text_extractor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tests.test_pdfparser.test_text_table_extractor module
+-----------------------------------------------------
+
+.. automodule:: tests.test_pdfparser.test_text_table_extractor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: tests.test_pdfparser
+    :members:
+    :undoc-members:
+    :show-inheritance:

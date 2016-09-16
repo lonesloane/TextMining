@@ -20,6 +20,14 @@ tests.test_analysis.test_corpus module
     :undoc-members:
     :show-inheritance:
 
+tests.test_analysis.test_temporal module
+----------------------------------------
+
+.. automodule:: tests.test_analysis.test_temporal
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 tests.test_analysis.test_topics_typeahead module
 ------------------------------------------------
 
